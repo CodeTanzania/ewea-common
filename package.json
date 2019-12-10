@@ -118,6 +118,7 @@
     "@lykmapipo/express-common": ">=0.17.15",
     "@lykmapipo/express-rest-actions": ">=0.8.3",
     "@lykmapipo/file": ">=0.1.13",
+    "@lykmapipo/logger": ">=0.5.1",
     "@lykmapipo/mongoose-common": ">=0.28.1",
     "@lykmapipo/mongoose-exportable": ">=0.3.14",
     "@lykmapipo/mongoose-sequenceable": ">=0.2.0",

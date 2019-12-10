@@ -1,5 +1,6 @@
 import '../../src/internals';
-import { connect, clear, drop } from '@lykmapipo/mongoose-test-helpers';
+import { clear, drop } from '@lykmapipo/mongoose-test-helpers';
+import { connect } from '../../src';
 
 process.env.NODE_ENV = 'test';
 process.env.DEFAULT_LOCALE = 'en';
