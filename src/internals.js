@@ -25,9 +25,18 @@ export const PREDEFINE_NAMESPACES = [
 // relations
 export const PREDEFINE_RELATIONS = {
   permissions: { ref: 'Permission', array: true },
-  roles: { ref: 'Predefine', array: true },
-  groups: { ref: 'Predefine', array: true },
-  unit: { ref: 'Predefine' },
+  roles: { ref: 'Predefine', namespace: 'PartyRole', array: true },
+  groups: { ref: 'Predefine', namespace: 'PartyGroup', array: true },
+  group: { ref: 'Predefine', namespace: 'EventGroup' },
+  type: { ref: 'Predefine', namespace: ['EventType', 'FeatureType'] },
+  function: { ref: 'Predefine', namespace: 'EventFunction' },
+  level: { ref: 'Predefine', namespace: 'AdministrativeLevel' },
+  area: { ref: 'Predefine', namespace: 'AdministrativeArea' },
+  indicator: { ref: 'Predefine', namespace: 'EventIndicator' },
+  unit: { ref: 'Predefine', namespace: 'Unit' },
+  agencies: { ref: 'Party', array: true },
+  focals: { ref: 'Party', array: true },
+  custodians: { ref: 'Party', array: true },
 };
 
 // setup
