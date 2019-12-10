@@ -1,6 +1,6 @@
 import { expect } from '@lykmapipo/test-helpers';
-import { getStrings } from '@lykmapipo/env';
-import { PREDEFINE_NAMESPACES } from '../../src';
+import { getStrings, getObject } from '@lykmapipo/env';
+import { PREDEFINE_NAMESPACES, PREDEFINE_RELATIONS } from '../../src';
 
 describe('common', () => {
   it('should set predefine namespaces', () => {
@@ -17,5 +17,10 @@ describe('common', () => {
     expect(getStrings('PREDEFINE_RELATIONS_IGNORED')).to.be.eql(
       PREDEFINE_NAMESPACES
     );
+  });
+
+  it('should set predefine relations', () => {
+    expect(process.env.PREDEFINE_RELATIONS).to.exist;
+    expect(getObject('PREDEFINE_RELATIONS')).to.eql(PREDEFINE_RELATIONS);
   });
 });

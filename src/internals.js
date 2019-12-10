@@ -1,5 +1,6 @@
 import { join, stringify } from '@lykmapipo/common';
 
+// namespaces
 export const PREDEFINE_NAMESPACES = [
   'PartyRole',
   'PartyGroup',
@@ -20,7 +21,14 @@ export const PREDEFINE_NAMESPACES = [
   'EventQuestion',
   'Unit',
 ];
-export const PREDEFINE_RELATIONS = {};
+
+// relations
+export const PREDEFINE_RELATIONS = {
+  permissions: { ref: 'Permission', array: true },
+  roles: { ref: 'Predefine', array: true },
+  groups: { ref: 'Predefine', array: true },
+  unit: { ref: 'Predefine' },
+};
 
 // setup
 process.env.PREDEFINE_NAMESPACES = join(PREDEFINE_NAMESPACES, ',');
