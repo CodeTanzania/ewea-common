@@ -20,6 +20,7 @@ export const PREDEFINE_NAMESPACES = [
   'EventIndicator',
   'EventQuestion',
   'Unit',
+  'NotificationTemplate',
 ];
 
 // relations
