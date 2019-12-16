@@ -1,6 +1,12 @@
 import { expect } from '@lykmapipo/test-helpers';
 import { getStrings, getObject } from '@lykmapipo/env';
-import { PREDEFINE_NAMESPACES, PREDEFINE_RELATIONS } from '../../src';
+import {
+  PREDEFINE_NAMESPACES,
+  PREDEFINE_RELATIONS,
+  pathFor,
+  dataPathFor,
+  seedPathFor,
+} from '../../src';
 
 describe('common', () => {
   it('should set predefine namespaces', () => {
@@ -22,5 +28,19 @@ describe('common', () => {
   it('should set predefine relations', () => {
     expect(process.env.PREDEFINE_RELATIONS).to.exist;
     expect(getObject('PREDEFINE_RELATIONS')).to.eql(PREDEFINE_RELATIONS);
+  });
+
+  it('should derive paths', () => {
+    expect(pathFor()).to.exist.and.be.equal(process.cwd());
+    expect(pathFor('data')).to.exist.and.be.equal(`${process.cwd()}/data`);
+    expect(pathFor('seeds')).to.exist.and.be.equal(`${process.cwd()}/seeds`);
+
+    expect(dataPathFor('events')).to.exist.and.be.equal(
+      `${process.cwd()}/data/events`
+    );
+
+    expect(seedPathFor('events')).to.exist.and.be.equal(
+      `${process.cwd()}/seeds/events`
+    );
   });
 });
