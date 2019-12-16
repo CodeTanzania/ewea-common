@@ -8,6 +8,7 @@ import {
   seedPathFor,
   csvPathFor,
   shapeFilePathFor,
+  geoJsonPathFor,
 } from '../../src';
 
 describe('common', () => {
@@ -51,6 +52,10 @@ describe('common', () => {
 
     expect(shapeFilePathFor('Event')).to.exist.and.be.equal(
       `${process.cwd()}/data/events.shp`
+    );
+
+    expect(geoJsonPathFor('Event')).to.exist.and.be.equal(
+      `${process.cwd()}/data/events.geojson`
     );
   });
 });

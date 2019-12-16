@@ -85,7 +85,7 @@ export const seedPathFor = fileName => {
  * @example
  *
  * csvPathFor('events');
- * => /home/ewea/seeds/events.csv
+ * => /home/ewea/data/events.csv
  */
 export const csvPathFor = modelName => {
   const fileName = `${pluralize(toLower(modelName))}.csv`;
@@ -108,10 +108,33 @@ export const csvPathFor = modelName => {
  * @example
  *
  * shapeFilePathFor('events');
- * => /home/ewea/seeds/events.shp
+ * => /home/ewea/data/events.shp
  */
 export const shapeFilePathFor = modelName => {
   const fileName = `${pluralize(toLower(modelName))}.shp`;
   const shapeFilePath = dataPathFor(fileName);
   return shapeFilePath;
+};
+
+/**
+ * @function geoJsonPathFor
+ * @name geoJsonPathFor
+ * @description Derive geojson seed path of given model name
+ * @param {string} modelName valid model name or predefine namespace
+ * @returns {string} valid geojson seed path
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.3.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * geoJsonPathFor('events');
+ * => /home/ewea/data/events.geojson
+ */
+export const geoJsonPathFor = modelName => {
+  const fileName = `${pluralize(toLower(modelName))}.geojson`;
+  const geoJsonFilePath = dataPathFor(fileName);
+  return geoJsonFilePath;
 };
