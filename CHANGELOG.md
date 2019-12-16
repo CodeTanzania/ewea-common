@@ -1,3 +1,9 @@
+#### 0.2.1 (2019-12-16)
+
+##### Chores
+
+* **deps:**  force latest version & audit fix ([09ef43c9](https://github.com/codetanzania/ewea-common/commit/09ef43c9f7a5821a5e21aef1ef05141265c93b56))
+
 #### 0.1.0 (2019-12-10)
 
 ##### New Features
