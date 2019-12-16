@@ -1,4 +1,6 @@
 import { join as joinPath, resolve as resolvePath } from 'path';
+import { toLower } from 'lodash';
+import { pluralize } from '@lykmapipo/common';
 import { getString } from '@lykmapipo/env';
 
 /**
@@ -66,4 +68,27 @@ export const dataPathFor = fileName => {
 export const seedPathFor = fileName => {
   const path = getString('SEED_PATH', pathFor('seeds'));
   return resolvePath(path, fileName);
+};
+
+/**
+ * @function csvPathFor
+ * @name csvPathFor
+ * @description Derive csv seed path from application base of given model name
+ * @param {string} modelName valid model name or predefine namespace
+ * @returns {string} valid csv seed path
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.3.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * csvPathFor('events');
+ * => /home/ewea/seeds/events.csv
+ */
+export const csvPathFor = modelName => {
+  const fileName = `${pluralize(toLower(modelName))}.csv`;
+  const csvPath = dataPathFor(fileName);
+  return csvPath;
 };
