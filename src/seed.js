@@ -138,3 +138,27 @@ export const geoJsonPathFor = modelName => {
   const geoJsonFilePath = dataPathFor(fileName);
   return geoJsonFilePath;
 };
+
+/**
+ * @function jsonPathFor
+ * @name jsonPathFor
+ * @description Derive json seed path of given model name
+ * @param {string} modelName valid model name or predefine namespace
+ * @returns {string} valid json seed path
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.3.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * jsonPathFor('events');
+ * => /home/ewea/seeds/events.json
+ * => /home/ewea/seeds/events.js
+ */
+export const jsonPathFor = modelName => {
+  const fileName = `${pluralize(toLower(modelName))}`;
+  const jsonFilePath = dataPathFor(fileName);
+  return jsonFilePath;
+};

@@ -9,6 +9,7 @@ import {
   csvPathFor,
   shapeFilePathFor,
   geoJsonPathFor,
+  jsonPathFor,
 } from '../../src';
 
 describe('common', () => {
@@ -33,7 +34,7 @@ describe('common', () => {
     expect(getObject('PREDEFINE_RELATIONS')).to.eql(PREDEFINE_RELATIONS);
   });
 
-  it('should derive paths', () => {
+  it('should derive data and seed paths', () => {
     expect(pathFor()).to.exist.and.be.equal(process.cwd());
     expect(pathFor('data')).to.exist.and.be.equal(`${process.cwd()}/data`);
     expect(pathFor('seeds')).to.exist.and.be.equal(`${process.cwd()}/seeds`);
@@ -56,6 +57,10 @@ describe('common', () => {
 
     expect(geoJsonPathFor('Event')).to.exist.and.be.equal(
       `${process.cwd()}/data/events.geojson`
+    );
+
+    expect(jsonPathFor('Event')).to.exist.and.be.equal(
+      `${process.cwd()}/data/events`
     );
   });
 });
