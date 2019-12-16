@@ -73,7 +73,7 @@ export const seedPathFor = fileName => {
 /**
  * @function csvPathFor
  * @name csvPathFor
- * @description Derive csv seed path from application base of given model name
+ * @description Derive csv seed path of given model name
  * @param {string} modelName valid model name or predefine namespace
  * @returns {string} valid csv seed path
  * @author lally elias <lallyelias87@gmail.com>
@@ -91,4 +91,27 @@ export const csvPathFor = modelName => {
   const fileName = `${pluralize(toLower(modelName))}.csv`;
   const csvPath = dataPathFor(fileName);
   return csvPath;
+};
+
+/**
+ * @function shapeFilePathFor
+ * @name shapeFilePathFor
+ * @description Derive shapefile seed path of given model name
+ * @param {string} modelName valid model name or predefine namespace
+ * @returns {string} valid shapefile seed path
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.3.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * shapeFilePathFor('events');
+ * => /home/ewea/seeds/events.shp
+ */
+export const shapeFilePathFor = modelName => {
+  const fileName = `${pluralize(toLower(modelName))}.shp`;
+  const shapeFilePath = dataPathFor(fileName);
+  return shapeFilePath;
 };

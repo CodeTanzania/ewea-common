@@ -7,6 +7,7 @@ import {
   dataPathFor,
   seedPathFor,
   csvPathFor,
+  shapeFilePathFor,
 } from '../../src';
 
 describe('common', () => {
@@ -46,6 +47,10 @@ describe('common', () => {
 
     expect(csvPathFor('Event')).to.exist.and.be.equal(
       `${process.cwd()}/data/events.csv`
+    );
+
+    expect(shapeFilePathFor('Event')).to.exist.and.be.equal(
+      `${process.cwd()}/data/events.shp`
     );
   });
 });
