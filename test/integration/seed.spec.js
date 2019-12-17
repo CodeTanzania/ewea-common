@@ -2,6 +2,7 @@ import { expect } from '@lykmapipo/mongoose-test-helpers';
 import {
   seedCsv,
   seedUnits,
+  seedAdministrativeLevels,
   seedEventSeverities,
   seedEventCertainties,
   seedPartyGroups,
@@ -45,6 +46,13 @@ describe.only('seed', () => {
 
   it('should seed units', done => {
     seedUnits(error => {
+      expect(error).to.not.exist;
+      done(error);
+    });
+  });
+
+  it('should seed administrative levels', done => {
+    seedAdministrativeLevels(error => {
       expect(error).to.not.exist;
       done(error);
     });

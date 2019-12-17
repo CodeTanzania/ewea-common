@@ -397,6 +397,30 @@ export const seedUnits = done => {
 };
 
 /**
+ * @function seedAdministrativeLevels
+ * @name seedAdministrativeLevels
+ * @description Seed administrative levels
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.3.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedAdministrativeLevels(error => { ... });
+ */
+export const seedAdministrativeLevels = done => {
+  debug('Start Seeding Administrative Levels Data');
+  return seedPredefine('AdministrativeLevel', error => {
+    debug('Finish Seeding Administrative Levels Data');
+    return done(error);
+  });
+};
+
+/**
  * @function seedEventSeverities
  * @name seedEventSeverities
  * @description Seed event severities
@@ -608,6 +632,7 @@ export const seed = done => {
   const tasks = [
     syncIndexes,
     seedUnits,
+    seedAdministrativeLevels,
     seedEventSeverities,
     seedEventCertainties,
     seedPartyGroups,
