@@ -1,6 +1,7 @@
 import { expect } from '@lykmapipo/mongoose-test-helpers';
 import {
   seedCsv,
+  seedUnits,
   seedEventSeverities,
   seedEventCertainties,
   seedPartyGroups,
@@ -39,6 +40,13 @@ describe.only('seed', () => {
       expect(feature.description).to.exist;
       expect(next).to.exist.and.be.a('function');
       return next();
+    });
+  });
+
+  it('should seed units', done => {
+    seedUnits(error => {
+      expect(error).to.not.exist;
+      done(error);
     });
   });
 

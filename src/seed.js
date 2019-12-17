@@ -373,6 +373,30 @@ export const seedPredefine = (namespace, done) => {
 };
 
 /**
+ * @function seedUnits
+ * @name seedUnits
+ * @description Seed unit of measure
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.3.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedUnits(error => { ... });
+ */
+export const seedUnits = done => {
+  debug('Start Seeding Units Data');
+  return seedPredefine('Unit', error => {
+    debug('Finish Seeding Units Data');
+    return done(error);
+  });
+};
+
+/**
  * @function seedEventSeverities
  * @name seedEventSeverities
  * @description Seed event severities
@@ -544,7 +568,7 @@ export const seedEventFunctions = done => {
  * @function seedEventActions
  * @name seedEventActions
  * @description Seed event actions
- * @param {Action} done callback to invoke on success or error
+ * @param {Function} done callback to invoke on success or error
  * @returns {Error|undefined} error if fails else undefined
  * @author lally elias <lallyelias87@gmail.com>
  * @license MIT
@@ -583,6 +607,7 @@ export const seed = done => {
   // prepare seed tasks
   const tasks = [
     syncIndexes,
+    seedUnits,
     seedEventSeverities,
     seedEventCertainties,
     seedPartyGroups,
