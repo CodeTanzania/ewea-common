@@ -166,6 +166,23 @@ export const jsonPathFor = modelName => {
   return jsonFilePath;
 };
 
+/**
+ * @function transformSeedKeys
+ * @name transformSeedKeys
+ * @description Transform and normalize seed keys
+ * @param {object} seed valid seed
+ * @returns {object} transformed seed
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.3.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * transformSeedKeys({ Name: 'John Doe' });
+ * => { name: 'John Doe' }
+ */
 export const transformSeedKeys = seed => {
   // copy seed
   const data = mergeObjects(seed);
