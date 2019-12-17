@@ -1,6 +1,6 @@
 import { join as joinPath, resolve as resolvePath } from 'path';
-import { toLower } from 'lodash';
-import { pluralize } from '@lykmapipo/common';
+import { mapKeys, split, toLower } from 'lodash';
+import { join, pluralize, mergeObjects } from '@lykmapipo/common';
 import { getString } from '@lykmapipo/env';
 // import { debug, warn } from '@lykmapipo/logger';
 // import { PREDEFINE_NAMESPACES, PREDEFINE_RELATIONS } from './internals';
@@ -164,6 +164,24 @@ export const jsonPathFor = modelName => {
   const fileName = `${pluralize(toLower(modelName))}`;
   const jsonFilePath = dataPathFor(fileName);
   return jsonFilePath;
+};
+
+export const transformSeedKeys = seed => {
+  // copy seed
+  const data = mergeObjects(seed);
+
+  // normalize keys
+  const transformed = mapKeys(data, (value, key) => {
+    // key to lower
+    let path = toLower(key);
+    // key to path
+    path = join(split(path, ' '), '.');
+    // return normalized key
+    return path;
+  });
+
+  // return
+  return transformed;
 };
 
 export const seedCsv = (fileName, transforms, done) => {

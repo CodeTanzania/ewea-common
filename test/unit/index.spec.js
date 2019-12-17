@@ -10,6 +10,7 @@ import {
   shapeFilePathFor,
   geoJsonPathFor,
   jsonPathFor,
+  transformSeedKeys,
 } from '../../src';
 
 describe('common', () => {
@@ -62,5 +63,16 @@ describe('common', () => {
     expect(jsonPathFor('Event')).to.exist.and.be.equal(
       `${process.cwd()}/data/events`
     );
+  });
+
+  it('should transform seed keys', () => {
+    expect(transformSeedKeys({ FID: 1, Name: 'Two' })).to.be.eql({
+      fid: 1,
+      name: 'Two',
+    });
+    expect(transformSeedKeys({ FID: 1, 'Name En': 'Two' })).to.be.eql({
+      fid: 1,
+      'name.en': 'Two',
+    });
   });
 });
