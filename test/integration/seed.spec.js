@@ -8,6 +8,7 @@ import {
   seedEventGroups,
   seedEventTypes,
   seedEventFunctions,
+  seedEventActions,
   seed,
 } from '../../src';
 import '@codetanzania/emis-stakeholder';
@@ -85,6 +86,13 @@ describe.only('seed', () => {
 
   it('should seed event functions', done => {
     seedEventFunctions(error => {
+      expect(error).to.not.exist;
+      done(error);
+    });
+  });
+
+  it('should seed event actions', done => {
+    seedEventActions(error => {
       expect(error).to.not.exist;
       done(error);
     });
