@@ -122,13 +122,13 @@
     "@lykmapipo/mongoose-common": ">=0.28.2",
     "@lykmapipo/mongoose-exportable": ">=0.3.15",
     "@lykmapipo/mongoose-sequenceable": ">=0.2.0",
-    "@lykmapipo/postman": ">=0.16.1",
-    "@lykmapipo/predefine": ">=1.4.1",
+    "@lykmapipo/postman": ">=0.16.2",
+    "@lykmapipo/predefine": ">=1.5.0",
     "async": ">=3.1.0",
     "lodash": ">=4.17.15",
     "mongoose-geojson-schemas": ">=0.11.0",
     "mongoose-locale-schema": ">=0.4.7",
-    "mongoose-rest-actions": ">=0.29.8"
+    "mongoose-rest-actions": ">=0.29.9"
   },
   "engines": {
     "node": ">=12.4.0",

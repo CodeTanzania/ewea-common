@@ -11,7 +11,7 @@ import {
   geoJsonPathFor,
   jsonPathFor,
   transformSeedKeys,
-  transformToPredefine,
+  transformToPredefineSeed,
   applyTransformsOn,
 } from '../../src';
 
@@ -78,14 +78,6 @@ describe('common', () => {
     });
   });
 
-  it('should transform seed to predefine', () => {
-    const seed = { name: 'Two', description: 'Two' };
-    expect(transformToPredefine(seed)).to.be.eql({
-      name: { en: 'Two', sw: 'Two' },
-      description: { en: 'Two', sw: 'Two' },
-    });
-  });
-
   it('should apply transforms', () => {
     expect(applyTransformsOn({ FID: 1, Name: 'Two' })).to.be.eql({
       fid: 1,
@@ -94,6 +86,37 @@ describe('common', () => {
     expect(applyTransformsOn({ FID: 1, 'Name En': 'Two' })).to.be.eql({
       fid: 1,
       'name.en': 'Two',
+    });
+  });
+
+  it('should transform to predefine seed', () => {
+    const data = {
+      name: 'Two',
+      description: 'Two',
+      group: 'Meteorological',
+      agencies: 'Roads Agency',
+    };
+    const seed = transformToPredefineSeed(data);
+    expect(seed).to.be.eql({
+      strings: {
+        name: { en: 'Two', sw: 'Two' },
+        description: { en: 'Two', sw: 'Two' },
+      },
+      numbers: {},
+      booleans: {},
+      dates: {},
+      populate: {
+        'relations.group': {
+          model: 'Predefine',
+          match: { 'strings.name.en': { $in: [data.group] } },
+          array: false,
+        },
+        'relations.agencies': {
+          model: 'Party',
+          match: { name: { $in: [data.agencies] } },
+          array: true,
+        },
+      },
     });
   });
 });

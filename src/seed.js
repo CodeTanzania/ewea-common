@@ -1,12 +1,14 @@
 import { join as joinPath, resolve as resolvePath } from 'path';
 import { forEach, mapKeys, split, toLower } from 'lodash';
 import { waterfall } from 'async';
-import { join, pluralize, mergeObjects } from '@lykmapipo/common';
+import { join, pluralize, mergeObjects, sortedUniq } from '@lykmapipo/common';
 import { getString } from '@lykmapipo/env';
 import { debug, warn } from '@lykmapipo/logger';
-import { localizedValuesFor } from 'mongoose-locale-schema';
-// import { PREDEFINE_NAMESPACES, PREDEFINE_RELATIONS } from './internals';
+import { transformToPredefine } from '@lykmapipo/predefine';
+import { PREDEFINE_RELATIONS } from './internals';
 import { syncIndexes } from './database';
+
+const PREDEFINE_MODEL_NAME = 'Predefine';
 
 /**
  * @function pathFor
@@ -204,9 +206,9 @@ export const transformSeedKeys = seed => {
 };
 
 /**
- * @function transformToPredefin
- * @name transformToPredefin
- * @description Transform and normalize seed to predefine
+ * @function transformToPredefineSeed
+ * @name transformToPredefineSeed
+ * @description Transform and normalize given seed to predefine seed
  * @param {object} seed valid seed
  * @returns {object} valid predefine seed
  * @author lally elias <lallyelias87@gmail.com>
@@ -217,22 +219,34 @@ export const transformSeedKeys = seed => {
  * @public
  * @example
  *
- * transformToPredefine({ Name: 'John Doe' });
+ * transformToPredefineSeed({ Name: 'John Doe' });
  * => { strings: { name: { en : 'John Doe' } } }
  */
-export const transformToPredefine = seed => {
+export const transformToPredefineSeed = seed => {
   // copy seed
   const data = mergeObjects(seed);
 
   // normalize to predefine
-  const predefine = {};
-  forEach(data, (value, key) => {
-    if (key === 'name' || key === 'description') {
-      predefine[key] = localizedValuesFor({ en: value });
-    } else {
-      predefine[key] = value;
+  const predefine = transformToPredefine(data);
+
+  // transform relations
+  const populate = {};
+  forEach(PREDEFINE_RELATIONS, (value, key) => {
+    const hasRelation = key && seed[key];
+    if (hasRelation) {
+      const options = mergeObjects(value);
+      const path = `relations.${key}`;
+      const model = options.ref || PREDEFINE_MODEL_NAME;
+      const array = options.array || false;
+      const vals = sortedUniq(split(seed[key], ','));
+      const match =
+        model === PREDEFINE_MODEL_NAME
+          ? { 'strings.name.en': { $in: vals } }
+          : { name: { $in: vals } };
+      populate[path] = { model, match, array };
     }
   });
+  predefine.populate = populate;
 
   // return
   return predefine;
