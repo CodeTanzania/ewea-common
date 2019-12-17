@@ -1,101 +1,19 @@
-import { join, stringify, pluralize, mergeObjects, sortedUniq, compact } from '@lykmapipo/common';
+import { join as joinPath, resolve as resolvePath } from 'path';
+import { forEach, isEmpty, mapKeys, split, toLower } from 'lodash';
 import { waterfall } from 'async';
-import { connect as connect$1, syncIndexes as syncIndexes$1 } from '@lykmapipo/mongoose-common';
-import { createModels } from '@lykmapipo/file';
-import { join as join$1, resolve } from 'path';
-import { toLower, mapKeys, split, forEach, isEmpty } from 'lodash';
+import {
+  compact,
+  join,
+  pluralize,
+  mergeObjects,
+  sortedUniq,
+} from '@lykmapipo/common';
 import { getString } from '@lykmapipo/env';
 import { debug, warn } from '@lykmapipo/logger';
 import { readCsv } from '@lykmapipo/geo-tools';
-import { transformToPredefine, Predefine } from '@lykmapipo/predefine';
-
-// namespaces
-// order: mostly dependent -> less dependent
-const PREDEFINE_NAMESPACES = [
-  'PartyRole',
-  'PartyGroup',
-  'EventCertainty',
-  'EventSeverity',
-  'EventStatus',
-  'EventUrgency',
-  'FeatureType',
-  'Feature',
-  'AdministrativeLevel',
-  'AdministrativeArea',
-  'EventGroup',
-  'EventType',
-  'EventFunction',
-  'EventAction',
-  'EventCatalogue',
-  'EventIndicator',
-  'EventQuestion',
-  'Unit',
-  'NotificationTemplate',
-];
-
-// relations
-const PREDEFINE_RELATIONS = {
-  permissions: { ref: 'Permission', array: true },
-  roles: { ref: 'Predefine', namespace: 'PartyRole', array: true },
-  groups: { ref: 'Predefine', namespace: 'PartyGroup', array: true },
-  group: { ref: 'Predefine', namespace: 'EventGroup' },
-  type: { ref: 'Predefine', namespace: ['EventType', 'FeatureType'] },
-  function: { ref: 'Predefine', namespace: 'EventFunction' },
-  action: { ref: 'Predefine', namespace: 'EventAction' },
-  level: { ref: 'Predefine', namespace: 'AdministrativeLevel' },
-  area: { ref: 'Predefine', namespace: 'AdministrativeArea' },
-  indicator: { ref: 'Predefine', namespace: 'EventIndicator' },
-  unit: { ref: 'Predefine', namespace: 'Unit' },
-  agencies: { ref: 'Party', array: true },
-  focals: { ref: 'Party', array: true },
-  custodians: { ref: 'Party', array: true },
-};
-
-// setup
-process.env.PREDEFINE_NAMESPACES = join(PREDEFINE_NAMESPACES, ',');
-process.env.PREDEFINE_RELATIONS_IGNORED = join(PREDEFINE_NAMESPACES, ',');
-process.env.PREDEFINE_RELATIONS = stringify(PREDEFINE_RELATIONS);
-
-/**
- * @function connect
- * @name connect
- * @description Ensure database connection
- * @param {Function} done callback to invoke on success or error
- * @returns {Error} connection error if failed
- * @author lally elias <lallyelias87@gmail.com>
- * @license MIT
- * @since 0.1.0
- * @version 0.1.0
- * @static
- * @public
- * @example
- *
- * connect(error => { ... });
- */
-const connect = done => {
-  return connect$1(error => {
-    createModels();
-    return done(error);
-  });
-};
-
-/**
- * @function syncIndexes
- * @name syncIndexes
- * @description Synchronize model database indexes
- * @param {Function} done callback to invoke on success or error
- * @returns {Error|object} error if failed else sync results
- * @author lally elias <lallyelias87@gmail.com>
- * @license MIT
- * @since 0.1.0
- * @version 0.1.0
- * @static
- * @public
- * @example
- *
- * syncIndexes(error => { ... });
- */
-const syncIndexes = done => waterfall([connect, syncIndexes$1], done);
+import { Predefine, transformToPredefine } from '@lykmapipo/predefine';
+import { PREDEFINE_RELATIONS } from './internals';
+import { syncIndexes } from './database';
 
 const PREDEFINE_MODEL_NAME = 'Predefine';
 
@@ -116,9 +34,9 @@ const PREDEFINE_MODEL_NAME = 'Predefine';
  * pathFor('seeds');
  * => /home/ewea/seeds
  */
-const pathFor = (...paths) => {
+export const pathFor = (...paths) => {
   const base = getString('BASE_PATH', process.cwd());
-  const path = join$1(base, ...paths);
+  const path = joinPath(base, ...paths);
   return path;
 };
 
@@ -139,9 +57,9 @@ const pathFor = (...paths) => {
  * dataPathFor('events.csv');
  * => /home/ewea/data/events.csv
  */
-const dataPathFor = fileName => {
+export const dataPathFor = fileName => {
   const path = getString('DATA_PATH', pathFor('data'));
-  return resolve(path, fileName);
+  return resolvePath(path, fileName);
 };
 
 /**
@@ -161,9 +79,9 @@ const dataPathFor = fileName => {
  * seedPathFor('events.json');
  * => /home/ewea/seeds/events.json
  */
-const seedPathFor = fileName => {
+export const seedPathFor = fileName => {
   const path = getString('SEED_PATH', pathFor('seeds'));
-  return resolve(path, fileName);
+  return resolvePath(path, fileName);
 };
 
 /**
@@ -183,7 +101,7 @@ const seedPathFor = fileName => {
  * csvPathFor('events');
  * => /home/ewea/data/events.csv
  */
-const csvPathFor = modelName => {
+export const csvPathFor = modelName => {
   const fileName = `${pluralize(toLower(modelName))}.csv`;
   const csvPath = dataPathFor(fileName);
   return csvPath;
@@ -206,7 +124,7 @@ const csvPathFor = modelName => {
  * shapeFilePathFor('events');
  * => /home/ewea/data/events.shp
  */
-const shapeFilePathFor = modelName => {
+export const shapeFilePathFor = modelName => {
   const fileName = `${pluralize(toLower(modelName))}.shp`;
   const shapeFilePath = dataPathFor(fileName);
   return shapeFilePath;
@@ -229,7 +147,7 @@ const shapeFilePathFor = modelName => {
  * geoJsonPathFor('events');
  * => /home/ewea/data/events.geojson
  */
-const geoJsonPathFor = modelName => {
+export const geoJsonPathFor = modelName => {
   const fileName = `${pluralize(toLower(modelName))}.geojson`;
   const geoJsonFilePath = dataPathFor(fileName);
   return geoJsonFilePath;
@@ -253,7 +171,7 @@ const geoJsonPathFor = modelName => {
  * => /home/ewea/seeds/events.json
  * => /home/ewea/seeds/events.js
  */
-const jsonPathFor = modelName => {
+export const jsonPathFor = modelName => {
   const fileName = `${pluralize(toLower(modelName))}`;
   const jsonFilePath = dataPathFor(fileName);
   return jsonFilePath;
@@ -276,7 +194,7 @@ const jsonPathFor = modelName => {
  * transformSeedKeys({ Name: 'John Doe' });
  * => { name: 'John Doe' }
  */
-const transformSeedKeys = seed => {
+export const transformSeedKeys = seed => {
   // copy seed
   const data = mergeObjects(seed);
 
@@ -311,7 +229,7 @@ const transformSeedKeys = seed => {
  * transformToPredefineSeed({ Name: 'John Doe' });
  * => { strings: { name: { en : 'John Doe' } } }
  */
-const transformToPredefineSeed = seed => {
+export const transformToPredefineSeed = seed => {
   // copy seed
   const data = mergeObjects(seed);
 
@@ -359,7 +277,7 @@ const transformToPredefineSeed = seed => {
  * applyTransformsOn({ Name: 'John Doe' });
  * => { name: 'John Doe' }
  */
-const applyTransformsOn = (seed, ...transformers) => {
+export const applyTransformsOn = (seed, ...transformers) => {
   // copy seed
   let data = mergeObjects(seed);
 
@@ -393,7 +311,7 @@ const applyTransformsOn = (seed, ...transformers) => {
  *
  * seedCsv(path, transforms, (error, { finished, feature, next }) => { ... });
  */
-const seedCsv = (path, transformers, done) => {
+export const seedCsv = (path, transformers, done) => {
   return readCsv({ path }, (error, { finished, feature, next }) => {
     let data = feature;
     if (!isEmpty(feature) && next && !finished) {
@@ -420,7 +338,7 @@ const seedCsv = (path, transformers, done) => {
  *
  * seedPredefine(namespace, error => { ... });
  */
-const seedPredefine = (namespace, done) => {
+export const seedPredefine = (namespace, done) => {
   const csvFilePath = csvPathFor(namespace);
   const transformers = [transformToPredefineSeed];
   const stages = [
@@ -470,7 +388,7 @@ const seedPredefine = (namespace, done) => {
  *
  * seedUnits(error => { ... });
  */
-const seedUnits = done => {
+export const seedUnits = done => {
   debug('Start Seeding Units Data');
   return seedPredefine('Unit', error => {
     debug('Finish Seeding Units Data');
@@ -494,7 +412,7 @@ const seedUnits = done => {
  *
  * seedAdministrativeLevels(error => { ... });
  */
-const seedAdministrativeLevels = done => {
+export const seedAdministrativeLevels = done => {
   debug('Start Seeding Administrative Levels Data');
   return seedPredefine('AdministrativeLevel', error => {
     debug('Finish Seeding Administrative Levels Data');
@@ -518,7 +436,7 @@ const seedAdministrativeLevels = done => {
  *
  * seedFeatureTypes(error => { ... });
  */
-const seedFeatureTypes = done => {
+export const seedFeatureTypes = done => {
   debug('Start Seeding Feature Types Data');
   return seedPredefine('FeatureType', error => {
     debug('Finish Seeding Feature Types Data');
@@ -542,7 +460,7 @@ const seedFeatureTypes = done => {
  *
  * seedEventIndicators(error => { ... });
  */
-const seedEventIndicators = done => {
+export const seedEventIndicators = done => {
   debug('Start Seeding Event Indicators Data');
   return seedPredefine('EventIndicator', error => {
     debug('Finish Seeding Event Indicators Data');
@@ -566,7 +484,7 @@ const seedEventIndicators = done => {
  *
  * seedEventSeverities(error => { ... });
  */
-const seedEventSeverities = done => {
+export const seedEventSeverities = done => {
   debug('Start Seeding Event Severities Data');
   return seedPredefine('EventSeverity', error => {
     debug('Finish Seeding Event Severities Data');
@@ -590,7 +508,7 @@ const seedEventSeverities = done => {
  *
  * seedEventCertainties(error => { ... });
  */
-const seedEventCertainties = done => {
+export const seedEventCertainties = done => {
   debug('Start Seeding Event Certainties Data');
   return seedPredefine('EventCertainty', error => {
     debug('Finish Seeding Event Certainties Data');
@@ -614,7 +532,7 @@ const seedEventCertainties = done => {
  *
  * seedPartyGroups(error => { ... });
  */
-const seedPartyGroups = done => {
+export const seedPartyGroups = done => {
   debug('Start Seeding Party Groups Data');
   return seedPredefine('PartyGroup', error => {
     debug('Finish Seeding Party Groups Data');
@@ -638,7 +556,7 @@ const seedPartyGroups = done => {
  *
  * seedPartyRoles(error => { ... });
  */
-const seedPartyRoles = done => {
+export const seedPartyRoles = done => {
   debug('Start Seeding Party Roles Data');
   return seedPredefine('PartyRole', error => {
     debug('Finish Seeding Party Roles Data');
@@ -662,7 +580,7 @@ const seedPartyRoles = done => {
  *
  * seedEventGroups(error => { ... });
  */
-const seedEventGroups = done => {
+export const seedEventGroups = done => {
   debug('Start Seeding Event Groups Data');
   return seedPredefine('EventGroup', error => {
     debug('Finish Seeding Event Groups Data');
@@ -686,7 +604,7 @@ const seedEventGroups = done => {
  *
  * seedEventTypes(error => { ... });
  */
-const seedEventTypes = done => {
+export const seedEventTypes = done => {
   debug('Start Seeding Event Types Data');
   return seedPredefine('EventType', error => {
     debug('Finish Seeding Event Types Data');
@@ -710,7 +628,7 @@ const seedEventTypes = done => {
  *
  * seedEventFunctions(error => { ... });
  */
-const seedEventFunctions = done => {
+export const seedEventFunctions = done => {
   debug('Start Seeding Event Functions Data');
   return seedPredefine('EventFunction', error => {
     debug('Finish Seeding Event Functions Data');
@@ -734,7 +652,7 @@ const seedEventFunctions = done => {
  *
  * seedEventActions(error => { ... });
  */
-const seedEventActions = done => {
+export const seedEventActions = done => {
   debug('Start Seeding Event Actions Data');
   return seedPredefine('EventAction', error => {
     debug('Finish Seeding Event Actions Data');
@@ -758,7 +676,7 @@ const seedEventActions = done => {
  *
  * seedEventQuestions(error => { ... });
  */
-const seedEventQuestions = done => {
+export const seedEventQuestions = done => {
   debug('Start Seeding Event Questions Data');
   return seedPredefine('EventQuestion', error => {
     debug('Finish Seeding Event Questions Data');
@@ -781,7 +699,7 @@ const seedEventQuestions = done => {
  *
  * seed(error => { ... });
  */
-const seed = done => {
+export const seed = done => {
   // prepare seed tasks
   const tasks = [
     syncIndexes,
@@ -811,5 +729,3 @@ const seed = done => {
     return done(error, result);
   });
 };
-
-export { PREDEFINE_NAMESPACES, PREDEFINE_RELATIONS, applyTransformsOn, connect, csvPathFor, dataPathFor, geoJsonPathFor, jsonPathFor, pathFor, seed, seedAdministrativeLevels, seedCsv, seedEventActions, seedEventCertainties, seedEventFunctions, seedEventGroups, seedEventIndicators, seedEventQuestions, seedEventSeverities, seedEventTypes, seedFeatureTypes, seedPartyGroups, seedPartyRoles, seedPathFor, seedPredefine, seedUnits, shapeFilePathFor, syncIndexes, transformSeedKeys, transformToPredefineSeed };

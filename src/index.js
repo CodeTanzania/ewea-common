@@ -18,3 +18,4 @@
  */
 export * from './internals';
 export * from './database';
+export * from './seed';

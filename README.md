@@ -1,4 +1,4 @@
-# ewea-common(WIP)
+# ewea-common
 
 [![Build Status](https://travis-ci.org/codetanzania/ewea-common.svg?branch=develop)](https://travis-ci.org/codetanzania/ewea-common)
 [![Dependencies Status](https://david-dm.org/codetanzania/ewea-common.svg)](https://david-dm.org/codetanzania/ewea-common)

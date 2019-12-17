@@ -1,6 +1,7 @@
 import { join, stringify } from '@lykmapipo/common';
 
 // namespaces
+// order: mostly dependent -> less dependent
 export const PREDEFINE_NAMESPACES = [
   'PartyRole',
   'PartyGroup',
@@ -31,6 +32,7 @@ export const PREDEFINE_RELATIONS = {
   group: { ref: 'Predefine', namespace: 'EventGroup' },
   type: { ref: 'Predefine', namespace: ['EventType', 'FeatureType'] },
   function: { ref: 'Predefine', namespace: 'EventFunction' },
+  action: { ref: 'Predefine', namespace: 'EventAction' },
   level: { ref: 'Predefine', namespace: 'AdministrativeLevel' },
   area: { ref: 'Predefine', namespace: 'AdministrativeArea' },
   indicator: { ref: 'Predefine', namespace: 'EventIndicator' },
