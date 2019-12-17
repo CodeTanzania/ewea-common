@@ -445,6 +445,30 @@ export const seedFeatureTypes = done => {
 };
 
 /**
+ * @function seedEventIndicators
+ * @name seedEventIndicators
+ * @description Seed event indicators
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.3.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedEventIndicators(error => { ... });
+ */
+export const seedEventIndicators = done => {
+  debug('Start Seeding Event Indicators Data');
+  return seedPredefine('EventIndicator', error => {
+    debug('Finish Seeding Event Indicators Data');
+    return done(error);
+  });
+};
+
+/**
  * @function seedEventSeverities
  * @name seedEventSeverities
  * @description Seed event severities
@@ -658,6 +682,7 @@ export const seed = done => {
     seedUnits,
     seedAdministrativeLevels,
     seedFeatureTypes,
+    seedEventIndicators,
     seedEventSeverities,
     seedEventCertainties,
     seedPartyGroups,

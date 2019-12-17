@@ -4,6 +4,7 @@ import {
   seedUnits,
   seedAdministrativeLevels,
   seedFeatureTypes,
+  seedEventIndicators,
   seedEventSeverities,
   seedEventCertainties,
   seedPartyGroups,
@@ -61,6 +62,13 @@ describe.only('seed', () => {
 
   it('should seed feature types', done => {
     seedFeatureTypes(error => {
+      expect(error).to.not.exist;
+      done(error);
+    });
+  });
+
+  it('should seed event indicators', done => {
+    seedEventIndicators(error => {
       expect(error).to.not.exist;
       done(error);
     });
