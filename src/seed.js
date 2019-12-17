@@ -421,6 +421,30 @@ export const seedAdministrativeLevels = done => {
 };
 
 /**
+ * @function seedFeatureTypes
+ * @name seedFeatureTypes
+ * @description Seed feature types
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.3.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedFeatureTypes(error => { ... });
+ */
+export const seedFeatureTypes = done => {
+  debug('Start Seeding Feature Types Data');
+  return seedPredefine('FeatureType', error => {
+    debug('Finish Seeding Feature Types Data');
+    return done(error);
+  });
+};
+
+/**
  * @function seedEventSeverities
  * @name seedEventSeverities
  * @description Seed event severities
@@ -633,6 +657,7 @@ export const seed = done => {
     syncIndexes,
     seedUnits,
     seedAdministrativeLevels,
+    seedFeatureTypes,
     seedEventSeverities,
     seedEventCertainties,
     seedPartyGroups,

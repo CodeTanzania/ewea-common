@@ -3,6 +3,7 @@ import {
   seedCsv,
   seedUnits,
   seedAdministrativeLevels,
+  seedFeatureTypes,
   seedEventSeverities,
   seedEventCertainties,
   seedPartyGroups,
@@ -53,6 +54,13 @@ describe.only('seed', () => {
 
   it('should seed administrative levels', done => {
     seedAdministrativeLevels(error => {
+      expect(error).to.not.exist;
+      done(error);
+    });
+  });
+
+  it('should seed feature types', done => {
+    seedFeatureTypes(error => {
       expect(error).to.not.exist;
       done(error);
     });
