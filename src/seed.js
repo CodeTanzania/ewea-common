@@ -390,9 +390,33 @@ export const seedPredefine = (namespace, done) => {
  */
 export const seedEventSeverities = done => {
   debug('Start Seeding Event Severities Data');
-  return seedPredefine('EventSeverity', (error, result) => {
+  return seedPredefine('EventSeverity', error => {
     debug('Finish Seeding Event Severities Data');
-    return done(error, result);
+    return done(error);
+  });
+};
+
+/**
+ * @function seedEventCertainties
+ * @name seedEventCertainties
+ * @description Seed event certainties
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.3.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedEventCertainties(error => { ... });
+ */
+export const seedEventCertainties = done => {
+  debug('Start Seeding Event Certainties Data');
+  return seedPredefine('EventCertainty', error => {
+    debug('Finish Seeding Event Certainties Data');
+    return done(error);
   });
 };
 
@@ -413,7 +437,7 @@ export const seedEventSeverities = done => {
  */
 export const seed = done => {
   // prepare seed tasks
-  const tasks = [syncIndexes, seedEventSeverities];
+  const tasks = [syncIndexes, seedEventSeverities, seedEventCertainties];
 
   // run seed tasks
   debug('Start Seeding Data');

@@ -1,9 +1,16 @@
-import { expect } from '@lykmapipo/test-helpers';
-import { seedCsv, seedEventSeverities, seed } from '../../src';
+import { expect } from '@lykmapipo/mongoose-test-helpers';
+import {
+  seedCsv,
+  seedEventSeverities,
+  seedEventCertainties,
+  seed,
+} from '../../src';
 import '@codetanzania/emis-stakeholder';
 
-describe('seed', () => {
+describe.only('seed', () => {
   const { BASE_PATH, DATA_PATH } = process.env;
+
+  // enableDebug();
 
   before(() => {
     process.env.BASE_PATH = __dirname;
@@ -31,6 +38,13 @@ describe('seed', () => {
 
   it('should seed event severities', done => {
     seedEventSeverities(error => {
+      expect(error).to.not.exist;
+      done(error);
+    });
+  });
+
+  it('should seed event certainties', done => {
+    seedEventCertainties(error => {
       expect(error).to.not.exist;
       done(error);
     });
