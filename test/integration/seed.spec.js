@@ -3,6 +3,7 @@ import {
   seedCsv,
   seedEventSeverities,
   seedEventCertainties,
+  seedPartyGroups,
   seed,
 } from '../../src';
 import '@codetanzania/emis-stakeholder';
@@ -45,6 +46,13 @@ describe.only('seed', () => {
 
   it('should seed event certainties', done => {
     seedEventCertainties(error => {
+      expect(error).to.not.exist;
+      done(error);
+    });
+  });
+
+  it('should seed party groups', done => {
+    seedPartyGroups(error => {
       expect(error).to.not.exist;
       done(error);
     });
