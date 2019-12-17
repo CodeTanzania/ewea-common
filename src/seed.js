@@ -1,5 +1,5 @@
 import { join as joinPath, resolve as resolvePath } from 'path';
-import { mapKeys, split, toLower } from 'lodash';
+import { forEach, mapKeys, split, toLower } from 'lodash';
 import { join, pluralize, mergeObjects } from '@lykmapipo/common';
 import { getString } from '@lykmapipo/env';
 // import { debug, warn } from '@lykmapipo/logger';
@@ -199,6 +199,40 @@ export const transformSeedKeys = seed => {
 
   // return
   return transformed;
+};
+
+/**
+ * @function applyTransformsOn
+ * @name applyTransformsOn
+ * @description Transform and normalize seed
+ * @param {object} seed valid seed
+ * @param {...Function} [transformers] transform to apply on seed
+ * @returns {object} transformed seed
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.3.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * applyTransformsOn({ Name: 'John Doe' });
+ * => { name: 'John Doe' }
+ */
+export const applyTransformsOn = (seed, ...transformers) => {
+  // copy seed
+  let data = mergeObjects(seed);
+
+  // ensure transformers
+  const transforms = [transformSeedKeys].concat(transformers);
+
+  // apply transform sequentially
+  forEach(transforms, applyTransformOn => {
+    data = applyTransformOn(data);
+  });
+
+  // return
+  return data;
 };
 
 export const seedCsv = (fileName, transforms, done) => {

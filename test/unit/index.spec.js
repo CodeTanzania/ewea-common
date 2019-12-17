@@ -11,6 +11,7 @@ import {
   geoJsonPathFor,
   jsonPathFor,
   transformSeedKeys,
+  applyTransformsOn,
 } from '../../src';
 
 describe('common', () => {
@@ -71,6 +72,17 @@ describe('common', () => {
       name: 'Two',
     });
     expect(transformSeedKeys({ FID: 1, 'Name En': 'Two' })).to.be.eql({
+      fid: 1,
+      'name.en': 'Two',
+    });
+  });
+
+  it('should apply transforms', () => {
+    expect(applyTransformsOn({ FID: 1, Name: 'Two' })).to.be.eql({
+      fid: 1,
+      name: 'Two',
+    });
+    expect(applyTransformsOn({ FID: 1, 'Name En': 'Two' })).to.be.eql({
       fid: 1,
       'name.en': 'Two',
     });
