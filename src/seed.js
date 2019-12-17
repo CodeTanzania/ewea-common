@@ -493,6 +493,30 @@ export const seedEventGroups = done => {
 };
 
 /**
+ * @function seedEventTypes
+ * @name seedEventTypes
+ * @description Seed event types
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.3.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedEventTypes(error => { ... });
+ */
+export const seedEventTypes = done => {
+  debug('Start Seeding Event Types Data');
+  return seedPredefine('EventType', error => {
+    debug('Finish Seeding Event Types Data');
+    return done(error);
+  });
+};
+
+/**
  * @function seed
  * @name seed
  * @description Seed data
@@ -516,6 +540,7 @@ export const seed = done => {
     seedPartyGroups,
     seedPartyRoles,
     seedEventGroups,
+    seedEventTypes,
   ];
 
   // run seed tasks
