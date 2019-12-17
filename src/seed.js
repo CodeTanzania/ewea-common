@@ -445,6 +445,30 @@ export const seedPartyGroups = done => {
 };
 
 /**
+ * @function seedPartyRoles
+ * @name seedPartyRoles
+ * @description Seed party roles
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.3.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedPartyRoles(error => { ... });
+ */
+export const seedPartyRoles = done => {
+  debug('Start Seeding Party Roles Data');
+  return seedPredefine('PartyRole', error => {
+    debug('Finish Seeding Party Roles Data');
+    return done(error);
+  });
+};
+
+/**
  * @function seed
  * @name seed
  * @description Seed data
@@ -466,6 +490,7 @@ export const seed = done => {
     seedEventSeverities,
     seedEventCertainties,
     seedPartyGroups,
+    seedPartyRoles,
   ];
 
   // run seed tasks

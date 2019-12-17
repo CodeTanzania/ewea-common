@@ -4,6 +4,7 @@ import {
   seedEventSeverities,
   seedEventCertainties,
   seedPartyGroups,
+  seedPartyRoles,
   seed,
 } from '../../src';
 import '@codetanzania/emis-stakeholder';
@@ -53,6 +54,13 @@ describe.only('seed', () => {
 
   it('should seed party groups', done => {
     seedPartyGroups(error => {
+      expect(error).to.not.exist;
+      done(error);
+    });
+  });
+
+  it('should seed party roles', done => {
+    seedPartyRoles(error => {
       expect(error).to.not.exist;
       done(error);
     });
