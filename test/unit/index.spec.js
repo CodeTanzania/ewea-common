@@ -16,6 +16,13 @@ import {
 } from '../../src';
 
 describe('common', () => {
+  const { BASE_PATH, DATA_PATH } = process.env;
+
+  before(() => {
+    process.env.BASE_PATH = process.cwd();
+    process.env.DATA_PATH = 'data';
+  });
+
   it('should set predefine namespaces', () => {
     expect(process.env.PREDEFINE_NAMESPACES).to.exist.and.be.equal(
       'PartyRole,PartyGroup,EventCertainty,EventSeverity,EventStatus,EventUrgency,FeatureType,Feature,AdministrativeLevel,AdministrativeArea,EventGroup,EventType,EventFunction,EventAction,EventCatalogue,EventIndicator,EventQuestion,Unit,NotificationTemplate'
@@ -99,8 +106,8 @@ describe('common', () => {
     const seed = transformToPredefineSeed(data);
     expect(seed).to.be.eql({
       strings: {
-        name: { en: 'Two', sw: 'Two' },
-        description: { en: 'Two', sw: 'Two' },
+        name: { en: 'Two' },
+        description: { en: 'Two' },
       },
       numbers: {},
       booleans: {},
@@ -118,5 +125,10 @@ describe('common', () => {
         },
       },
     });
+  });
+
+  after(() => {
+    process.env.BASE_PATH = BASE_PATH;
+    process.env.DATA_PATH = DATA_PATH;
   });
 });

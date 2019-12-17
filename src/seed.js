@@ -1,10 +1,17 @@
 import { join as joinPath, resolve as resolvePath } from 'path';
-import { forEach, mapKeys, split, toLower } from 'lodash';
+import { forEach, isEmpty, mapKeys, split, toLower } from 'lodash';
 import { waterfall } from 'async';
-import { join, pluralize, mergeObjects, sortedUniq } from '@lykmapipo/common';
+import {
+  compact,
+  join,
+  pluralize,
+  mergeObjects,
+  sortedUniq,
+} from '@lykmapipo/common';
 import { getString } from '@lykmapipo/env';
 import { debug, warn } from '@lykmapipo/logger';
-import { transformToPredefine } from '@lykmapipo/predefine';
+import { readCsv } from '@lykmapipo/geo-tools';
+import { Predefine, transformToPredefine } from '@lykmapipo/predefine';
 import { PREDEFINE_RELATIONS } from './internals';
 import { syncIndexes } from './database';
 
@@ -275,7 +282,7 @@ export const applyTransformsOn = (seed, ...transformers) => {
   let data = mergeObjects(seed);
 
   // ensure transformers
-  const transforms = [transformSeedKeys].concat(transformers);
+  const transforms = compact([transformSeedKeys].concat(transformers));
 
   // apply transform sequentially
   forEach(transforms, applyTransformOn => {
@@ -286,16 +293,101 @@ export const applyTransformsOn = (seed, ...transformers) => {
   return data;
 };
 
-export const seedCsv = (filePath, transforms, done) => {
-  return done();
+/**
+ * @function seedCsv
+ * @name seedCsv
+ * @description Read csv seed and apply see transforms
+ * @param {string} path valid csv path
+ * @param {Function[]} [transformers] transforms to apply on seed
+ * @param {Function} done callback to invoke on next seed
+ * @returns {object} transformed seed
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.3.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedCsv(path, transforms, (error, { finished, feature, next }) => { ... });
+ */
+export const seedCsv = (path, transformers, done) => {
+  return readCsv({ path }, (error, { finished, feature, next }) => {
+    let data = feature;
+    if (!isEmpty(feature) && next && !finished) {
+      data = applyTransformsOn(feature, ...transformers);
+    }
+    return done(error, { finished, feature: data, next });
+  });
 };
 
+/**
+ * @function seedPredefine
+ * @name seedPredefine
+ * @description Seed given predefine namespace
+ * @param {string} namespace valid predefine namespace
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.3.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedPredefine(namespace, error => { ... });
+ */
 export const seedPredefine = (namespace, done) => {
   const csvFilePath = csvPathFor(namespace);
-  const stages = [next => seedCsv(csvFilePath, [], next)];
+  const transformers = [transformToPredefineSeed];
+  const stages = [
+    then => {
+      seedCsv(
+        csvFilePath,
+        transformers,
+        (error, { finished, feature, next }) => {
+          // handle read errors
+          if (error) {
+            return then(error);
+          }
+          // handle read finish
+          if (finished) {
+            return then();
+          }
+          // process features
+          if (feature && next) {
+            // seed feature
+            const data = mergeObjects(feature, { namespace });
+            return Predefine.seed(data, (err, seeded) => {
+              return next(err, seeded);
+            });
+          }
+          // request next chunk from stream
+          return next && next();
+        }
+      );
+    },
+  ];
   return waterfall(stages, done);
 };
 
+/**
+ * @function seedEventSeverities
+ * @name seedEventSeverities
+ * @description Seed event severities
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.3.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedEventSeverities(error => { ... });
+ */
 export const seedEventSeverities = done => {
   debug('Start Seeding Event Severities Data');
   return seedPredefine('EventSeverity', (error, result) => {
@@ -321,7 +413,7 @@ export const seedEventSeverities = done => {
  */
 export const seed = done => {
   // prepare seed tasks
-  const tasks = [syncIndexes];
+  const tasks = [syncIndexes, seedEventSeverities];
 
   // run seed tasks
   debug('Start Seeding Data');
