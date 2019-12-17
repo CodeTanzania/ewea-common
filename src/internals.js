@@ -1,6 +1,7 @@
 import { join, stringify } from '@lykmapipo/common';
 
 // namespaces
+// order: mostly dependent -> less dependent
 export const PREDEFINE_NAMESPACES = [
   'PartyRole',
   'PartyGroup',

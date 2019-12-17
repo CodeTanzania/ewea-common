@@ -1,10 +1,11 @@
 import { join as joinPath, resolve as resolvePath } from 'path';
 import { forEach, mapKeys, split, toLower } from 'lodash';
+import { waterfall } from 'async';
 import { join, pluralize, mergeObjects } from '@lykmapipo/common';
 import { getString } from '@lykmapipo/env';
-// import { debug, warn } from '@lykmapipo/logger';
+import { debug, warn } from '@lykmapipo/logger';
 // import { PREDEFINE_NAMESPACES, PREDEFINE_RELATIONS } from './internals';
-// import { syncIndexes } from './database';
+import { syncIndexes } from './database';
 
 /**
  * @function pathFor
@@ -235,6 +236,36 @@ export const applyTransformsOn = (seed, ...transformers) => {
   return data;
 };
 
-export const seedCsv = (fileName, transforms, done) => {
+export const seedCsv = (filePath, transforms, done) => {
   return done();
+};
+
+export const seedPredefine = (namespace, done) => {
+  const csvFilePath = csvPathFor(namespace);
+  const stages = [next => seedCsv(csvFilePath, [], next)];
+  return waterfall(stages, done);
+};
+
+export const seedEventSeverity = done => {
+  debug('Start Seeding Event Severities Data');
+  return seedPredefine('EventSeverity', (error, result) => {
+    debug('Finish Seeding Event Severities Data');
+    return done(error, result);
+  });
+};
+
+export const seed = done => {
+  // prepare seed tasks
+  const tasks = [syncIndexes];
+
+  // run seed tasks
+  debug('Start Seeding Data');
+  waterfall(tasks, (error, result) => {
+    if (error) {
+      warn('Fail Seeding Data', error);
+    } else {
+      debug('Finish Seeding Data');
+    }
+    return done(error, result);
+  });
 };
