@@ -11,6 +11,7 @@ import {
   geoJsonPathFor,
   jsonPathFor,
   transformSeedKeys,
+  transformToPredefine,
   applyTransformsOn,
 } from '../../src';
 
@@ -74,6 +75,14 @@ describe('common', () => {
     expect(transformSeedKeys({ FID: 1, 'Name En': 'Two' })).to.be.eql({
       fid: 1,
       'name.en': 'Two',
+    });
+  });
+
+  it('should transform seed to predefine', () => {
+    const seed = { name: 'Two', description: 'Two' };
+    expect(transformToPredefine(seed)).to.be.eql({
+      name: { en: 'Two', sw: 'Two' },
+      description: { en: 'Two', sw: 'Two' },
     });
   });
 

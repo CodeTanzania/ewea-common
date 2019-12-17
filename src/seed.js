@@ -4,6 +4,7 @@ import { waterfall } from 'async';
 import { join, pluralize, mergeObjects } from '@lykmapipo/common';
 import { getString } from '@lykmapipo/env';
 import { debug, warn } from '@lykmapipo/logger';
+import { localizedValuesFor } from 'mongoose-locale-schema';
 // import { PREDEFINE_NAMESPACES, PREDEFINE_RELATIONS } from './internals';
 import { syncIndexes } from './database';
 
@@ -203,6 +204,41 @@ export const transformSeedKeys = seed => {
 };
 
 /**
+ * @function transformToPredefin
+ * @name transformToPredefin
+ * @description Transform and normalize seed to predefine
+ * @param {object} seed valid seed
+ * @returns {object} valid predefine seed
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.3.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * transformToPredefine({ Name: 'John Doe' });
+ * => { strings: { name: { en : 'John Doe' } } }
+ */
+export const transformToPredefine = seed => {
+  // copy seed
+  const data = mergeObjects(seed);
+
+  // normalize to predefine
+  const predefine = {};
+  forEach(data, (value, key) => {
+    if (key === 'name' || key === 'description') {
+      predefine[key] = localizedValuesFor({ en: value });
+    } else {
+      predefine[key] = value;
+    }
+  });
+
+  // return
+  return predefine;
+};
+
+/**
  * @function applyTransformsOn
  * @name applyTransformsOn
  * @description Transform and normalize seed
@@ -246,7 +282,7 @@ export const seedPredefine = (namespace, done) => {
   return waterfall(stages, done);
 };
 
-export const seedEventSeverity = done => {
+export const seedEventSeverities = done => {
   debug('Start Seeding Event Severities Data');
   return seedPredefine('EventSeverity', (error, result) => {
     debug('Finish Seeding Event Severities Data');
