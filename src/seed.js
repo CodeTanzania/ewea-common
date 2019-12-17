@@ -254,6 +254,21 @@ export const seedEventSeverity = done => {
   });
 };
 
+/**
+ * @function seed
+ * @name seed
+ * @description Seed data
+ * @param {Function} done callback to invoke on success or error
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.3.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seed(error => { ... });
+ */
 export const seed = done => {
   // prepare seed tasks
   const tasks = [syncIndexes];
