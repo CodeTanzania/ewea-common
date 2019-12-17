@@ -18,7 +18,7 @@ import {
 } from '../../src';
 import '@codetanzania/emis-stakeholder';
 
-describe.only('seed', () => {
+describe('seed', () => {
   const { BASE_PATH, DATA_PATH } = process.env;
 
   // enableDebug();
