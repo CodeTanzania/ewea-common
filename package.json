@@ -78,7 +78,7 @@
     "@commitlint/cli": "^8.2.0",
     "@commitlint/config-conventional": "^8.2.0",
     "@commitlint/travis-cli": "^8.2.0",
-    "@lykmapipo/express-test-helpers": "^0.8.11",
+    "@lykmapipo/express-test-helpers": "^0.8.12",
     "@lykmapipo/mongoose-test-helpers": "^0.7.28",
     "@lykmapipo/test-helpers": "^0.5.0",
     "chai": "^4.2.0",
@@ -113,9 +113,10 @@
     "mongoose": ">=5.8.1"
   },
   "dependencies": {
+    "@codetanzania/ewea-internals": ">=0.1.0",
     "@lykmapipo/common": ">=0.29.0",
     "@lykmapipo/env": ">=0.16.0",
-    "@lykmapipo/express-common": ">=0.17.15",
+    "@lykmapipo/express-common": ">=0.17.16",
     "@lykmapipo/express-rest-actions": ">=0.8.3",
     "@lykmapipo/file": ">=0.1.13",
     "@lykmapipo/geo-tools": ">=0.4.2",
