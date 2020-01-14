@@ -1,4 +1,4 @@
-import '../../src/internals';
+import '@codetanzania/ewea-internals';
 import { clear, drop } from '@lykmapipo/mongoose-test-helpers';
 import { connect } from '../../src';
 

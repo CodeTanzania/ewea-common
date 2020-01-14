@@ -1,3 +1,7 @@
+import {
+  MODEL_NAME_PREDEFINE,
+  PREDEFINE_RELATIONS,
+} from '@codetanzania/ewea-internals';
 import { join as joinPath, resolve as resolvePath } from 'path';
 import { forEach, isEmpty, mapKeys, split, toLower } from 'lodash';
 import { waterfall } from 'async';
@@ -12,10 +16,8 @@ import { getString } from '@lykmapipo/env';
 import { debug, warn } from '@lykmapipo/logger';
 import { readCsv } from '@lykmapipo/geo-tools';
 import { Predefine, transformToPredefine } from '@lykmapipo/predefine';
-import { PREDEFINE_RELATIONS } from './internals';
-import { syncIndexes } from './database';
 
-const PREDEFINE_MODEL_NAME = 'Predefine';
+import { syncIndexes } from './database';
 
 /**
  * @function pathFor
@@ -243,11 +245,11 @@ export const transformToPredefineSeed = seed => {
     if (hasRelation) {
       const options = mergeObjects(value);
       const path = `relations.${key}`;
-      const model = options.ref || PREDEFINE_MODEL_NAME;
+      const model = options.ref || MODEL_NAME_PREDEFINE;
       const array = options.array || false;
       const vals = sortedUniq(split(seed[key], ','));
       const match =
-        model === PREDEFINE_MODEL_NAME
+        model === MODEL_NAME_PREDEFINE
           ? { 'strings.name.en': { $in: vals } }
           : { name: { $in: vals } };
       populate[path] = { model, match, array };
