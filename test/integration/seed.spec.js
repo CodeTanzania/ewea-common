@@ -14,6 +14,7 @@ import {
   seedEventFunctions,
   seedEventActions,
   seedEventQuestions,
+  seedNotificationTemplates,
   seed,
 } from '../../src';
 import '@codetanzania/emis-stakeholder';
@@ -133,6 +134,13 @@ describe('seed', () => {
 
   it('should seed event questions', done => {
     seedEventQuestions(error => {
+      expect(error).to.not.exist;
+      done(error);
+    });
+  });
+
+  it('should seed notification templates', done => {
+    seedNotificationTemplates(error => {
       expect(error).to.not.exist;
       done(error);
     });
