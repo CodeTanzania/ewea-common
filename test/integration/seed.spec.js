@@ -1,4 +1,4 @@
-import { expect } from '@lykmapipo/mongoose-test-helpers';
+import { expect, enableDebug } from '@lykmapipo/mongoose-test-helpers';
 import {
   seedCsv,
   seedUnits,
@@ -14,6 +14,7 @@ import {
   seedEventFunctions,
   seedEventActions,
   seedEventQuestions,
+  seedAdministrativeAreas,
   seedNotificationTemplates,
   seed,
 } from '../../src';
@@ -134,6 +135,14 @@ describe('seed', () => {
 
   it('should seed event questions', done => {
     seedEventQuestions(error => {
+      expect(error).to.not.exist;
+      done(error);
+    });
+  });
+
+  it('should seed administrative areas', done => {
+    enableDebug();
+    seedAdministrativeAreas(error => {
       expect(error).to.not.exist;
       done(error);
     });
