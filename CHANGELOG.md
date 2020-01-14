@@ -1,3 +1,15 @@
+#### 0.4.0 (2020-01-14)
+
+##### Chores
+
+* **deps:**
+  *  force latest version & audit fix ([54521070](https://github.com/codetanzania/ewea-common/commit/5452107066a4e49e632c229f2ab282c9235548b5))
+  *  force latest version & audit fix ([fca54ffd](https://github.com/codetanzania/ewea-common/commit/fca54ffdcc1a939d37099be5c496dcd553134f97))
+
+##### Refactors
+
+*  use ewea internals ([8cf0704f](https://github.com/codetanzania/ewea-common/commit/8cf0704f61f7d4ed2aec8614442ab52d92602dce))
+
 #### 0.3.0 (2019-12-17)
 
 ##### Chores

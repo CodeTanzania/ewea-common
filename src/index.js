@@ -16,6 +16,7 @@
  * start(error => { ... });
  *
  */
-export * from './internals';
+import '@codetanzania/ewea-internals';
+
 export * from './database';
 export * from './seed';
