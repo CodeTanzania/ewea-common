@@ -753,6 +753,7 @@ export const seed = done => {
   // prepare seed tasks
   const tasks = [
     syncIndexes,
+    // seedPermissions,
     seedUnits,
     seedAdministrativeLevels,
     seedFeatureTypes,
@@ -767,7 +768,10 @@ export const seed = done => {
     seedEventActions,
     seedEventQuestions,
     seedAdministrativeAreas,
+    // seedParties,
     seedNotificationTemplates,
+    // seedEvents,
+    // seedEventChangeLogs,
   ];
 
   // run seed tasks
