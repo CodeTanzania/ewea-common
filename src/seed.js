@@ -735,6 +735,30 @@ export const seedFeatures = done => {
 };
 
 /**
+ * @function seedEventCatalogues
+ * @name seedEventCatalogues
+ * @description Seed event catalogues
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.4.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedEventCatalogues(error => { ... });
+ */
+export const seedEventCatalogues = done => {
+  debug('Start Seeding Event Catalogues Data');
+  return seedPredefine('EventCatalogue', error => {
+    debug('Finish Seeding Event Catalogues Data');
+    return done(error);
+  });
+};
+
+/**
  * @function seedNotificationTemplates
  * @name seedNotificationTemplates
  * @description Seed notification templates
@@ -794,6 +818,7 @@ export const seed = done => {
     seedAdministrativeAreas,
     // seedParties,
     seedFeatures,
+    seedEventCatalogues,
     seedNotificationTemplates,
     // seedEvents,
     // seedEventChangeLogs,
