@@ -10,6 +10,7 @@ pids
 # Temporary
 .tmp
 .grunt
+.DS_Store
 
 # Dependencies
 node_modules

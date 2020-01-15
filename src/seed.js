@@ -687,6 +687,54 @@ export const seedEventQuestions = done => {
 };
 
 /**
+ * @function seedAdministrativeAreas
+ * @name seedAdministrativeAreas
+ * @description Seed administrative areas
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.4.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedAdministrativeAreas(error => { ... });
+ */
+export const seedAdministrativeAreas = done => {
+  debug('Start Seeding Administrative Areas Data');
+  return seedPredefine('AdministrativeArea', error => {
+    debug('Finish Seeding Administrative Areas Data');
+    return done(error);
+  });
+};
+
+/**
+ * @function seedNotificationTemplates
+ * @name seedNotificationTemplates
+ * @description Seed notification templates
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.4.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedNotificationTemplates(error => { ... });
+ */
+export const seedNotificationTemplates = done => {
+  debug('Start Seeding Notification Templates Data');
+  return seedPredefine('NotificationTemplate', error => {
+    debug('Finish Seeding Notification Templates Data');
+    return done(error);
+  });
+};
+
+/**
  * @function seed
  * @name seed
  * @description Seed data
@@ -718,6 +766,8 @@ export const seed = done => {
     seedEventFunctions,
     seedEventActions,
     seedEventQuestions,
+    seedAdministrativeAreas,
+    seedNotificationTemplates,
   ];
 
   // run seed tasks
