@@ -711,6 +711,30 @@ export const seedAdministrativeAreas = done => {
 };
 
 /**
+ * @function seedFeatures
+ * @name seedFeatures
+ * @description Seed features
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.4.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedFeatures(error => { ... });
+ */
+export const seedFeatures = done => {
+  debug('Start Seeding Features Data');
+  return seedPredefine('Feature', error => {
+    debug('Finish Seeding Features Data');
+    return done(error);
+  });
+};
+
+/**
  * @function seedNotificationTemplates
  * @name seedNotificationTemplates
  * @description Seed notification templates
@@ -769,6 +793,7 @@ export const seed = done => {
     seedEventQuestions,
     seedAdministrativeAreas,
     // seedParties,
+    seedFeatures,
     seedNotificationTemplates,
     // seedEvents,
     // seedEventChangeLogs,

@@ -15,6 +15,7 @@ import {
   seedEventActions,
   seedEventQuestions,
   seedAdministrativeAreas,
+  seedFeatures,
   seedNotificationTemplates,
   seed,
 } from '../../src';
@@ -142,6 +143,13 @@ describe('seed', () => {
 
   it('should seed administrative areas', done => {
     seedAdministrativeAreas(error => {
+      expect(error).to.not.exist;
+      done(error);
+    });
+  });
+
+  it('should seed features', done => {
+    seedFeatures(error => {
       expect(error).to.not.exist;
       done(error);
     });
