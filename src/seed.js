@@ -766,6 +766,7 @@ export const seed = done => {
     seedEventFunctions,
     seedEventActions,
     seedEventQuestions,
+    seedAdministrativeAreas,
     seedNotificationTemplates,
   ];
 

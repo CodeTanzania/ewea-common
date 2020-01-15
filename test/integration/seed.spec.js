@@ -1,4 +1,4 @@
-import { expect, enableDebug } from '@lykmapipo/mongoose-test-helpers';
+import { expect } from '@lykmapipo/mongoose-test-helpers';
 import {
   seedCsv,
   seedUnits,
@@ -141,7 +141,6 @@ describe('seed', () => {
   });
 
   it('should seed administrative areas', done => {
-    enableDebug();
     seedAdministrativeAreas(error => {
       expect(error).to.not.exist;
       done(error);
