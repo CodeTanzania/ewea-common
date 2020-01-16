@@ -816,7 +816,7 @@ export const seed = done => {
     seedEventActions,
     seedEventQuestions,
     seedAdministrativeAreas,
-    // seedParties,
+    // seedParties(seedAgencies, seedFocals),
     seedFeatures,
     seedEventCatalogues,
     seedNotificationTemplates,
