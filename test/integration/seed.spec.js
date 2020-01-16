@@ -1,6 +1,7 @@
 import { expect } from '@lykmapipo/mongoose-test-helpers';
 import {
   seedCsv,
+  seedPermissions,
   seedUnits,
   seedAdministrativeLevels,
   seedFeatureTypes,
@@ -48,6 +49,13 @@ describe('seed', () => {
       expect(feature.description).to.exist;
       expect(next).to.exist.and.be.a('function');
       return next();
+    });
+  });
+
+  it('should seed permissions', done => {
+    seedPermissions(error => {
+      expect(error).to.not.exist;
+      done(error);
     });
   });
 

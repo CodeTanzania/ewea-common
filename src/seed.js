@@ -15,7 +15,12 @@ import {
 import { getString } from '@lykmapipo/env';
 import { debug, warn } from '@lykmapipo/logger';
 import { readCsv } from '@lykmapipo/geo-tools';
-import { Predefine, transformToPredefine } from '@lykmapipo/predefine';
+import {
+  Predefine,
+  listPermissions,
+  transformToPredefine,
+} from '@lykmapipo/predefine';
+import { Permission } from '@lykmapipo/permission';
 
 import { syncIndexes } from './database';
 
@@ -372,6 +377,36 @@ export const seedPredefine = (namespace, done) => {
     },
   ];
   return waterfall(stages, done);
+};
+
+/**
+ * @function seedPermissions
+ * @name seedPermissions
+ * @description Seed permissions
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.4.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedPermissions(error => { ... });
+ */
+export const seedPermissions = done => {
+  debug('Start Seeding Permissions Data');
+  return waterfall(
+    [
+      next => Permission.seed(error => next(error)),
+      next => Permission.seed(listPermissions(), error => next(error)),
+    ],
+    error => {
+      debug('Finish Seeding Permissions Data');
+      return done(error);
+    }
+  );
 };
 
 /**
@@ -801,7 +836,7 @@ export const seed = done => {
   // prepare seed tasks
   const tasks = [
     syncIndexes,
-    // seedPermissions,
+    seedPermissions,
     seedUnits,
     seedAdministrativeLevels,
     seedFeatureTypes,
