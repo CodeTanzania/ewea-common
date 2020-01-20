@@ -8,6 +8,8 @@ import {
   seedEventIndicators,
   seedEventSeverities,
   seedEventCertainties,
+  seedEventStatuses,
+  seedEventUrgencies,
   seedPartyGroups,
   seedPartyRoles,
   seedEventGroups,
@@ -96,6 +98,20 @@ describe('seed', () => {
 
   it('should seed event certainties', done => {
     seedEventCertainties(error => {
+      expect(error).to.not.exist;
+      done(error);
+    });
+  });
+
+  it('should seed event statuses', done => {
+    seedEventStatuses(error => {
+      expect(error).to.not.exist;
+      done(error);
+    });
+  });
+
+  it('should seed event urgencies', done => {
+    seedEventUrgencies(error => {
       expect(error).to.not.exist;
       done(error);
     });

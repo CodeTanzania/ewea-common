@@ -1,3 +1,9 @@
+#### 0.5.1 (2020-01-20)
+
+##### New Features
+
+* **seed:**  add event statuses & urgencies ([f3b1273f](https://github.com/codetanzania/ewea-common/commit/f3b1273f182609940a15acf7057a3cc59b599263))
+
 #### 0.5.0 (2020-01-20)
 
 ##### Refactors
