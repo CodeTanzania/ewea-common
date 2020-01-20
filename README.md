@@ -29,10 +29,9 @@ npm install @codetanzania/ewea-common --save
 ## Usage
 
 ```js
-import { start } from '@codetanzania/ewea-common';
+import { syncIndexes } from '@codetanzania/ewea-common';
 
-// fire the http server
-start(error => { ... });
+syncIndexes(error => { ... });
 ```
 
 ## Testing
