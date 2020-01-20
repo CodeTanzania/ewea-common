@@ -15,7 +15,12 @@ import {
 import { getString } from '@lykmapipo/env';
 import { debug, warn } from '@lykmapipo/logger';
 import { readCsv } from '@lykmapipo/geo-tools';
-import { Predefine, transformToPredefine } from '@lykmapipo/predefine';
+import {
+  Predefine,
+  listPermissions,
+  transformToPredefine,
+} from '@lykmapipo/predefine';
+import { Permission } from '@lykmapipo/permission';
 
 import { syncIndexes } from './database';
 
@@ -375,6 +380,36 @@ export const seedPredefine = (namespace, done) => {
 };
 
 /**
+ * @function seedPermissions
+ * @name seedPermissions
+ * @description Seed permissions
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.4.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedPermissions(error => { ... });
+ */
+export const seedPermissions = done => {
+  debug('Start Seeding Permissions Data');
+  return waterfall(
+    [
+      next => Permission.seed(error => next(error)),
+      next => Permission.seed(listPermissions(), error => next(error)),
+    ],
+    error => {
+      debug('Finish Seeding Permissions Data');
+      return done(error);
+    }
+  );
+};
+
+/**
  * @function seedUnits
  * @name seedUnits
  * @description Seed unit of measure
@@ -687,6 +722,102 @@ export const seedEventQuestions = done => {
 };
 
 /**
+ * @function seedAdministrativeAreas
+ * @name seedAdministrativeAreas
+ * @description Seed administrative areas
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.4.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedAdministrativeAreas(error => { ... });
+ */
+export const seedAdministrativeAreas = done => {
+  debug('Start Seeding Administrative Areas Data');
+  return seedPredefine('AdministrativeArea', error => {
+    debug('Finish Seeding Administrative Areas Data');
+    return done(error);
+  });
+};
+
+/**
+ * @function seedFeatures
+ * @name seedFeatures
+ * @description Seed features
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.4.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedFeatures(error => { ... });
+ */
+export const seedFeatures = done => {
+  debug('Start Seeding Features Data');
+  return seedPredefine('Feature', error => {
+    debug('Finish Seeding Features Data');
+    return done(error);
+  });
+};
+
+/**
+ * @function seedEventCatalogues
+ * @name seedEventCatalogues
+ * @description Seed event catalogues
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.4.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedEventCatalogues(error => { ... });
+ */
+export const seedEventCatalogues = done => {
+  debug('Start Seeding Event Catalogues Data');
+  return seedPredefine('EventCatalogue', error => {
+    debug('Finish Seeding Event Catalogues Data');
+    return done(error);
+  });
+};
+
+/**
+ * @function seedNotificationTemplates
+ * @name seedNotificationTemplates
+ * @description Seed notification templates
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.4.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedNotificationTemplates(error => { ... });
+ */
+export const seedNotificationTemplates = done => {
+  debug('Start Seeding Notification Templates Data');
+  return seedPredefine('NotificationTemplate', error => {
+    debug('Finish Seeding Notification Templates Data');
+    return done(error);
+  });
+};
+
+/**
  * @function seed
  * @name seed
  * @description Seed data
@@ -705,6 +836,7 @@ export const seed = done => {
   // prepare seed tasks
   const tasks = [
     syncIndexes,
+    seedPermissions,
     seedUnits,
     seedAdministrativeLevels,
     seedFeatureTypes,
@@ -718,6 +850,13 @@ export const seed = done => {
     seedEventFunctions,
     seedEventActions,
     seedEventQuestions,
+    seedAdministrativeAreas,
+    // seedParties(seedAgencies, seedFocals),
+    seedFeatures,
+    seedEventCatalogues,
+    seedNotificationTemplates,
+    // seedEvents,
+    // seedEventChangeLogs,
   ];
 
   // run seed tasks

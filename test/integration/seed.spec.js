@@ -1,6 +1,7 @@
 import { expect } from '@lykmapipo/mongoose-test-helpers';
 import {
   seedCsv,
+  seedPermissions,
   seedUnits,
   seedAdministrativeLevels,
   seedFeatureTypes,
@@ -14,6 +15,10 @@ import {
   seedEventFunctions,
   seedEventActions,
   seedEventQuestions,
+  seedAdministrativeAreas,
+  seedFeatures,
+  seedEventCatalogues,
+  seedNotificationTemplates,
   seed,
 } from '../../src';
 import '@codetanzania/emis-stakeholder';
@@ -44,6 +49,13 @@ describe('seed', () => {
       expect(feature.description).to.exist;
       expect(next).to.exist.and.be.a('function');
       return next();
+    });
+  });
+
+  it('should seed permissions', done => {
+    seedPermissions(error => {
+      expect(error).to.not.exist;
+      done(error);
     });
   });
 
@@ -133,6 +145,34 @@ describe('seed', () => {
 
   it('should seed event questions', done => {
     seedEventQuestions(error => {
+      expect(error).to.not.exist;
+      done(error);
+    });
+  });
+
+  it('should seed administrative areas', done => {
+    seedAdministrativeAreas(error => {
+      expect(error).to.not.exist;
+      done(error);
+    });
+  });
+
+  it('should seed features', done => {
+    seedFeatures(error => {
+      expect(error).to.not.exist;
+      done(error);
+    });
+  });
+
+  it('should seed event catalogues', done => {
+    seedEventCatalogues(error => {
+      expect(error).to.not.exist;
+      done(error);
+    });
+  });
+
+  it('should seed notification templates', done => {
+    seedNotificationTemplates(error => {
       expect(error).to.not.exist;
       done(error);
     });
