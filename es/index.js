@@ -583,6 +583,54 @@ const seedEventCertainties = done => {
 };
 
 /**
+ * @function seedEventStatuses
+ * @name seedEventStatuses
+ * @description Seed event statuses
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.5.1
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedEventStatuses(error => { ... });
+ */
+const seedEventStatuses = done => {
+  debug('Start Seeding Event Statuses Data');
+  return seedPredefine('EventStatus', error => {
+    debug('Finish Seeding Event Statuses Data');
+    return done(error);
+  });
+};
+
+/**
+ * @function seedEventUrgencies
+ * @name seedEventUrgencies
+ * @description Seed event urgencies
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.5.1
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedEventUrgencies(error => { ... });
+ */
+const seedEventUrgencies = done => {
+  debug('Start Seeding Event Urgencies Data');
+  return seedPredefine('EventUrgency', error => {
+    debug('Finish Seeding Event Urgencies Data');
+    return done(error);
+  });
+};
+
+/**
  * @function seedPartyGroups
  * @name seedPartyGroups
  * @description Seed party groups
@@ -872,6 +920,8 @@ const seed = done => {
     seedEventIndicators,
     seedEventSeverities,
     seedEventCertainties,
+    seedEventStatuses,
+    seedEventUrgencies,
     seedPartyGroups,
     seedPartyRoles,
     seedEventGroups,
@@ -900,4 +950,4 @@ const seed = done => {
   });
 };
 
-export { applyTransformsOn, connect, csvPathFor, dataPathFor, geoJsonPathFor, jsonPathFor, pathFor, seed, seedAdministrativeAreas, seedAdministrativeLevels, seedCsv, seedEventActions, seedEventCatalogues, seedEventCertainties, seedEventFunctions, seedEventGroups, seedEventIndicators, seedEventQuestions, seedEventSeverities, seedEventTypes, seedFeatureTypes, seedFeatures, seedNotificationTemplates, seedPartyGroups, seedPartyRoles, seedPathFor, seedPermissions, seedPredefine, seedUnits, shapeFilePathFor, syncIndexes, transformSeedKeys, transformToPredefineSeed };
+export { applyTransformsOn, connect, csvPathFor, dataPathFor, geoJsonPathFor, jsonPathFor, pathFor, seed, seedAdministrativeAreas, seedAdministrativeLevels, seedCsv, seedEventActions, seedEventCatalogues, seedEventCertainties, seedEventFunctions, seedEventGroups, seedEventIndicators, seedEventQuestions, seedEventSeverities, seedEventStatuses, seedEventTypes, seedEventUrgencies, seedFeatureTypes, seedFeatures, seedNotificationTemplates, seedPartyGroups, seedPartyRoles, seedPathFor, seedPermissions, seedPredefine, seedUnits, shapeFilePathFor, syncIndexes, transformSeedKeys, transformToPredefineSeed };
