@@ -1,3 +1,28 @@
+#### 0.4.1 (2020-01-20)
+
+##### Chores
+
+* **deps:**
+  *  force latest version & audit fix ([d84e261f](https://github.com/codetanzania/ewea-common/commit/d84e261fa62ee509211d5e22f6fb2e212ffa40de))
+  *  force latest version & audit fix ([baa820f3](https://github.com/codetanzania/ewea-common/commit/baa820f36a4d2a2d2263834838457cd0a9c4ecbc))
+* **todos:**
+  *  add to be implemented placeholders ([d18d6038](https://github.com/codetanzania/ewea-common/commit/d18d6038d4845c7072bbf83f39aea9b998132b1c))
+  *  add to be implemented placeholders ([0b3a126a](https://github.com/codetanzania/ewea-common/commit/0b3a126ada696258c36de479b477bc2ee4d4dd2f))
+* **fixtures:**  rename to samples to avoid collisions ([945950cf](https://github.com/codetanzania/ewea-common/commit/945950cfa27914390649ccc540b8eb4cb5d20d59))
+
+##### New Features
+
+* **seed:**
+  *  add runtime permissions seed ([7b170999](https://github.com/codetanzania/ewea-common/commit/7b170999b8df0c874dd17b868ead30c25dd8a8c7))
+  *  seed event catalogues from csv ([dbc49e9e](https://github.com/codetanzania/ewea-common/commit/dbc49e9e2b21cf3e3f5fcac0198d679516028909))
+  *  seed features from csv ([c98259a0](https://github.com/codetanzania/ewea-common/commit/c98259a0db1fad585fd90ef97396f45d1e12704e))
+  *  seed administrative areas from csv ([f613d460](https://github.com/codetanzania/ewea-common/commit/f613d460ec8ac329ec9b1569ee12cadfcc9e574d))
+  *  seed notification templates from csv ([e635584d](https://github.com/codetanzania/ewea-common/commit/e635584df2a6075fdbc6c718efd8c36ba46fd38f))
+
+##### Other Changes
+
+* **seed:**  seed administrative areas from csv ([8564b7b7](https://github.com/codetanzania/ewea-common/commit/8564b7b76970fcc3f0b97ebaa8611ad8e6645f02))
+
 #### 0.4.0 (2020-01-14)
 
 ##### Chores
