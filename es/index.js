@@ -1,60 +1,16 @@
-import { join, stringify, pluralize, mergeObjects, sortedUniq, compact } from '@lykmapipo/common';
+import { PREDEFINE_RELATIONS, MODEL_NAME_PREDEFINE } from '@codetanzania/ewea-internals';
+export * from '@codetanzania/ewea-internals';
 import { waterfall } from 'async';
 import { connect as connect$1, syncIndexes as syncIndexes$1 } from '@lykmapipo/mongoose-common';
 import { createModels } from '@lykmapipo/file';
-import { join as join$1, resolve } from 'path';
+import { join, resolve } from 'path';
 import { toLower, mapKeys, split, forEach, isEmpty } from 'lodash';
+import { pluralize, mergeObjects, join as join$1, sortedUniq, compact } from '@lykmapipo/common';
 import { getString } from '@lykmapipo/env';
 import { debug, warn } from '@lykmapipo/logger';
 import { readCsv } from '@lykmapipo/geo-tools';
-import { transformToPredefine, Predefine } from '@lykmapipo/predefine';
-
-// namespaces
-// order: mostly dependent -> less dependent
-const PREDEFINE_NAMESPACES = [
-  'PartyRole',
-  'PartyGroup',
-  'EventCertainty',
-  'EventSeverity',
-  'EventStatus',
-  'EventUrgency',
-  'FeatureType',
-  'Feature',
-  'AdministrativeLevel',
-  'AdministrativeArea',
-  'EventGroup',
-  'EventType',
-  'EventFunction',
-  'EventAction',
-  'EventCatalogue',
-  'EventIndicator',
-  'EventQuestion',
-  'Unit',
-  'NotificationTemplate',
-];
-
-// relations
-const PREDEFINE_RELATIONS = {
-  permissions: { ref: 'Permission', array: true },
-  roles: { ref: 'Predefine', namespace: 'PartyRole', array: true },
-  groups: { ref: 'Predefine', namespace: 'PartyGroup', array: true },
-  group: { ref: 'Predefine', namespace: 'EventGroup' },
-  type: { ref: 'Predefine', namespace: ['EventType', 'FeatureType'] },
-  function: { ref: 'Predefine', namespace: 'EventFunction' },
-  action: { ref: 'Predefine', namespace: 'EventAction' },
-  level: { ref: 'Predefine', namespace: 'AdministrativeLevel' },
-  area: { ref: 'Predefine', namespace: 'AdministrativeArea' },
-  indicator: { ref: 'Predefine', namespace: 'EventIndicator' },
-  unit: { ref: 'Predefine', namespace: 'Unit' },
-  agencies: { ref: 'Party', array: true },
-  focals: { ref: 'Party', array: true },
-  custodians: { ref: 'Party', array: true },
-};
-
-// setup
-process.env.PREDEFINE_NAMESPACES = join(PREDEFINE_NAMESPACES, ',');
-process.env.PREDEFINE_RELATIONS_IGNORED = join(PREDEFINE_NAMESPACES, ',');
-process.env.PREDEFINE_RELATIONS = stringify(PREDEFINE_RELATIONS);
+import { transformToPredefine, listPermissions, Predefine } from '@lykmapipo/predefine';
+import { Permission } from '@lykmapipo/permission';
 
 /**
  * @function connect
@@ -97,8 +53,6 @@ const connect = done => {
  */
 const syncIndexes = done => waterfall([connect, syncIndexes$1], done);
 
-const PREDEFINE_MODEL_NAME = 'Predefine';
-
 /**
  * @function pathFor
  * @name pathFor
@@ -118,7 +72,7 @@ const PREDEFINE_MODEL_NAME = 'Predefine';
  */
 const pathFor = (...paths) => {
   const base = getString('BASE_PATH', process.cwd());
-  const path = join$1(base, ...paths);
+  const path = join(base, ...paths);
   return path;
 };
 
@@ -285,7 +239,7 @@ const transformSeedKeys = seed => {
     // key to lower
     let path = toLower(key);
     // key to path
-    path = join(split(path, ' '), '.');
+    path = join$1(split(path, ' '), '.');
     // return normalized key
     return path;
   });
@@ -325,11 +279,11 @@ const transformToPredefineSeed = seed => {
     if (hasRelation) {
       const options = mergeObjects(value);
       const path = `relations.${key}`;
-      const model = options.ref || PREDEFINE_MODEL_NAME;
+      const model = options.ref || MODEL_NAME_PREDEFINE;
       const array = options.array || false;
       const vals = sortedUniq(split(seed[key], ','));
       const match =
-        model === PREDEFINE_MODEL_NAME
+        model === MODEL_NAME_PREDEFINE
           ? { 'strings.name.en': { $in: vals } }
           : { name: { $in: vals } };
       populate[path] = { model, match, array };
@@ -452,6 +406,36 @@ const seedPredefine = (namespace, done) => {
     },
   ];
   return waterfall(stages, done);
+};
+
+/**
+ * @function seedPermissions
+ * @name seedPermissions
+ * @description Seed permissions
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.4.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedPermissions(error => { ... });
+ */
+const seedPermissions = done => {
+  debug('Start Seeding Permissions Data');
+  return waterfall(
+    [
+      next => Permission.seed(error => next(error)),
+      next => Permission.seed(listPermissions(), error => next(error)),
+    ],
+    error => {
+      debug('Finish Seeding Permissions Data');
+      return done(error);
+    }
+  );
 };
 
 /**
@@ -767,6 +751,102 @@ const seedEventQuestions = done => {
 };
 
 /**
+ * @function seedAdministrativeAreas
+ * @name seedAdministrativeAreas
+ * @description Seed administrative areas
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.4.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedAdministrativeAreas(error => { ... });
+ */
+const seedAdministrativeAreas = done => {
+  debug('Start Seeding Administrative Areas Data');
+  return seedPredefine('AdministrativeArea', error => {
+    debug('Finish Seeding Administrative Areas Data');
+    return done(error);
+  });
+};
+
+/**
+ * @function seedFeatures
+ * @name seedFeatures
+ * @description Seed features
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.4.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedFeatures(error => { ... });
+ */
+const seedFeatures = done => {
+  debug('Start Seeding Features Data');
+  return seedPredefine('Feature', error => {
+    debug('Finish Seeding Features Data');
+    return done(error);
+  });
+};
+
+/**
+ * @function seedEventCatalogues
+ * @name seedEventCatalogues
+ * @description Seed event catalogues
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.4.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedEventCatalogues(error => { ... });
+ */
+const seedEventCatalogues = done => {
+  debug('Start Seeding Event Catalogues Data');
+  return seedPredefine('EventCatalogue', error => {
+    debug('Finish Seeding Event Catalogues Data');
+    return done(error);
+  });
+};
+
+/**
+ * @function seedNotificationTemplates
+ * @name seedNotificationTemplates
+ * @description Seed notification templates
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.4.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedNotificationTemplates(error => { ... });
+ */
+const seedNotificationTemplates = done => {
+  debug('Start Seeding Notification Templates Data');
+  return seedPredefine('NotificationTemplate', error => {
+    debug('Finish Seeding Notification Templates Data');
+    return done(error);
+  });
+};
+
+/**
  * @function seed
  * @name seed
  * @description Seed data
@@ -785,6 +865,7 @@ const seed = done => {
   // prepare seed tasks
   const tasks = [
     syncIndexes,
+    seedPermissions,
     seedUnits,
     seedAdministrativeLevels,
     seedFeatureTypes,
@@ -798,6 +879,13 @@ const seed = done => {
     seedEventFunctions,
     seedEventActions,
     seedEventQuestions,
+    seedAdministrativeAreas,
+    // seedParties(seedAgencies, seedFocals),
+    seedFeatures,
+    seedEventCatalogues,
+    seedNotificationTemplates,
+    // seedEvents,
+    // seedEventChangeLogs,
   ];
 
   // run seed tasks
@@ -812,4 +900,4 @@ const seed = done => {
   });
 };
 
-export { PREDEFINE_NAMESPACES, PREDEFINE_RELATIONS, applyTransformsOn, connect, csvPathFor, dataPathFor, geoJsonPathFor, jsonPathFor, pathFor, seed, seedAdministrativeLevels, seedCsv, seedEventActions, seedEventCertainties, seedEventFunctions, seedEventGroups, seedEventIndicators, seedEventQuestions, seedEventSeverities, seedEventTypes, seedFeatureTypes, seedPartyGroups, seedPartyRoles, seedPathFor, seedPredefine, seedUnits, shapeFilePathFor, syncIndexes, transformSeedKeys, transformToPredefineSeed };
+export { applyTransformsOn, connect, csvPathFor, dataPathFor, geoJsonPathFor, jsonPathFor, pathFor, seed, seedAdministrativeAreas, seedAdministrativeLevels, seedCsv, seedEventActions, seedEventCatalogues, seedEventCertainties, seedEventFunctions, seedEventGroups, seedEventIndicators, seedEventQuestions, seedEventSeverities, seedEventTypes, seedFeatureTypes, seedFeatures, seedNotificationTemplates, seedPartyGroups, seedPartyRoles, seedPathFor, seedPermissions, seedPredefine, seedUnits, shapeFilePathFor, syncIndexes, transformSeedKeys, transformToPredefineSeed };
