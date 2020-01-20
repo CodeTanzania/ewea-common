@@ -1,6 +1,6 @@
 {
   "name": "@codetanzania/ewea-common",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Common utilities for EWEA",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -113,7 +113,7 @@
     "mongoose": ">=5.8.9"
   },
   "dependencies": {
-    "@codetanzania/ewea-internals": ">=0.2.1",
+    "@codetanzania/ewea-internals": ">=0.3.0",
     "@lykmapipo/common": ">=0.30.2",
     "@lykmapipo/env": ">=0.16.4",
     "@lykmapipo/express-common": ">=0.17.18",
