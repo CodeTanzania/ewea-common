@@ -397,11 +397,19 @@ export const seedPredefine = (namespace, done) => {
  */
 export const seedPermissions = done => {
   debug('Start Seeding Permissions Data');
+
+  // prepare permissions seed tasks
+  const seedResourcePermissions = next => {
+    return Permission.seed(error => next(error));
+  };
+  const seedPredefineNamespacePermissions = next => {
+    const namespacePermissions = listPermissions();
+    return Permission.seed(namespacePermissions, error => next(error));
+  };
+
+  // do seed permissions
   return waterfall(
-    [
-      next => Permission.seed(error => next(error)),
-      next => Permission.seed(listPermissions(), error => next(error)),
-    ],
+    [seedResourcePermissions, seedPredefineNamespacePermissions],
     error => {
       debug('Finish Seeding Permissions Data');
       return done(error);
