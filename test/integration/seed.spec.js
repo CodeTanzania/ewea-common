@@ -23,7 +23,7 @@ import {
   seedNotificationTemplates,
   seed,
 } from '../../src';
-import '@codetanzania/emis-stakeholder';
+import '@codetanzania/emis-stakeholder'; // TODO: why needed?
 
 describe('seed', () => {
   const { BASE_PATH, DATA_PATH } = process.env;

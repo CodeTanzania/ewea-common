@@ -3,7 +3,7 @@ import {
   PREDEFINE_RELATIONS,
 } from '@codetanzania/ewea-internals';
 import { join as joinPath, resolve as resolvePath } from 'path';
-import { forEach, isEmpty, mapKeys, split, toLower } from 'lodash';
+import { forEach, isEmpty, isString, mapKeys, split, toLower } from 'lodash';
 import { waterfall } from 'async';
 import {
   compact,
@@ -332,7 +332,9 @@ export const seedCsv = (path, transformers, done) => {
  * @function seedPredefine
  * @name seedPredefine
  * @description Seed given predefine namespace
- * @param {string} namespace valid predefine namespace
+ * @param {object} optns valid seed options
+ * @param {string} optns.namespace valid predefine namespace
+ * @param {Function[]} optns.transformers valid predefine transformers
  * @param {Function} done callback to invoke on success or error
  * @returns {Error|undefined} error if fails else undefined
  * @author lally elias <lallyelias87@gmail.com>
@@ -345,14 +347,20 @@ export const seedCsv = (path, transformers, done) => {
  *
  * seedPredefine(namespace, error => { ... });
  */
-export const seedPredefine = (namespace, done) => {
+export const seedPredefine = (optns, done) => {
+  // normalize arguments
+  const {
+    namespace = Predefine.DEFAULT_NAMESPACE,
+    transformers = [],
+  } = mergeObjects(isString(optns) ? { namespace: optns } : optns);
+
   const csvFilePath = csvPathFor(namespace);
-  const transformers = [transformToPredefineSeed];
+  const appliedTransformers = [transformToPredefineSeed, ...transformers];
   const stages = [
     then => {
       seedCsv(
         csvFilePath,
-        transformers,
+        appliedTransformers,
         (error, { finished, feature, next }) => {
           // handle read errors
           if (error) {

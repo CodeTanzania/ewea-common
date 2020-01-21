@@ -1,9 +1,9 @@
-import { expect } from '@lykmapipo/test-helpers';
-import { getStrings, getObject } from '@lykmapipo/env';
 import {
   PREDEFINE_NAMESPACES,
   PREDEFINE_RELATIONS,
 } from '@codetanzania/ewea-internals';
+import { expect } from '@lykmapipo/test-helpers';
+import { getStrings, getObject } from '@lykmapipo/env';
 import {
   pathFor,
   dataPathFor,
@@ -104,8 +104,8 @@ describe('common', () => {
     const seed = transformToPredefineSeed(data);
     expect(seed).to.be.eql({
       strings: {
-        name: { en: 'Two' },
-        description: { en: 'Two' },
+        name: { en: 'Two', sw: 'Two' },
+        description: { en: 'Two', sw: 'Two' },
       },
       numbers: {},
       booleans: {},
