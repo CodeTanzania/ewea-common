@@ -337,6 +337,8 @@ export const readCsvFile = (path, transformers, done) => {
  * @param {string} [optns.modelName] valid model name
  * @param {string} [optns.namespace] valid predefine namespace
  * @param {boolean} [optns.ignoreEnoent=true] whether to ignore file error
+ * @param {string} [optns.filePath=undefined] valid full file path for csv seed
+ * @param {object} [optns.properties={}] extra properties to merge on each seed
  * @param {Function[]} [optns.transformers] valid predefine transformers
  * @param {Function} done callback to invoke on success or error
  * @returns {Error|undefined} error if fails else undefined
@@ -354,6 +356,8 @@ export const readCsvFile = (path, transformers, done) => {
 export const seedFromCsv = (optns, done) => {
   // normalize options
   const {
+    filePath = undefined,
+    properties = {},
     modelName = MODEL_NAME_PREDEFINE,
     namespace = Predefine.DEFAULT_NAMESPACE,
     ignoreEnoent = true,
@@ -365,7 +369,8 @@ export const seedFromCsv = (optns, done) => {
   if (Model) {
     // prepare seed options
     const isPredefine = modelName === MODEL_NAME_PREDEFINE;
-    const csvFilePath = csvPathFor(isPredefine ? namespace : modelName);
+    const csvFilePath =
+      filePath || csvPathFor(isPredefine ? namespace : modelName);
     const appliedTransformers = isPredefine
       ? [transformToPredefineSeed, ...transformers]
       : [...transformers];
@@ -384,7 +389,7 @@ export const seedFromCsv = (optns, done) => {
       // process datas
       if (feature && next) {
         // seed data & next chunk from csv read stream
-        const data = mergeObjects(feature, { namespace });
+        const data = mergeObjects(feature, properties, { namespace });
         return Model.seed(data, next);
       }
       // request next chunk from csv read stream
