@@ -421,46 +421,11 @@ export const seedFromCsv = (optns, done) => {
  */
 export const seedPredefine = (optns, done) => {
   // normalize arguments
-  const {
-    namespace = Predefine.DEFAULT_NAMESPACE,
-    transformers = [],
-  } = mergeObjects(isString(optns) ? { namespace: optns } : optns);
-
-  // prepare seed stages options
-  const csvFilePath = csvPathFor(namespace);
-  const appliedTransformers = [transformToPredefineSeed, ...transformers];
+  const options = mergeObjects(isString(optns) ? { namespace: optns } : optns);
 
   // prepare predefine seed stages
-  const fromCsv = onFinished => {
-    return readCsvFile(
-      csvFilePath,
-      appliedTransformers,
-      (error, { finished, feature, next }) => {
-        // handle read errors
-        if (error) {
-          return onFinished(error);
-        }
-        // handle read finish
-        if (finished) {
-          return onFinished();
-        }
-        // process features
-        if (feature && next) {
-          // seed feature
-          const data = mergeObjects(feature, { namespace });
-          return Predefine.seed(data, (err, seeded) => {
-            return next(err, seeded);
-          });
-        }
-        // request next chunk from stream
-        return next && next();
-      }
-    );
-  };
-  const fromJson = onFinished => {
-    // TODO: support transformers options
-    return Predefine.seed(onFinished);
-  };
+  const fromCsv = onFinished => seedFromCsv(options, onFinished);
+  const fromJson = onFinished => Predefine.seed(onFinished);
   const stages = [fromCsv, fromJson];
 
   // do seed predefine

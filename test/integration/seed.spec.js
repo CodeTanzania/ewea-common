@@ -2,10 +2,7 @@ import {
   PREDEFINE_MODEL_NAME,
   PREDEFINE_NAMESPACE_EVENTSEVERITY,
 } from '@codetanzania/ewea-internals';
-import {
-  expect,
-  // enableDebug
-} from '@lykmapipo/mongoose-test-helpers';
+import { expect, enableDebug } from '@lykmapipo/mongoose-test-helpers';
 import {
   readCsvFile,
   seedFromCsv,
@@ -36,7 +33,7 @@ import '@codetanzania/emis-stakeholder';
 describe('seed', () => {
   const { BASE_PATH, DATA_PATH } = process.env;
 
-  // enableDebug();
+  enableDebug();
 
   before(() => {
     process.env.BASE_PATH = __dirname;
