@@ -434,7 +434,7 @@ export const seedFromJson = (optns, done) => {
   const Model = model(modelName);
   if (Model) {
     // TODO: support transformers options
-    // TODO: support namespace seeds
+    // TODO: support namespace seeds for predefines
     return Model.seed(done);
   }
   // backoff: no data model found

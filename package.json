@@ -128,6 +128,7 @@
     "@lykmapipo/postman": ">=0.16.4",
     "@lykmapipo/predefine": ">=1.5.2",
     "async": ">=3.1.0",
+    "load-json-file": ">=6.2.0",
     "lodash": ">=4.17.15",
     "mongoose-geojson-schemas": ">=0.11.4",
     "mongoose-locale-schema": ">=0.4.10",
