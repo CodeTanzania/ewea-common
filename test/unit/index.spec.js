@@ -13,8 +13,8 @@ import {
   geoJsonPathFor,
   jsonPathFor,
   transformSeedKeys,
-  transformToPredefineSeed,
   applyTransformsOn,
+  transformToPredefineSeed,
 } from '../../src';
 
 describe('common', () => {
@@ -83,23 +83,13 @@ describe('common', () => {
     });
   });
 
-  it('should apply transforms', () => {
-    expect(applyTransformsOn({ FID: 1, Name: 'Two' })).to.be.eql({
-      fid: 1,
-      name: 'Two',
-    });
-    expect(applyTransformsOn({ FID: 1, 'Name En': 'Two' })).to.be.eql({
-      fid: 1,
-      'name.en': 'Two',
-    });
-  });
-
   it('should transform to predefine seed', () => {
     const data = {
       name: 'Two',
       description: 'Two',
       group: 'Meteorological',
       agencies: 'Roads Agency',
+      area: '',
     };
     const seed = transformToPredefineSeed(data);
     expect(seed).to.be.eql({
@@ -122,6 +112,17 @@ describe('common', () => {
           array: true,
         },
       },
+    });
+  });
+
+  it('should apply transforms', () => {
+    expect(applyTransformsOn({ FID: 1, Name: 'Two' })).to.be.eql({
+      fid: 1,
+      name: 'Two',
+    });
+    expect(applyTransformsOn({ FID: 1, 'Name En': 'Two' })).to.be.eql({
+      fid: 1,
+      'name.en': 'Two',
     });
   });
 

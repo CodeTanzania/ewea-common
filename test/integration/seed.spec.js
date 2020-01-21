@@ -1,4 +1,7 @@
-import { expect } from '@lykmapipo/mongoose-test-helpers';
+import {
+  expect,
+  // enableDebug
+} from '@lykmapipo/mongoose-test-helpers';
 import {
   seedCsv,
   seedPermissions,
@@ -23,7 +26,7 @@ import {
   seedNotificationTemplates,
   seed,
 } from '../../src';
-import '@codetanzania/emis-stakeholder'; // TODO: why needed?
+import '@codetanzania/emis-stakeholder';
 
 describe('seed', () => {
   const { BASE_PATH, DATA_PATH } = process.env;

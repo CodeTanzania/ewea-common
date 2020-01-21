@@ -220,6 +220,68 @@ export const transformSeedKeys = seed => {
 };
 
 /**
+ * @function applyTransformsOn
+ * @name applyTransformsOn
+ * @description Transform and normalize seed
+ * @param {object} seed valid seed
+ * @param {...Function} [transformers] transform to apply on seed
+ * @returns {object} transformed seed
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.3.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * applyTransformsOn({ Name: 'John Doe' });
+ * => { name: 'John Doe' }
+ */
+export const applyTransformsOn = (seed, ...transformers) => {
+  // copy seed
+  let data = mergeObjects(seed);
+
+  // ensure transformers
+  const transforms = compact([transformSeedKeys].concat(transformers));
+
+  // apply transform sequentially
+  forEach(transforms, applyTransformOn => {
+    data = applyTransformOn(data);
+  });
+
+  // return
+  return data;
+};
+
+/**
+ * @function seedCsv
+ * @name seedCsv
+ * @description Read csv seed and apply seed transforms
+ * @param {string} path valid csv path
+ * @param {Function[]} [transformers] transforms to apply on seed
+ * @param {Function} done callback to invoke on next seed
+ * @returns {object} transformed seed
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.3.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedCsv(path, transforms, (error, { finished, feature, next }) => { ... });
+ */
+export const seedCsv = (path, transformers, done) => {
+  return readCsv({ path }, (error, { finished, feature, next }) => {
+    let data = feature;
+    if (!isEmpty(feature) && next && !finished) {
+      data = applyTransformsOn(feature, ...transformers);
+    }
+    return done(error, { finished, feature: data, next });
+  });
+};
+
+/**
  * @function transformToPredefineSeed
  * @name transformToPredefineSeed
  * @description Transform and normalize given seed to predefine seed
@@ -267,68 +329,6 @@ export const transformToPredefineSeed = seed => {
 };
 
 /**
- * @function applyTransformsOn
- * @name applyTransformsOn
- * @description Transform and normalize seed
- * @param {object} seed valid seed
- * @param {...Function} [transformers] transform to apply on seed
- * @returns {object} transformed seed
- * @author lally elias <lallyelias87@gmail.com>
- * @license MIT
- * @since 0.3.0
- * @version 0.1.0
- * @static
- * @public
- * @example
- *
- * applyTransformsOn({ Name: 'John Doe' });
- * => { name: 'John Doe' }
- */
-export const applyTransformsOn = (seed, ...transformers) => {
-  // copy seed
-  let data = mergeObjects(seed);
-
-  // ensure transformers
-  const transforms = compact([transformSeedKeys].concat(transformers));
-
-  // apply transform sequentially
-  forEach(transforms, applyTransformOn => {
-    data = applyTransformOn(data);
-  });
-
-  // return
-  return data;
-};
-
-/**
- * @function seedCsv
- * @name seedCsv
- * @description Read csv seed and apply see transforms
- * @param {string} path valid csv path
- * @param {Function[]} [transformers] transforms to apply on seed
- * @param {Function} done callback to invoke on next seed
- * @returns {object} transformed seed
- * @author lally elias <lallyelias87@gmail.com>
- * @license MIT
- * @since 0.3.0
- * @version 0.1.0
- * @static
- * @public
- * @example
- *
- * seedCsv(path, transforms, (error, { finished, feature, next }) => { ... });
- */
-export const seedCsv = (path, transformers, done) => {
-  return readCsv({ path }, (error, { finished, feature, next }) => {
-    let data = feature;
-    if (!isEmpty(feature) && next && !finished) {
-      data = applyTransformsOn(feature, ...transformers);
-    }
-    return done(error, { finished, feature: data, next });
-  });
-};
-
-/**
  * @function seedPredefine
  * @name seedPredefine
  * @description Seed given predefine namespace
@@ -354,36 +354,40 @@ export const seedPredefine = (optns, done) => {
     transformers = [],
   } = mergeObjects(isString(optns) ? { namespace: optns } : optns);
 
+  // prepare seed stages options
   const csvFilePath = csvPathFor(namespace);
   const appliedTransformers = [transformToPredefineSeed, ...transformers];
-  const stages = [
-    then => {
-      seedCsv(
-        csvFilePath,
-        appliedTransformers,
-        (error, { finished, feature, next }) => {
-          // handle read errors
-          if (error) {
-            return then(error);
-          }
-          // handle read finish
-          if (finished) {
-            return then();
-          }
-          // process features
-          if (feature && next) {
-            // seed feature
-            const data = mergeObjects(feature, { namespace });
-            return Predefine.seed(data, (err, seeded) => {
-              return next(err, seeded);
-            });
-          }
-          // request next chunk from stream
-          return next && next();
+
+  // prepare predefine seed stages
+  const seedFromCsv = onFinished => {
+    return seedCsv(
+      csvFilePath,
+      appliedTransformers,
+      (error, { finished, feature, next }) => {
+        // handle read errors
+        if (error) {
+          return onFinished(error);
         }
-      );
-    },
-  ];
+        // handle read finish
+        if (finished) {
+          return onFinished();
+        }
+        // process features
+        if (feature && next) {
+          // seed feature
+          const data = mergeObjects(feature, { namespace });
+          return Predefine.seed(data, (err, seeded) => {
+            return next(err, seeded);
+          });
+        }
+        // request next chunk from stream
+        return next && next();
+      }
+    );
+  };
+  const stages = [seedFromCsv];
+
+  // do seed predefine
   return waterfall(stages, done);
 };
 
@@ -406,7 +410,7 @@ export const seedPredefine = (optns, done) => {
 export const seedPermissions = done => {
   debug('Start Seeding Permissions Data');
 
-  // prepare permissions seed tasks
+  // prepare permissions seed stages
   const seedResourcePermissions = next => {
     return Permission.seed(error => next(error));
   };
@@ -414,15 +418,13 @@ export const seedPermissions = done => {
     const namespacePermissions = listPermissions();
     return Permission.seed(namespacePermissions, error => next(error));
   };
+  const stages = [seedResourcePermissions, seedPredefineNamespacePermissions];
 
   // do seed permissions
-  return waterfall(
-    [seedResourcePermissions, seedPredefineNamespacePermissions],
-    error => {
-      debug('Finish Seeding Permissions Data');
-      return done(error);
-    }
-  );
+  return waterfall(stages, error => {
+    debug('Finish Seeding Permissions Data');
+    return done(error);
+  });
 };
 
 /**
