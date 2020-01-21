@@ -400,6 +400,43 @@ export const seedFromCsv = (optns, done) => {
 };
 
 /**
+ * @function seedFromJson
+ * @name seedFromJson
+ * @description Seed given model from json file
+ * @param {object} optns valid seed options
+ * @param {string} [optns.modelName] valid model name
+ * @param {string} [optns.namespace] valid predefine namespace
+ * @param {boolean} [optns.ignoreEnoent=true] whether to ignore file error
+ * @param {Function[]} [optns.transformers] valid predefine transformers
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.6.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * const opts = { modelName: ..., transformers: [ ... ] };
+ * seedFromJson(optns, error => { ... });
+ */
+export const seedFromJson = (optns, done) => {
+  // normalize options
+  const { modelName = MODEL_NAME_PREDEFINE } = mergeObjects(optns);
+
+  // do: seed data to model if exists
+  const Model = model(modelName);
+  if (Model) {
+    // TODO: support transformers options
+    // TODO: support namespace seeds
+    return Model.seed(done);
+  }
+  // backoff: no data model found
+  return done();
+};
+
+/**
  * @function seedPredefine
  * @name seedPredefine
  * @description Seed given predefine namespace
@@ -425,7 +462,7 @@ export const seedPredefine = (optns, done) => {
 
   // prepare predefine seed stages
   const fromCsv = onFinished => seedFromCsv(options, onFinished);
-  const fromJson = onFinished => Predefine.seed(onFinished);
+  const fromJson = onFinished => seedFromJson(options, onFinished);
   const stages = [fromCsv, fromJson];
 
   // do seed predefine

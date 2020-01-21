@@ -2,10 +2,14 @@ import {
   PREDEFINE_MODEL_NAME,
   PREDEFINE_NAMESPACE_EVENTSEVERITY,
 } from '@codetanzania/ewea-internals';
-import { expect, enableDebug } from '@lykmapipo/mongoose-test-helpers';
+import {
+  expect,
+  // enableDebug
+} from '@lykmapipo/mongoose-test-helpers';
 import {
   readCsvFile,
   seedFromCsv,
+  seedFromJson,
   seedPermissions,
   seedUnits,
   seedAdministrativeLevels,
@@ -31,13 +35,14 @@ import {
 import '@codetanzania/emis-stakeholder';
 
 describe('seed', () => {
-  const { BASE_PATH, DATA_PATH } = process.env;
+  const { BASE_PATH, DATA_PATH, SEED_PATH } = process.env;
 
-  enableDebug();
+  // enableDebug();
 
   before(() => {
     process.env.BASE_PATH = __dirname;
     process.env.DATA_PATH = `${__dirname}'/../fixtures`;
+    process.env.SEED_PATH = `${__dirname}'/../fixtures`;
   });
 
   it('should read csv seed file', done => {
@@ -65,6 +70,16 @@ describe('seed', () => {
     const optns = { modelName, namespace };
 
     seedFromCsv(optns, error => {
+      expect(error).to.not.exist;
+      done(error);
+    });
+  });
+
+  it('should seed from json if file exists', done => {
+    const modelName = PREDEFINE_MODEL_NAME;
+    const optns = { modelName };
+
+    seedFromJson(optns, error => {
       expect(error).to.not.exist;
       done(error);
     });
@@ -220,5 +235,6 @@ describe('seed', () => {
   after(() => {
     process.env.BASE_PATH = BASE_PATH;
     process.env.DATA_PATH = DATA_PATH;
+    process.env.SEED_PATH = SEED_PATH;
   });
 });

@@ -18,11 +18,12 @@ import {
 } from '../../src';
 
 describe('common', () => {
-  const { BASE_PATH, DATA_PATH } = process.env;
+  const { BASE_PATH, DATA_PATH, SEED_PATH } = process.env;
 
   before(() => {
     process.env.BASE_PATH = process.cwd();
     process.env.DATA_PATH = 'data';
+    process.env.SEED_PATH = 'seeds';
   });
 
   it('should set predefine namespaces', () => {
@@ -129,5 +130,6 @@ describe('common', () => {
   after(() => {
     process.env.BASE_PATH = BASE_PATH;
     process.env.DATA_PATH = DATA_PATH;
+    process.env.SEED_PATH = SEED_PATH;
   });
 });
