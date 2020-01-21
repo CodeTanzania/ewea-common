@@ -1,9 +1,14 @@
 import {
+  PREDEFINE_MODEL_NAME,
+  PREDEFINE_NAMESPACE_EVENTSEVERITY,
+} from '@codetanzania/ewea-internals';
+import {
   expect,
   // enableDebug
 } from '@lykmapipo/mongoose-test-helpers';
 import {
-  seedCsv,
+  readCsvFile,
+  seedFromCsv,
   seedPermissions,
   seedUnits,
   seedAdministrativeLevels,
@@ -38,9 +43,9 @@ describe('seed', () => {
     process.env.DATA_PATH = `${__dirname}'/../fixtures`;
   });
 
-  it('should seed csv file', done => {
+  it('should read csv seed file', done => {
     const path = `${__dirname}/../fixtures/eventseverities.csv`;
-    seedCsv(path, [], (error, { finished, feature, next }) => {
+    readCsvFile(path, [], (error, { finished, feature, next }) => {
       if (error) {
         expect(error).to.not.exist;
         return done(error);
@@ -54,6 +59,17 @@ describe('seed', () => {
       expect(feature.description).to.exist;
       expect(next).to.exist.and.be.a('function');
       return next();
+    });
+  });
+
+  it('should seed from csv if file exists', done => {
+    const modelName = PREDEFINE_MODEL_NAME;
+    const namespace = PREDEFINE_NAMESPACE_EVENTSEVERITY;
+    const optns = { modelName, namespace };
+
+    seedFromCsv(optns, error => {
+      expect(error).to.not.exist;
+      done(error);
     });
   });
 

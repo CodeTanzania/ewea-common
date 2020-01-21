@@ -15,6 +15,7 @@ import {
 import { getString } from '@lykmapipo/env';
 import { debug, warn } from '@lykmapipo/logger';
 import { readCsv } from '@lykmapipo/geo-tools';
+import { model } from '@lykmapipo/mongoose-common';
 import {
   Predefine,
   listPermissions,
@@ -254,34 +255,6 @@ export const applyTransformsOn = (seed, ...transformers) => {
 };
 
 /**
- * @function seedCsv
- * @name seedCsv
- * @description Read csv seed and apply seed transforms
- * @param {string} path valid csv path
- * @param {Function[]} [transformers] transforms to apply on seed
- * @param {Function} done callback to invoke on next seed
- * @returns {object} transformed seed
- * @author lally elias <lallyelias87@gmail.com>
- * @license MIT
- * @since 0.3.0
- * @version 0.1.0
- * @static
- * @public
- * @example
- *
- * seedCsv(path, transforms, (error, { finished, feature, next }) => { ... });
- */
-export const seedCsv = (path, transformers, done) => {
-  return readCsv({ path }, (error, { finished, feature, next }) => {
-    let data = feature;
-    if (!isEmpty(feature) && next && !finished) {
-      data = applyTransformsOn(feature, ...transformers);
-    }
-    return done(error, { finished, feature: data, next });
-  });
-};
-
-/**
  * @function transformToPredefineSeed
  * @name transformToPredefineSeed
  * @description Transform and normalize given seed to predefine seed
@@ -312,14 +285,14 @@ export const transformToPredefineSeed = seed => {
     if (hasRelation) {
       const options = mergeObjects(value);
       const path = `relations.${key}`;
-      const model = options.ref || MODEL_NAME_PREDEFINE;
+      const modelName = options.ref || MODEL_NAME_PREDEFINE;
       const array = options.array || false;
       const vals = sortedUniq(split(seed[key], ','));
       const match =
-        model === MODEL_NAME_PREDEFINE
+        modelName === MODEL_NAME_PREDEFINE
           ? { 'strings.name.en': { $in: vals } }
           : { name: { $in: vals } };
-      populate[path] = { model, match, array };
+      populate[path] = { model: modelName, match, array };
     }
   });
   predefine.populate = populate;
@@ -329,11 +302,110 @@ export const transformToPredefineSeed = seed => {
 };
 
 /**
+ * @function readCsvFile
+ * @name readCsvFile
+ * @description Read csv seed and apply seed transforms
+ * @param {string} path valid csv path
+ * @param {Function[]} [transformers] transforms to apply on seed
+ * @param {Function} done callback to invoke on next seed
+ * @returns {object} transformed seed
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.3.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * readCsvFile(path, transforms, (error, { finished, feature, next }) => { ... });
+ */
+export const readCsvFile = (path, transformers, done) => {
+  return readCsv({ path }, (error, { finished, feature, next }) => {
+    let data = feature;
+    if (!isEmpty(feature) && next && !finished) {
+      data = applyTransformsOn(feature, ...transformers);
+    }
+    return done(error, { finished, feature: data, next });
+  });
+};
+
+/**
+ * @function seedFromCsv
+ * @name seedFromCsv
+ * @description Seed given model from csv file
+ * @param {object} optns valid seed options
+ * @param {string} [optns.modelName] valid model name
+ * @param {string} [optns.namespace] valid predefine namespace
+ * @param {boolean} [optns.ignoreEnoent=true] whether to ignore file error
+ * @param {Function[]} [optns.transformers] valid predefine transformers
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.6.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * const opts = { modelName: ..., transformers: [ ... ] };
+ * seedFromCsv(optns, error => { ... });
+ */
+export const seedFromCsv = (optns, done) => {
+  // normalize options
+  const {
+    modelName = MODEL_NAME_PREDEFINE,
+    namespace = Predefine.DEFAULT_NAMESPACE,
+    ignoreEnoent = true,
+    transformers = [],
+  } = mergeObjects(optns);
+
+  // do: seed data to model if exists
+  const Model = model(modelName);
+  if (Model) {
+    // prepare seed options
+    const isPredefine = modelName === MODEL_NAME_PREDEFINE;
+    const csvFilePath = csvPathFor(isPredefine ? namespace : modelName);
+    const appliedTransformers = isPredefine
+      ? [transformToPredefineSeed, ...transformers]
+      : [...transformers];
+
+    // process each csv row(data)
+    const processCsvSeed = (error, { finished, feature, next }) => {
+      // handle file read errors
+      if (error) {
+        const ignoreFileError = error.code === 'ENOENT' && ignoreEnoent;
+        return ignoreFileError ? done() : done(error);
+      }
+      // handle read finish
+      if (finished) {
+        return done();
+      }
+      // process datas
+      if (feature && next) {
+        // seed data & next chunk from csv read stream
+        const data = mergeObjects(feature, { namespace });
+        return Model.seed(data, next);
+      }
+      // request next chunk from csv read stream
+      return next && next();
+    };
+
+    // seed from csv
+    return readCsvFile(csvFilePath, appliedTransformers, processCsvSeed);
+  }
+
+  // backoff: no data model found
+  return done();
+};
+
+/**
  * @function seedPredefine
  * @name seedPredefine
  * @description Seed given predefine namespace
  * @param {object} optns valid seed options
  * @param {string} optns.namespace valid predefine namespace
+ * @param {boolean} [optns.ignoreEnoent=true] whether to ignore file error
  * @param {Function[]} optns.transformers valid predefine transformers
  * @param {Function} done callback to invoke on success or error
  * @returns {Error|undefined} error if fails else undefined
@@ -359,8 +431,8 @@ export const seedPredefine = (optns, done) => {
   const appliedTransformers = [transformToPredefineSeed, ...transformers];
 
   // prepare predefine seed stages
-  const seedFromCsv = onFinished => {
-    return seedCsv(
+  const fromCsv = onFinished => {
+    return readCsvFile(
       csvFilePath,
       appliedTransformers,
       (error, { finished, feature, next }) => {
@@ -385,7 +457,11 @@ export const seedPredefine = (optns, done) => {
       }
     );
   };
-  const stages = [seedFromCsv];
+  const fromJson = onFinished => {
+    // TODO: support transformers options
+    return Predefine.seed(onFinished);
+  };
+  const stages = [fromCsv, fromJson];
 
   // do seed predefine
   return waterfall(stages, done);
@@ -899,6 +975,7 @@ export const seedNotificationTemplates = done => {
  * seed(error => { ... });
  */
 export const seed = done => {
+  // TODO: optns: transform per model name/namespace
   // prepare seed tasks
   const tasks = [
     syncIndexes,
