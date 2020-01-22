@@ -1,5 +1,5 @@
 import {
-  PREDEFINE_MODEL_NAME,
+  MODEL_NAME_PREDEFINE,
   PREDEFINE_NAMESPACE_EVENTSEVERITY,
 } from '@codetanzania/ewea-internals';
 import {
@@ -10,6 +10,7 @@ import {
   readCsvFile,
   seedFromCsv,
   seedFromJson,
+  seedFromSeeds,
   seedPermissions,
   seedUnits,
   seedAdministrativeLevels,
@@ -65,7 +66,7 @@ describe('seed', () => {
   });
 
   it('should seed from csv if file exists', done => {
-    const modelName = PREDEFINE_MODEL_NAME;
+    const modelName = MODEL_NAME_PREDEFINE;
     const namespace = PREDEFINE_NAMESPACE_EVENTSEVERITY;
     const optns = { modelName, namespace };
 
@@ -75,12 +76,35 @@ describe('seed', () => {
     });
   });
 
-  it('should seed from json if file exists', done => {
-    const modelName = PREDEFINE_MODEL_NAME;
-    const optns = { modelName };
+  it.skip('should seed from json if file exists', done => {
+    const modelName = MODEL_NAME_PREDEFINE;
+    const namespace = PREDEFINE_NAMESPACE_EVENTSEVERITY;
+    const optns = { modelName, namespace };
 
     seedFromJson(optns, error => {
       expect(error).to.not.exist;
+      done(error);
+    });
+  });
+
+  it('should seed from seeds file if exists', done => {
+    const modelName = MODEL_NAME_PREDEFINE;
+    const optns = { modelName };
+
+    seedFromSeeds(optns, (error, results) => {
+      expect(error).to.not.exist;
+      expect(results).to.exist;
+      done(error);
+    });
+  });
+
+  it('should not seed from seeds file if not exists', done => {
+    const modelName = 'Unknown';
+    const optns = { modelName };
+
+    seedFromSeeds(optns, (error, results) => {
+      expect(error).to.not.exist;
+      expect(results).to.not.exist;
       done(error);
     });
   });

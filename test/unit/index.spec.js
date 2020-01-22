@@ -101,6 +101,8 @@ describe('common', () => {
       numbers: {},
       booleans: {},
       dates: {},
+      geos: {},
+      properties: {},
       populate: {
         'relations.group': {
           model: 'Predefine',

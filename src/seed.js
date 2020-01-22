@@ -3,7 +3,21 @@ import {
   PREDEFINE_RELATIONS,
 } from '@codetanzania/ewea-internals';
 import { join as joinPath, resolve as resolvePath } from 'path';
-import { forEach, isEmpty, isString, mapKeys, split, toLower } from 'lodash';
+import {
+  endsWith,
+  first,
+  forEach,
+  isArray,
+  isEmpty,
+  isFunction,
+  isString,
+  keys,
+  map,
+  mapKeys,
+  split,
+  toLower,
+  omit,
+} from 'lodash';
 import { waterfall } from 'async';
 import {
   compact,
@@ -14,7 +28,7 @@ import {
 } from '@lykmapipo/common';
 import { getString } from '@lykmapipo/env';
 import { debug, warn } from '@lykmapipo/logger';
-import { readCsv } from '@lykmapipo/geo-tools';
+import { readCsv, readJson } from '@lykmapipo/geo-tools';
 import { model } from '@lykmapipo/mongoose-common';
 import {
   Predefine,
@@ -224,7 +238,7 @@ export const transformSeedKeys = seed => {
  * @function applyTransformsOn
  * @name applyTransformsOn
  * @description Transform and normalize seed
- * @param {object} seed valid seed
+ * @param {object|object[]} seed valid seed(s)
  * @param {...Function} [transformers] transform to apply on seed
  * @returns {object} transformed seed
  * @author lally elias <lallyelias87@gmail.com>
@@ -240,17 +254,26 @@ export const transformSeedKeys = seed => {
  */
 export const applyTransformsOn = (seed, ...transformers) => {
   // copy seed
-  let data = mergeObjects(seed);
+  let data = compact([].concat(seed));
 
-  // ensure transformers
-  const transforms = compact([transformSeedKeys].concat(transformers));
+  data = map(data, value => {
+    // copy value
+    let transformed = mergeObjects(value);
 
-  // apply transform sequentially
-  forEach(transforms, applyTransformOn => {
-    data = applyTransformOn(data);
+    // ensure transformers
+    const transforms = compact([transformSeedKeys].concat(transformers));
+
+    // apply transform sequentially
+    forEach(transforms, applyTransformOn => {
+      transformed = applyTransformOn(transformed);
+    });
+
+    // return transformed
+    return transformed;
   });
 
   // return
+  data = isArray(seed) ? data : first(data);
   return data;
 };
 
@@ -276,7 +299,7 @@ export const transformToPredefineSeed = seed => {
   const data = mergeObjects(seed);
 
   // normalize to predefine
-  const predefine = transformToPredefine(data);
+  let predefine = transformToPredefine(data);
 
   // transform relations
   const populate = {};
@@ -298,6 +321,7 @@ export const transformToPredefineSeed = seed => {
   predefine.populate = populate;
 
   // return
+  predefine = omit(predefine, ...[...keys(PREDEFINE_RELATIONS), 'relations']);
   return predefine;
 };
 
@@ -428,14 +452,87 @@ export const seedFromCsv = (optns, done) => {
  */
 export const seedFromJson = (optns, done) => {
   // normalize options
-  const { modelName = MODEL_NAME_PREDEFINE } = mergeObjects(optns);
+  const {
+    filePath = undefined,
+    modelName = MODEL_NAME_PREDEFINE,
+    namespace = Predefine.DEFAULT_NAMESPACE,
+    ignoreEnoent = true,
+    transformers = [],
+  } = mergeObjects(optns);
 
   // do: seed data to model if exists
   const Model = model(modelName);
   if (Model) {
-    // TODO: support transformers options
-    // TODO: support namespace seeds for predefines
-    return Model.seed(done);
+    // prepare seed options
+    const isPredefine =
+      modelName === MODEL_NAME_PREDEFINE && !isEmpty(namespace);
+    const jsonFilePath =
+      filePath || jsonPathFor(isPredefine ? namespace : modelName);
+    const appliedTransformers = isPredefine
+      ? [transformToPredefineSeed, ...transformers]
+      : [...transformers];
+
+    // prepare json seed stages
+    const fromData = onFinished => {
+      const path = endsWith(jsonFilePath, '.json')
+        ? jsonFilePath
+        : `${jsonFilePath}.json`;
+      const throws = !ignoreEnoent;
+      return readJson({ path, throws }, (error, data) => {
+        if (!isEmpty(data)) {
+          const copyOfData = applyTransformsOn(data, ...appliedTransformers);
+          return Model.seed(copyOfData, onFinished);
+        }
+        return onFinished(error, data);
+      });
+    };
+    // const fromSeeds = onFinished => Model.seed(onFinished);
+    const stages = [fromData];
+
+    return waterfall(stages, done);
+  }
+  // backoff: no data model found
+  return done();
+};
+
+/**
+ * @function seedFromSeeds
+ * @name seedFromSeeds
+ * @description Seed given model from seeds file
+ * @param {object} optns valid seed options
+ * @param {string} [optns.modelName=undefined] valid model name
+ * @param {boolean} [optns.throws=false] whether to ignore error
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.6.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * const opts = { modelName: ... };
+ * seedFromSeeds(optns, error => { ... });
+ */
+export const seedFromSeeds = (optns, done) => {
+  // normalize options
+  const { modelName = undefined, throws = false } = mergeObjects(optns);
+
+  // do: seed data to model if seeds exists
+  const Model = model(modelName);
+  const canSeed = Model && isFunction(Model.seed);
+  if (canSeed) {
+    // TODO: support transforms
+    // TODO: support filter(allow staged seeds)
+    return Model.seed((error, results) => {
+      // reply with errors
+      if (throws) {
+        return done(error, results);
+      }
+      // ignore errors
+      return done(null, results);
+    });
   }
   // backoff: no data model found
   return done();
