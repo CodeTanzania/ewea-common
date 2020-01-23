@@ -126,7 +126,7 @@
     "@lykmapipo/mongoose-sequenceable": ">=0.2.5",
     "@lykmapipo/permission": ">=0.8.17",
     "@lykmapipo/postman": ">=0.16.5",
-    "@lykmapipo/predefine": ">=1.6.0",
+    "@lykmapipo/predefine": ">=1.6.2",
     "async": ">=3.1.0",
     "lodash": ">=4.17.15",
     "mongoose-geojson-schemas": ">=0.11.5",

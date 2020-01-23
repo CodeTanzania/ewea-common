@@ -69,7 +69,7 @@ describe('common', () => {
     );
 
     expect(jsonPathFor('Event')).to.exist.and.be.equal(
-      `${process.cwd()}/data/events`
+      `${process.cwd()}/data/events.json`
     );
   });
 
@@ -98,11 +98,6 @@ describe('common', () => {
         name: { en: 'Two', sw: 'Two' },
         description: { en: 'Two', sw: 'Two' },
       },
-      numbers: {},
-      booleans: {},
-      dates: {},
-      geos: {},
-      properties: {},
       populate: {
         'relations.group': {
           model: 'Predefine',

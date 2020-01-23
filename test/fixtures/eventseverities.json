@@ -1,22 +1,22 @@
 [
   {
     "namespace": "EventSeverity",
-    "strings": { "name": { "en": "Extreme" } }
+    "name": "Extreme"
   },
   {
     "namespace": "EventSeverity",
-    "strings": { "name": { "en": "Severe" } }
+    "name": "Severe"
   },
   {
     "namespace": "EventSeverity",
-    "strings": { "name": { "en": "Moderate" } }
+    "name": "Moderate"
   },
   {
     "namespace": "EventSeverity",
-    "strings": { "name": { "en": "Minor" } }
+    "name": "Minor"
   },
   {
     "namespace": "EventSeverity",
-    "strings": { "name": { "en": "Unknown" } }
+    "name": "Unknown"
   }
 ]

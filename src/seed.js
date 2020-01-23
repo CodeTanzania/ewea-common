@@ -190,10 +190,9 @@ export const geoJsonPathFor = modelName => {
  *
  * jsonPathFor('events');
  * => /home/ewea/seeds/events.json
- * => /home/ewea/seeds/events.js
  */
 export const jsonPathFor = modelName => {
-  const fileName = `${pluralize(toLower(modelName))}`;
+  const fileName = `${pluralize(toLower(modelName))}.json`;
   const jsonFilePath = dataPathFor(fileName);
   return jsonFilePath;
 };
@@ -381,8 +380,8 @@ export const seedFromCsv = (optns, done) => {
   const {
     filePath = undefined,
     properties = {},
-    modelName = MODEL_NAME_PREDEFINE,
-    namespace = Predefine.DEFAULT_NAMESPACE,
+    modelName = undefined,
+    namespace = undefined,
     throws = false,
     transformers = [],
   } = mergeObjects(optns);
@@ -391,7 +390,8 @@ export const seedFromCsv = (optns, done) => {
   const Model = model(modelName);
   if (Model) {
     // prepare seed options
-    const isPredefine = modelName === MODEL_NAME_PREDEFINE;
+    const isPredefine =
+      modelName === MODEL_NAME_PREDEFINE && !isEmpty(namespace);
     const csvFilePath =
       filePath || csvPathFor(isPredefine ? namespace : modelName);
     const appliedTransformers = isPredefine
@@ -411,7 +411,7 @@ export const seedFromCsv = (optns, done) => {
       // process datas
       if (feature && next) {
         // seed data & next chunk from csv read stream
-        const data = mergeObjects(feature, properties, { namespace });
+        const data = mergeObjects(properties, { namespace }, feature);
         return Model.seed(data, next);
       }
       // request next chunk from csv read stream
@@ -434,6 +434,8 @@ export const seedFromCsv = (optns, done) => {
  * @param {string} [optns.modelName] valid model name
  * @param {string} [optns.namespace] valid predefine namespace
  * @param {boolean} [optns.throws=false] whether to throw error
+ * @param {string} [optns.filePath=undefined] valid full file path for json seed
+ * @param {object} [optns.properties={}] extra properties to merge on each seed
  * @param {Function[]} [optns.transformers] valid predefine transformers
  * @param {Function} done callback to invoke on success or error
  * @returns {Error|undefined} error if fails else undefined
@@ -452,8 +454,9 @@ export const seedFromJson = (optns, done) => {
   // normalize options
   const {
     filePath = undefined,
-    modelName = MODEL_NAME_PREDEFINE,
-    namespace = Predefine.DEFAULT_NAMESPACE,
+    properties = {},
+    modelName = undefined,
+    namespace = undefined,
     throws = false,
     transformers = [],
   } = mergeObjects(optns);
@@ -471,22 +474,19 @@ export const seedFromJson = (optns, done) => {
       : [...transformers];
 
     // prepare json seed stages
-    const fromData = onFinished => {
-      const path = endsWith(jsonFilePath, '.json')
-        ? jsonFilePath
-        : `${jsonFilePath}.json`;
-      return readJson({ path, throws }, (error, data) => {
-        if (!isEmpty(data)) {
-          const copyOfData = applyTransformsOn(data, ...appliedTransformers);
-          return Model.seed(copyOfData, onFinished);
-        }
-        return onFinished(error, data);
-      });
-    };
-    // const fromSeeds = onFinished => Model.seed(onFinished);
-    const stages = [fromData];
-
-    return waterfall(stages, done);
+    const path = endsWith(jsonFilePath, '.json')
+      ? jsonFilePath
+      : `${jsonFilePath}.json`;
+    return readJson({ path, throws }, (error, data) => {
+      if (!isEmpty(data)) {
+        const transform = seed => {
+          const merged = mergeObjects(properties, { namespace }, seed);
+          return applyTransformsOn(merged, ...appliedTransformers);
+        };
+        return Model.seed({ data, transform }, done);
+      }
+      return done(error, data);
+    });
   }
   // backoff: no data model found
   return done();
@@ -497,8 +497,11 @@ export const seedFromJson = (optns, done) => {
  * @name seedFromSeeds
  * @description Seed given model from seeds file
  * @param {object} optns valid seed options
- * @param {string} [optns.modelName=undefined] valid model name
+ * @param {string} [optns.modelName] valid model name
+ * @param {string} [optns.namespace] valid predefine namespace
  * @param {boolean} [optns.throws=false] whether to throw error
+ * @param {object} [optns.properties={}] extra properties to merge on each seed
+ * @param {Function[]} [optns.transformers] valid applied transformers
  * @param {Function} [optns.filter=undefined] seed data filter
  * @param {Function} [optns.transform=undefined] seed data transformer
  * @param {Function} done callback to invoke on success or error
@@ -527,8 +530,7 @@ export const seedFromSeeds = (optns, done) => {
   const Model = model(modelName);
   const canSeed = Model && isFunction(Model.seed);
   if (canSeed) {
-    // TODO: support transforms
-    // TODO: support filter(allow staged seeds)
+    // filter, transform & seed
     return Model.seed({ filter, transform }, (error, results) => {
       // reply with errors
       if (throws) {
@@ -579,9 +581,9 @@ export const seedPredefine = (optns, done) => {
 
   // prepare predefine seed stages
   const fromSeeds = next => seedFromSeeds(options, error => next(error));
-  // const fromJson = next => seedFromJson(options, next);
+  const fromJson = next => seedFromJson(options, error => next(error));
   const fromCsv = next => seedFromCsv(options, error => next(error));
-  const stages = [fromSeeds, fromCsv];
+  const stages = [fromSeeds, fromJson, fromCsv];
 
   // do seed predefine
   return waterfall(stages, done);

@@ -76,13 +76,26 @@ describe('seed', () => {
     });
   });
 
-  it.skip('should seed from json if file exists', done => {
+  it('should seed from json if file exists', done => {
     const modelName = MODEL_NAME_PREDEFINE;
     const namespace = PREDEFINE_NAMESPACE_EVENTSEVERITY;
     const optns = { modelName, namespace };
 
-    seedFromJson(optns, error => {
+    seedFromJson(optns, (error, results) => {
       expect(error).to.not.exist;
+      expect(results).to.exist;
+      done(error);
+    });
+  });
+
+  it('should not seed from json if file exists', done => {
+    const modelName = MODEL_NAME_PREDEFINE;
+    const namespace = 'Unknown';
+    const optns = { modelName, namespace };
+
+    seedFromJson(optns, (error, results) => {
+      expect(error).to.not.exist;
+      expect(results).to.exist;
       done(error);
     });
   });
