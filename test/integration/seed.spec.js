@@ -98,6 +98,18 @@ describe('seed', () => {
     });
   });
 
+  it('should filter seed from seeds file if exists', done => {
+    const modelName = MODEL_NAME_PREDEFINE;
+    const filter = val => val.namespace === PREDEFINE_NAMESPACE_EVENTSEVERITY;
+    const optns = { modelName, filter };
+
+    seedFromSeeds(optns, (error, results) => {
+      expect(error).to.not.exist;
+      expect(results).to.exist;
+      done(error);
+    });
+  });
+
   it('should not seed from seeds file if not exists', done => {
     const modelName = 'Unknown';
     const optns = { modelName };

@@ -8,16 +8,12 @@ const severities = [
     strings: { name: { en: 'Severe' } },
   },
   {
-    namespace: 'EventSeverity',
-    strings: { name: { en: 'Moderate' } },
+    namespace: 'EventStatus',
+    strings: { name: { en: 'Actual' } },
   },
   {
-    namespace: 'EventSeverity',
-    strings: { name: { en: 'Minor' } },
-  },
-  {
-    namespace: 'EventSeverity',
-    strings: { name: { en: 'Unknown' } },
+    namespace: 'EventStatus',
+    strings: { name: { en: 'Exercise' } },
   },
 ];
 
