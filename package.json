@@ -74,7 +74,7 @@
     "@babel/preset-env": "^7.8.3",
     "@babel/register": "^7.8.3",
     "@benmaruchu/faker": "^4.3.0",
-    "@codetanzania/emis-stakeholder": "^2.0.0",
+    "@codetanzania/emis-stakeholder": "^2.1.0",
     "@commitlint/cli": "^8.3.5",
     "@commitlint/config-conventional": "^8.3.4",
     "@commitlint/travis-cli": "^8.3.5",
@@ -92,7 +92,7 @@
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-config-prettier": "^6.9.0",
     "eslint-plugin-import": "^2.20.0",
-    "eslint-plugin-jsdoc": "^20.3.1",
+    "eslint-plugin-jsdoc": "^20.4.0",
     "eslint-plugin-mocha": "^6.2.2",
     "eslint-plugin-prettier": "^3.1.2",
     "generate-changelog": "^1.8.0",
@@ -113,7 +113,7 @@
     "mongoose": ">=5.8.9"
   },
   "dependencies": {
-    "@codetanzania/ewea-internals": ">=0.3.0",
+    "@codetanzania/ewea-internals": ">=0.4.0",
     "@lykmapipo/common": ">=0.30.3",
     "@lykmapipo/env": ">=0.16.5",
     "@lykmapipo/express-common": ">=0.17.19",

@@ -11,6 +11,8 @@ import {
   seedFromCsv,
   seedFromJson,
   seedFromSeeds,
+  seedPredefine,
+  seedParty,
   seedPermissions,
   seedUnits,
   seedAdministrativeLevels,
@@ -28,6 +30,8 @@ import {
   seedEventActions,
   seedEventQuestions,
   seedAdministrativeAreas,
+  seedAgencies,
+  seedFocals,
   seedFeatures,
   seedEventCatalogues,
   seedNotificationTemplates,
@@ -130,6 +134,20 @@ describe('seed', () => {
     seedFromSeeds(optns, (error, results) => {
       expect(error).to.not.exist;
       expect(results).to.not.exist;
+      done(error);
+    });
+  });
+
+  it('should seed predefines', done => {
+    seedPredefine({}, error => {
+      expect(error).to.not.exist;
+      done(error);
+    });
+  });
+
+  it('should seed parties', done => {
+    seedParty({}, error => {
+      expect(error).to.not.exist;
       done(error);
     });
   });
@@ -248,6 +266,20 @@ describe('seed', () => {
 
   it('should seed administrative areas', done => {
     seedAdministrativeAreas(error => {
+      expect(error).to.not.exist;
+      done(error);
+    });
+  });
+
+  it('should seed agencies', done => {
+    seedAgencies(error => {
+      expect(error).to.not.exist;
+      done(error);
+    });
+  });
+
+  it('should seed focals', done => {
+    seedFocals(error => {
       expect(error).to.not.exist;
       done(error);
     });
