@@ -1,9 +1,9 @@
-import { expect } from '@lykmapipo/test-helpers';
-import { getStrings, getObject } from '@lykmapipo/env';
 import {
   PREDEFINE_NAMESPACES,
   PREDEFINE_RELATIONS,
 } from '@codetanzania/ewea-internals';
+import { expect } from '@lykmapipo/test-helpers';
+import { getStrings, getObject } from '@lykmapipo/env';
 import {
   pathFor,
   dataPathFor,
@@ -13,16 +13,17 @@ import {
   geoJsonPathFor,
   jsonPathFor,
   transformSeedKeys,
-  transformToPredefineSeed,
   applyTransformsOn,
+  transformToPredefineSeed,
 } from '../../src';
 
 describe('common', () => {
-  const { BASE_PATH, DATA_PATH } = process.env;
+  const { BASE_PATH, DATA_PATH, SEED_PATH } = process.env;
 
   before(() => {
     process.env.BASE_PATH = process.cwd();
     process.env.DATA_PATH = 'data';
+    process.env.SEED_PATH = 'seeds';
   });
 
   it('should set predefine namespaces', () => {
@@ -68,7 +69,7 @@ describe('common', () => {
     );
 
     expect(jsonPathFor('Event')).to.exist.and.be.equal(
-      `${process.cwd()}/data/events`
+      `${process.cwd()}/data/events.json`
     );
   });
 
@@ -83,33 +84,20 @@ describe('common', () => {
     });
   });
 
-  it('should apply transforms', () => {
-    expect(applyTransformsOn({ FID: 1, Name: 'Two' })).to.be.eql({
-      fid: 1,
-      name: 'Two',
-    });
-    expect(applyTransformsOn({ FID: 1, 'Name En': 'Two' })).to.be.eql({
-      fid: 1,
-      'name.en': 'Two',
-    });
-  });
-
   it('should transform to predefine seed', () => {
     const data = {
       name: 'Two',
       description: 'Two',
       group: 'Meteorological',
       agencies: 'Roads Agency',
+      area: '',
     };
     const seed = transformToPredefineSeed(data);
     expect(seed).to.be.eql({
       strings: {
-        name: { en: 'Two' },
-        description: { en: 'Two' },
+        name: { en: 'Two', sw: 'Two' },
+        description: { en: 'Two', sw: 'Two' },
       },
-      numbers: {},
-      booleans: {},
-      dates: {},
       populate: {
         'relations.group': {
           model: 'Predefine',
@@ -125,8 +113,20 @@ describe('common', () => {
     });
   });
 
+  it('should apply transforms', () => {
+    expect(applyTransformsOn({ FID: 1, Name: 'Two' })).to.be.eql({
+      fid: 1,
+      name: 'Two',
+    });
+    expect(applyTransformsOn({ FID: 1, 'Name En': 'Two' })).to.be.eql({
+      fid: 1,
+      'name.en': 'Two',
+    });
+  });
+
   after(() => {
     process.env.BASE_PATH = BASE_PATH;
     process.env.DATA_PATH = DATA_PATH;
+    process.env.SEED_PATH = SEED_PATH;
   });
 });
