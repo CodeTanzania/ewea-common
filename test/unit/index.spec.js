@@ -32,7 +32,7 @@ describe('process csv file', () => {
     const error = new Error();
     processCsvSeed({ throws: false }, done)(error, {});
     expect(error).to.be.exist;
-    expect(done.called).to.be.true;
+    expect(done).to.be.have.been.called;
   });
 
   it('should not call done if finished is false', () => {
@@ -40,7 +40,7 @@ describe('process csv file', () => {
     const error = undefined;
     processCsvSeed({ throws: false }, done)(error, { finished: false });
     expect(error).to.not.exist;
-    expect(done.notCalled).to.be.true;
+    expect(done).to.have.not.been.called;
   });
 
   it('should call on model seed function when next is true', () => {
@@ -73,7 +73,7 @@ describe('process csv file', () => {
     processCsvSeed({ Model, throws: false }, done)(error, {
       next: false,
     });
-    expect(Model.seed.notCalled).to.be.true;
+    expect(Model.seed).to.have.not.been.called;
   });
 });
 
