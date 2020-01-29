@@ -2,10 +2,11 @@ import {
   PREDEFINE_NAMESPACES,
   PREDEFINE_RELATIONS,
 } from '@codetanzania/ewea-internals';
-import { expect } from '@lykmapipo/test-helpers';
+import { expect, fake } from '@lykmapipo/test-helpers';
 import { getStrings, getObject } from '@lykmapipo/env';
 import {
   pathFor,
+  processCsvSeed,
   dataPathFor,
   seedPathFor,
   csvPathFor,
@@ -16,6 +17,65 @@ import {
   applyTransformsOn,
   transformToPredefineSeed,
 } from '../../src';
+
+describe('process csv file', () => {
+  it('should call done with error if throw is true', () => {
+    const done = fake();
+    const error = new Error();
+    processCsvSeed({ throws: true }, done)(error, {});
+    expect(error).to.be.exist;
+    expect(done.calledWith(error)).to.be.true;
+  });
+
+  it('should call done error if throw is false', () => {
+    const done = fake();
+    const error = new Error();
+    processCsvSeed({ throws: false }, done)(error, {});
+    expect(error).to.be.exist;
+    expect(done.called).to.be.true;
+  });
+
+  it('should not call done if finished is false', () => {
+    const done = fake();
+    const error = undefined;
+    processCsvSeed({ throws: false }, done)(error, { finished: false });
+    expect(error).to.not.exist;
+    expect(done.notCalled).to.be.true;
+  });
+
+  it('should call on model seed function when next is true', () => {
+    const Model = {};
+    const done = fake();
+    const next = true;
+    const error = undefined;
+    const data = {
+      strings: {
+        description: { en: 'Ward', sw: 'Ward' },
+        name: { en: 'Ward', sw: 'Ward' },
+      },
+    };
+    Model.seed = fake();
+
+    processCsvSeed({ Model, throws: false }, done)(error, {
+      feature: {},
+    });
+    Model.seed(data, next);
+    expect(Model.seed).to.be.calledOnce;
+    expect(Model.seed.calledWith(data, next)).to.be.true;
+  });
+
+  it('should not call model seed function next is false', () => {
+    const Model = {};
+    const done = fake();
+    const error = undefined;
+    Model.seed = fake();
+
+    processCsvSeed({ Model, throws: false }, done)(error, {
+      next: false,
+    });
+    expect(Model.seed.notCalled).to.be.true;
+  });
+});
 
 describe('common', () => {
   const { BASE_PATH, DATA_PATH, SEED_PATH } = process.env;
