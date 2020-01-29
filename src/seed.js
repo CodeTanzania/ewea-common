@@ -395,6 +395,50 @@ export const readCsvFile = (path, transformers, done) => {
 };
 
 /**
+ * @function processCsvSeed
+ * @name processCsvSeed
+ * @description process each csv row (data)
+ * @param {object} [options] valid options
+ * @param {string} [options.Model=undefined] valid model name
+ * @param {object} [options.properties={}] valid extra properties to merge on each seed
+ * @param {string} [options.namespace=undefined] valid predefine namespace
+ * @param {boolean} [options.throws=false] whether to throw error
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Function} call back function
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.3.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * const options = { Model = undefined, properties = {}, namespace = undefined, throws = false }
+ * processCsvSeed((options,done) => (error,{finished,feature,next}) => { ... });
+ */
+export const processCsvSeed = (
+  { Model = undefined, properties = {}, namespace = undefined, throws = false },
+  done
+) => (error, { finished, feature, next }) => {
+  // handle file read errors
+  if (error) {
+    return throws ? done(error) : done();
+  }
+  // handle read finish
+  if (finished) {
+    return done();
+  }
+  // process datas
+  if (feature && next) {
+    // seed data & next chunk from csv read stream
+    const data = mergeObjects(properties, { namespace }, feature);
+    return Model.seed(data, next);
+  }
+  // request next chunk from csv read stream
+  return next && next();
+};
+
+/**
  * @function seedFromCsv
  * @name seedFromCsv
  * @description Seed given model from csv file
@@ -440,28 +484,12 @@ export const seedFromCsv = (optns, done) => {
       ? [transformToPredefineSeed, ...transformers]
       : [...transformers];
 
-    // process each csv row(data)
-    const processCsvSeed = (error, { finished, feature, next }) => {
-      // handle file read errors
-      if (error) {
-        return throws ? done(error) : done();
-      }
-      // handle read finish
-      if (finished) {
-        return done();
-      }
-      // process datas
-      if (feature && next) {
-        // seed data & next chunk from csv read stream
-        const data = mergeObjects(properties, { namespace }, feature);
-        return Model.seed(data, next);
-      }
-      // request next chunk from csv read stream
-      return next && next();
-    };
-
     // seed from csv
-    return readCsvFile(csvFilePath, appliedTransformers, processCsvSeed);
+    return readCsvFile(
+      csvFilePath,
+      appliedTransformers,
+      processCsvSeed({ Model, properties, throws }, done)
+    );
   }
 
   // backoff: no data model found
