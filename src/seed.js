@@ -760,9 +760,8 @@ export const seedParty = (optns, done) => {
  * @name seedEvent
  * @description Seed given events
  * @param {object} optns valid seed options
- * @param {string} optns.type valid party type
  * @param {boolean} [optns.throws=false] whether to ignore error
- * @param {Function[]} optns.transformers valid party transformers
+ * @param {Function[]} optns.transformers valid event transformers
  * @param {Function} done callback to invoke on success or error
  * @returns {Error|undefined} error if fails else undefined
  * @author lally elias <lallyelias87@gmail.com>
@@ -779,23 +778,16 @@ export const seedEvent = (optns, done) => {
   // normalize options
   const {
     modelName = MODEL_NAME_EVENT,
-    type = 'Event',
     throws = false,
     transformers = [],
   } = mergeObjects(optns);
 
-  // prepare type filter
-  const filter = seed => seed.type === type;
-
   // prepare options
   const options = {
     modelName,
-    namespace: type,
-    properties: { type },
-    type,
+    properties: {},
     throws,
     transformers: [transformToEventSeed, ...transformers],
-    filter,
   };
 
   // prepare event seed stages
@@ -804,7 +796,7 @@ export const seedEvent = (optns, done) => {
   const fromCsv = next => seedFromCsv(options, error => next(error));
   const stages = [fromSeeds, fromJson, fromCsv];
 
-  // do seed party
+  // do seed event
   return waterfall(stages, done);
 };
 
@@ -1387,8 +1379,7 @@ export const seedNotificationTemplates = done => {
  */
 export const seedEvents = done => {
   debug('Start Seeding Events Data');
-  const type = 'Event';
-  return seedEvent({ type }, error => {
+  return seedEvent({}, error => {
     debug('Finish Seeding Events Data');
     return done(error);
   });

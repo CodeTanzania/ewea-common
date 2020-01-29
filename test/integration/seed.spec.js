@@ -37,6 +37,7 @@ import {
   seed,
 } from '../../src';
 import '@codetanzania/emis-stakeholder';
+import '@codetanzania/ewea-event';
 
 describe('seed', () => {
   const { BASE_PATH, DATA_PATH, SEED_PATH } = process.env;
