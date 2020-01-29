@@ -1,8 +1,10 @@
 import {
   MODEL_NAME_PREDEFINE,
   MODEL_NAME_PARTY,
+  MODEL_NAME_EVENT,
   PARTY_RELATIONS,
   PREDEFINE_RELATIONS,
+  EVENT_RELATIONS,
 } from '@codetanzania/ewea-internals';
 import { join as joinPath, resolve as resolvePath } from 'path';
 import {
@@ -367,6 +369,51 @@ export const transformToPartySeed = seed => {
 };
 
 /**
+ * @function transformToEventSeed
+ * @name transformToEventSeed
+ * @description Transform and normalize given seed to event seed
+ * @param {object} seed valid seed
+ * @returns {object} valid party seed
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.6.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * transformToEventSeed({ Name: 'John Doe' });
+ * => { name: 'John Doe' }
+ */
+export const transformToEventSeed = seed => {
+  // copy seed
+  let data = mergeObjects(seed);
+
+  // transform relations
+  const populate = {};
+  forEach(EVENT_RELATIONS, (value, key) => {
+    const hasRelation = key && data[key];
+    if (hasRelation) {
+      const options = mergeObjects(value);
+      const path = `${options.path || key}`;
+      const modelName = options.ref || MODEL_NAME_PREDEFINE;
+      const array = options.array || false;
+      const vals = sortedUniq(split(data[key], ','));
+      const match =
+        modelName === MODEL_NAME_PREDEFINE
+          ? { 'strings.name.en': { $in: vals } }
+          : { name: { $in: vals } };
+      populate[path] = { model: modelName, match, array };
+    }
+  });
+  data.populate = populate;
+
+  // return
+  data = omit(data, ...[...keys(EVENT_RELATIONS), 'relations', 'namespace']);
+  return data;
+};
+
+/**
  * @function readCsvFile
  * @name readCsvFile
  * @description Read csv seed and apply seed transforms
@@ -699,6 +746,59 @@ export const seedParty = (optns, done) => {
   };
 
   // prepare party seed stages
+  const fromSeeds = next => seedFromSeeds(options, error => next(error));
+  const fromJson = next => seedFromJson(options, error => next(error));
+  const fromCsv = next => seedFromCsv(options, error => next(error));
+  const stages = [fromSeeds, fromJson, fromCsv];
+
+  // do seed party
+  return waterfall(stages, done);
+};
+
+/**
+ * @function seedEvent
+ * @name seedEvent
+ * @description Seed given events
+ * @param {object} optns valid seed options
+ * @param {string} optns.type valid party type
+ * @param {boolean} [optns.throws=false] whether to ignore error
+ * @param {Function[]} optns.transformers valid party transformers
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.3.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedEvent(optns, error => { ... });
+ */
+export const seedEvent = (optns, done) => {
+  // normalize options
+  const {
+    modelName = MODEL_NAME_EVENT,
+    type = 'Event',
+    throws = false,
+    transformers = [],
+  } = mergeObjects(optns);
+
+  // prepare type filter
+  const filter = seed => seed.type === type;
+
+  // prepare options
+  const options = {
+    modelName,
+    namespace: type,
+    properties: { type },
+    type,
+    throws,
+    transformers: [transformToEventSeed, ...transformers],
+    filter,
+  };
+
+  // prepare event seed stages
   const fromSeeds = next => seedFromSeeds(options, error => next(error));
   const fromJson = next => seedFromJson(options, error => next(error));
   const fromCsv = next => seedFromCsv(options, error => next(error));
@@ -1270,6 +1370,31 @@ export const seedNotificationTemplates = done => {
 };
 
 /**
+ * @function seedEvents
+ * @name seedEvents
+ * @description seed events
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.4.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedEvents(error => { ... });
+ */
+export const seedEvents = done => {
+  debug('Start Seeding Events Data');
+  const type = 'Event';
+  return seedEvent({ type }, error => {
+    debug('Finish Seeding Events Data');
+    return done(error);
+  });
+};
+
+/**
  * @function seed
  * @name seed
  * @description Seed data
@@ -1310,7 +1435,7 @@ export const seed = done => {
     seedFeatures,
     seedEventCatalogues,
     seedNotificationTemplates,
-    // seedEvents,
+    seedEvents,
     // seedEventChangeLogs,
   ];
 
