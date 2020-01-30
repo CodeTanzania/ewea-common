@@ -2,10 +2,7 @@ import {
   MODEL_NAME_PREDEFINE,
   PREDEFINE_NAMESPACE_EVENTSEVERITY,
 } from '@codetanzania/ewea-internals';
-import {
-  expect,
-  // enableDebug
-} from '@lykmapipo/mongoose-test-helpers';
+import { expect } from '@lykmapipo/mongoose-test-helpers';
 import {
   readCsvFile,
   seedFromCsv,
@@ -13,6 +10,7 @@ import {
   seedFromSeeds,
   seedPredefine,
   seedParty,
+  seedEvent,
   seedPermissions,
   seedUnits,
   seedAdministrativeLevels,
@@ -35,9 +33,11 @@ import {
   seedFeatures,
   seedEventCatalogues,
   seedNotificationTemplates,
+  seedEvents,
   seed,
 } from '../../src';
 import '@codetanzania/emis-stakeholder';
+import '@codetanzania/ewea-event';
 
 describe('seed', () => {
   const { BASE_PATH, DATA_PATH, SEED_PATH } = process.env;
@@ -147,6 +147,13 @@ describe('seed', () => {
 
   it('should seed parties', done => {
     seedParty({}, error => {
+      expect(error).to.not.exist;
+      done(error);
+    });
+  });
+
+  it('should seed event', done => {
+    seedEvent({}, error => {
       expect(error).to.not.exist;
       done(error);
     });
@@ -301,6 +308,13 @@ describe('seed', () => {
 
   it('should seed notification templates', done => {
     seedNotificationTemplates(error => {
+      expect(error).to.not.exist;
+      done(error);
+    });
+  });
+
+  it('should seed events', done => {
+    seedEvents(error => {
       expect(error).to.not.exist;
       done(error);
     });
