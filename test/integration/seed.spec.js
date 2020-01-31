@@ -138,6 +138,17 @@ describe('seed', () => {
     });
   });
 
+  it.skip('should not seed from seeds file if throws is true', done => {
+    const modelName = MODEL_NAME_PREDEFINE;
+    const optns = { modelName, throws: true };
+
+    seedFromSeeds(optns, (error, results) => {
+      expect(error).to.exist;
+      expect(results).to.be.undefined;
+      done();
+    });
+  });
+
   it('should seed predefines', done => {
     seedPredefine({}, error => {
       expect(error).to.not.exist;
