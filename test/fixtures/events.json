@@ -1,0 +1,26 @@
+[
+  {
+    "group": "Hydrological",
+    "type": "Floods",
+    "certainity": "Observed",
+    "severity": "Extreme",
+    "status": "Exercise",
+    "urgency": "Immediate",
+    "stage": "Event",
+    "scope": "Private",
+    "number": "",
+    "startedAt": "2019-10-17T07:53:32.831Z",
+    "reporter": "",
+    "location": "",
+    "address": "",
+    "causes": "Heavy rainfall",
+    "description": "Overflowing water from the dam",
+    "places": "Ilala, Temeke, Dar es Salaam",
+    "areas": "Dar es Salaam",
+    "instructions": "Continue monitor the situation",
+    "interventions": "Affected victims were evacuated and relocated",
+    "impacts": "55 people affected, 72 houses destroyed and 9 schools damaged",
+    "remarks": "Relief items should be provided to the victims",
+    "endedAt": "2019-10-19T07:53:32.831Z"
+  }
+]

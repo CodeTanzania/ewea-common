@@ -16,6 +16,9 @@ import {
   transformSeedKeys,
   applyTransformsOn,
   transformToPredefineSeed,
+  seedFromCsv,
+  seedFromJson,
+  seedFromSeeds,
 } from '../../src';
 
 describe('process csv file', () => {
@@ -74,6 +77,57 @@ describe('process csv file', () => {
       next: false,
     });
     expect(Model.seed).to.have.not.been.called;
+  });
+});
+
+describe('seed from csv', () => {
+  it('should call done if model does not exist', () => {
+    const done = fake();
+    const option = { modelName: undefined };
+    seedFromCsv(option, done);
+    expect(done).to.be.called;
+  });
+});
+
+describe('seed from json', () => {
+  it('should call done if model does not exist', () => {
+    const done = fake();
+    const option = { modelName: undefined };
+    seedFromJson(option, done);
+    expect(done).to.be.called;
+  });
+});
+
+describe('seed from seeds', () => {
+  it('should call done if model does not exist', () => {
+    const done = fake();
+    const option = {};
+    seedFromSeeds(option, done);
+    expect(done).to.be.called;
+  });
+
+  it('should call done with error and result if throws is true', () => {
+    const error = new Error();
+    const Model = { modelName: 'TEST' };
+    const results = {};
+    const done = fake();
+    Model.seed = fake();
+
+    Model.seed({ throws: true }, done(error, results));
+    expect(error).to.exist;
+    expect(done).to.be.calledWith(error, results);
+  });
+
+  it('should call done with result if throws is false', () => {
+    const error = null;
+    const Model = { modelName: 'TEST' };
+    const results = {};
+    const done = fake();
+    Model.seed = fake();
+
+    Model.seed({ throws: false }, done(error, results));
+    expect(error).to.not.exist;
+    expect(done).to.be.calledWith(null, results);
   });
 });
 
