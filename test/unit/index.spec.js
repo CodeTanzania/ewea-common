@@ -1,11 +1,12 @@
-import { expect } from '@lykmapipo/test-helpers';
-import { getStrings, getObject } from '@lykmapipo/env';
 import {
   PREDEFINE_NAMESPACES,
   PREDEFINE_RELATIONS,
 } from '@codetanzania/ewea-internals';
+import { expect, fake } from '@lykmapipo/test-helpers';
+import { getStrings, getObject } from '@lykmapipo/env';
 import {
   pathFor,
+  processCsvSeed,
   dataPathFor,
   seedPathFor,
   csvPathFor,
@@ -13,16 +14,130 @@ import {
   geoJsonPathFor,
   jsonPathFor,
   transformSeedKeys,
-  transformToPredefineSeed,
   applyTransformsOn,
+  transformToPredefineSeed,
+  seedFromCsv,
+  seedFromJson,
+  seedFromSeeds,
 } from '../../src';
 
+describe('process csv file', () => {
+  it('should call done with error if throw is true', () => {
+    const done = fake();
+    const error = new Error();
+    processCsvSeed({ throws: true }, done)(error, {});
+    expect(error).to.be.exist;
+    expect(done.calledWith(error)).to.be.true;
+  });
+
+  it('should call done error if throw is false', () => {
+    const done = fake();
+    const error = new Error();
+    processCsvSeed({ throws: false }, done)(error, {});
+    expect(error).to.be.exist;
+    expect(done).to.be.have.been.called;
+  });
+
+  it('should not call done if finished is false', () => {
+    const done = fake();
+    const error = undefined;
+    processCsvSeed({ throws: false }, done)(error, { finished: false });
+    expect(error).to.not.exist;
+    expect(done).to.have.not.been.called;
+  });
+
+  it('should call on model seed function when next is true', () => {
+    const Model = {};
+    const done = fake();
+    const next = true;
+    const error = undefined;
+    const data = {
+      strings: {
+        description: { en: 'Ward', sw: 'Ward' },
+        name: { en: 'Ward', sw: 'Ward' },
+      },
+    };
+    Model.seed = fake();
+
+    processCsvSeed({ Model, throws: false }, done)(error, {
+      feature: {},
+    });
+    Model.seed(data, next);
+    expect(Model.seed).to.be.calledOnce;
+    expect(Model.seed.calledWith(data, next)).to.be.true;
+  });
+
+  it('should not call model seed function next is false', () => {
+    const Model = {};
+    const done = fake();
+    const error = undefined;
+    Model.seed = fake();
+
+    processCsvSeed({ Model, throws: false }, done)(error, {
+      next: false,
+    });
+    expect(Model.seed).to.have.not.been.called;
+  });
+});
+
+describe('seed from csv', () => {
+  it('should call done if model does not exist', () => {
+    const done = fake();
+    const option = { modelName: undefined };
+    seedFromCsv(option, done);
+    expect(done).to.be.called;
+  });
+});
+
+describe('seed from json', () => {
+  it('should call done if model does not exist', () => {
+    const done = fake();
+    const option = { modelName: undefined };
+    seedFromJson(option, done);
+    expect(done).to.be.called;
+  });
+});
+
+describe('seed from seeds', () => {
+  it('should call done if model does not exist', () => {
+    const done = fake();
+    const option = {};
+    seedFromSeeds(option, done);
+    expect(done).to.be.called;
+  });
+
+  it('should call done with error and result if throws is true', () => {
+    const error = new Error();
+    const Model = { modelName: 'TEST' };
+    const results = {};
+    const done = fake();
+    Model.seed = fake();
+
+    Model.seed({ throws: true }, done(error, results));
+    expect(error).to.exist;
+    expect(done).to.be.calledWith(error, results);
+  });
+
+  it('should call done with result if throws is false', () => {
+    const error = null;
+    const Model = { modelName: 'TEST' };
+    const results = {};
+    const done = fake();
+    Model.seed = fake();
+
+    Model.seed({ throws: false }, done(error, results));
+    expect(error).to.not.exist;
+    expect(done).to.be.calledWith(null, results);
+  });
+});
+
 describe('common', () => {
-  const { BASE_PATH, DATA_PATH } = process.env;
+  const { BASE_PATH, DATA_PATH, SEED_PATH } = process.env;
 
   before(() => {
     process.env.BASE_PATH = process.cwd();
     process.env.DATA_PATH = 'data';
+    process.env.SEED_PATH = 'seeds';
   });
 
   it('should set predefine namespaces', () => {
@@ -68,7 +183,7 @@ describe('common', () => {
     );
 
     expect(jsonPathFor('Event')).to.exist.and.be.equal(
-      `${process.cwd()}/data/events`
+      `${process.cwd()}/data/events.json`
     );
   });
 
@@ -83,33 +198,20 @@ describe('common', () => {
     });
   });
 
-  it('should apply transforms', () => {
-    expect(applyTransformsOn({ FID: 1, Name: 'Two' })).to.be.eql({
-      fid: 1,
-      name: 'Two',
-    });
-    expect(applyTransformsOn({ FID: 1, 'Name En': 'Two' })).to.be.eql({
-      fid: 1,
-      'name.en': 'Two',
-    });
-  });
-
   it('should transform to predefine seed', () => {
     const data = {
       name: 'Two',
       description: 'Two',
       group: 'Meteorological',
       agencies: 'Roads Agency',
+      area: '',
     };
     const seed = transformToPredefineSeed(data);
     expect(seed).to.be.eql({
       strings: {
-        name: { en: 'Two' },
-        description: { en: 'Two' },
+        name: { en: 'Two', sw: 'Two' },
+        description: { en: 'Two', sw: 'Two' },
       },
-      numbers: {},
-      booleans: {},
-      dates: {},
       populate: {
         'relations.group': {
           model: 'Predefine',
@@ -125,8 +227,20 @@ describe('common', () => {
     });
   });
 
+  it('should apply transforms', () => {
+    expect(applyTransformsOn({ FID: 1, Name: 'Two' })).to.be.eql({
+      fid: 1,
+      name: 'Two',
+    });
+    expect(applyTransformsOn({ FID: 1, 'Name En': 'Two' })).to.be.eql({
+      fid: 1,
+      'name.en': 'Two',
+    });
+  });
+
   after(() => {
     process.env.BASE_PATH = BASE_PATH;
     process.env.DATA_PATH = DATA_PATH;
+    process.env.SEED_PATH = SEED_PATH;
   });
 });

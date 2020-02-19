@@ -1,6 +1,16 @@
+import {
+  MODEL_NAME_PREDEFINE,
+  PREDEFINE_NAMESPACE_EVENTSEVERITY,
+} from '@codetanzania/ewea-internals';
 import { expect } from '@lykmapipo/mongoose-test-helpers';
 import {
-  seedCsv,
+  readCsvFile,
+  seedFromCsv,
+  seedFromJson,
+  seedFromSeeds,
+  seedPredefine,
+  seedParty,
+  seedEvent,
   seedPermissions,
   seedUnits,
   seedAdministrativeLevels,
@@ -18,26 +28,31 @@ import {
   seedEventActions,
   seedEventQuestions,
   seedAdministrativeAreas,
+  seedAgencies,
+  seedFocals,
   seedFeatures,
   seedEventCatalogues,
   seedNotificationTemplates,
+  seedEvents,
   seed,
 } from '../../src';
 import '@codetanzania/emis-stakeholder';
+import '@codetanzania/ewea-event';
 
 describe('seed', () => {
-  const { BASE_PATH, DATA_PATH } = process.env;
+  const { BASE_PATH, DATA_PATH, SEED_PATH } = process.env;
 
   // enableDebug();
 
   before(() => {
     process.env.BASE_PATH = __dirname;
     process.env.DATA_PATH = `${__dirname}'/../fixtures`;
+    process.env.SEED_PATH = `${__dirname}'/../fixtures`;
   });
 
-  it('should seed csv file', done => {
+  it('should read csv seed file', done => {
     const path = `${__dirname}/../fixtures/eventseverities.csv`;
-    seedCsv(path, [], (error, { finished, feature, next }) => {
+    readCsvFile(path, [], (error, { finished, feature, next }) => {
       if (error) {
         expect(error).to.not.exist;
         return done(error);
@@ -51,6 +66,107 @@ describe('seed', () => {
       expect(feature.description).to.exist;
       expect(next).to.exist.and.be.a('function');
       return next();
+    });
+  });
+
+  it('should seed from csv if file exists', done => {
+    const modelName = MODEL_NAME_PREDEFINE;
+    const namespace = PREDEFINE_NAMESPACE_EVENTSEVERITY;
+    const optns = { modelName, namespace };
+
+    seedFromCsv(optns, error => {
+      expect(error).to.not.exist;
+      done(error);
+    });
+  });
+
+  it('should seed from json if file exists', done => {
+    const modelName = MODEL_NAME_PREDEFINE;
+    const namespace = PREDEFINE_NAMESPACE_EVENTSEVERITY;
+    const optns = { modelName, namespace };
+
+    seedFromJson(optns, (error, results) => {
+      expect(error).to.not.exist;
+      expect(results).to.exist;
+      done(error);
+    });
+  });
+
+  it('should not seed from json if file exists', done => {
+    const modelName = MODEL_NAME_PREDEFINE;
+    const namespace = 'Unknown';
+    const optns = { modelName, namespace };
+
+    seedFromJson(optns, (error, results) => {
+      expect(error).to.not.exist;
+      expect(results).to.exist;
+      done(error);
+    });
+  });
+
+  it('should seed from seeds file if exists', done => {
+    const modelName = MODEL_NAME_PREDEFINE;
+    const optns = { modelName };
+
+    seedFromSeeds(optns, (error, results) => {
+      expect(error).to.not.exist;
+      expect(results).to.exist;
+      done(error);
+    });
+  });
+
+  it('should filter seed from seeds file if exists', done => {
+    const modelName = MODEL_NAME_PREDEFINE;
+    const filter = val => val.namespace === PREDEFINE_NAMESPACE_EVENTSEVERITY;
+    const optns = { modelName, filter };
+
+    seedFromSeeds(optns, (error, results) => {
+      expect(error).to.not.exist;
+      expect(results).to.exist;
+      done(error);
+    });
+  });
+
+  it('should not seed from seeds file if not exists', done => {
+    const modelName = 'Unknown';
+    const optns = { modelName };
+
+    seedFromSeeds(optns, (error, results) => {
+      expect(error).to.not.exist;
+      expect(results).to.not.exist;
+      done(error);
+    });
+  });
+
+  it.skip('should not seed from seeds file if throws is true', done => {
+    const modelName = MODEL_NAME_PREDEFINE;
+    const optns = { modelName, throws: true };
+
+    seedFromSeeds(optns, (error, results) => {
+      expect(error).to.exist;
+      expect(results).to.be.undefined;
+      done();
+    });
+  });
+
+  it('should seed predefines', done => {
+    seedPredefine({}, error => {
+      expect(error).to.not.exist;
+      done(error);
+    });
+  });
+
+  it('should seed parties', done => {
+    seedParty({}, error => {
+      expect(error).to.not.exist;
+      done(error);
+    });
+  });
+
+  it('should seed event', done => {
+    seedEvent({}, error => {
+      expect(error).to.not.exist;
+      done(error);
     });
   });
 
@@ -173,6 +289,20 @@ describe('seed', () => {
     });
   });
 
+  it('should seed agencies', done => {
+    seedAgencies(error => {
+      expect(error).to.not.exist;
+      done(error);
+    });
+  });
+
+  it('should seed focals', done => {
+    seedFocals(error => {
+      expect(error).to.not.exist;
+      done(error);
+    });
+  });
+
   it('should seed features', done => {
     seedFeatures(error => {
       expect(error).to.not.exist;
@@ -194,6 +324,13 @@ describe('seed', () => {
     });
   });
 
+  it('should seed events', done => {
+    seedEvents(error => {
+      expect(error).to.not.exist;
+      done(error);
+    });
+  });
+
   it('should seed data', done => {
     seed(error => {
       expect(error).to.not.exist;
@@ -204,5 +341,6 @@ describe('seed', () => {
   after(() => {
     process.env.BASE_PATH = BASE_PATH;
     process.env.DATA_PATH = DATA_PATH;
+    process.env.SEED_PATH = SEED_PATH;
   });
 });

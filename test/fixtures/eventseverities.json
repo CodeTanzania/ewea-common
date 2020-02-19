@@ -1,0 +1,22 @@
+[
+  {
+    "namespace": "EventSeverity",
+    "name": "Extreme"
+  },
+  {
+    "namespace": "EventSeverity",
+    "name": "Severe"
+  },
+  {
+    "namespace": "EventSeverity",
+    "name": "Moderate"
+  },
+  {
+    "namespace": "EventSeverity",
+    "name": "Minor"
+  },
+  {
+    "namespace": "EventSeverity",
+    "name": "Unknown"
+  }
+]

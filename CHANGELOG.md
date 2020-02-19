@@ -1,3 +1,48 @@
+#### 0.5.2 (2020-02-19)
+
+##### Chores
+
+* **deps:**
+  *  force latest version & audit fix ([288a4a7b](https://github.com/codetanzania/ewea-common/commit/288a4a7b53569979b94dae14660377a8f00a3e32))
+  *  force latest version & audit fix ([9d05554c](https://github.com/codetanzania/ewea-common/commit/9d05554c3db3df00f2f4e524b3ed10d62f7d814d))
+  *  force latest version & audit fix ([2ec74aa1](https://github.com/codetanzania/ewea-common/commit/2ec74aa134f90741b99e08350895a49d43d43393))
+  *  install ewea-event on dev ([4a8136b0](https://github.com/codetanzania/ewea-common/commit/4a8136b0d70b49ef44892c891efa2875b0382448))
+  *  force latest version & audit fix ([aa25b67a](https://github.com/codetanzania/ewea-common/commit/aa25b67aead1ceb41bc9784f4b229fc831e60947))
+* **fixtures:**  add events csv file ([07a508e1](https://github.com/codetanzania/ewea-common/commit/07a508e1f358ad581e87f493d0ce7ba665e31fae))
+
+##### New Features
+
+* **seed:**
+  *  implement agencies & focals seeding ([98737e28](https://github.com/codetanzania/ewea-common/commit/98737e281bd9ed13aaac9f0d6b9be472f2bcf47f))
+  *  support json data files ([1c080c82](https://github.com/codetanzania/ewea-common/commit/1c080c82922057d8642e6ff2813993aab4b12f23))
+  *  order predefine seeding order ([1ed5a3c6](https://github.com/codetanzania/ewea-common/commit/1ed5a3c681cd91ae8bb5de9429806375422497c7))
+  *  support filePath & extra properties on csv seed ([4ad7fc42](https://github.com/codetanzania/ewea-common/commit/4ad7fc4219b9f6193c7ba4aa2a6ef6a317e0aa8c))
+  *  add seedFromJson for any data model ([f7a6d12f](https://github.com/codetanzania/ewea-common/commit/f7a6d12f12e83b9d80ddd09d6762a680437f4081))
+  *  add seedFromCsv for any model form csv ([5c7f011d](https://github.com/codetanzania/ewea-common/commit/5c7f011df7fb766b928dcaeeddfdbd2900002e2e))
+* **seeds:**  support seeding of seeds ([290cda5e](https://github.com/codetanzania/ewea-common/commit/290cda5ec8b27f44f98cc40f2a54be72688880bf))
+
+##### Other Changes
+
+* CodeTanzania/ewea-common into feature/improve-test-coverage ([d02a5163](https://github.com/codetanzania/ewea-common/commit/d02a51638070deb687a6a18070b9bec026c8beb5))
+
+##### Refactors
+
+* **seed:**
+  *  improve event seed ([1589b47b](https://github.com/codetanzania/ewea-common/commit/1589b47b20b05bb8967bcd759adf377013f3a950))
+  *  implement event seed ([cf2b31b6](https://github.com/codetanzania/ewea-common/commit/cf2b31b67f58ccea2f39db4b3bde7893c0765f36))
+  *  improve predefine seed flow ([a951e229](https://github.com/codetanzania/ewea-common/commit/a951e22918b4200e623108b90c5b0a2492d194c7))
+  *  name permission seed tasks ([23a12dd9](https://github.com/codetanzania/ewea-common/commit/23a12dd9ab84efcfc4839ed9c0369cfef2179889))
+*  improve assertion on unit tests ([4d1b15d1](https://github.com/codetanzania/ewea-common/commit/4d1b15d149413045eaed44b8540c0cd59b1069b2))
+*  process csv function ([bd6eaf39](https://github.com/codetanzania/ewea-common/commit/bd6eaf3987781506cfc3d5bb042dfac78599e5a2))
+*  order seed helpers & test scripts ([0b3ef8c2](https://github.com/codetanzania/ewea-common/commit/0b3ef8c2263c0cb836a78cd222cad6c4776cb99d))
+
+##### Tests
+
+* **seed:**  improve test coverage ([89eec776](https://github.com/codetanzania/ewea-common/commit/89eec776b822075089d4b4ca7627fd582cb80134))
+* **fixtures:**  add events json file ([32b8fb74](https://github.com/codetanzania/ewea-common/commit/32b8fb744c8e80539e3883caa37fe7d6529cd3e9))
+*  add unit test for process csv function ([0c5037f5](https://github.com/codetanzania/ewea-common/commit/0c5037f5d5c115d393b9fcaee8cfbc76cdadbc19))
+* **env:**  ensure same locales ([10754730](https://github.com/codetanzania/ewea-common/commit/10754730b20c0c50271c9e4e41a5c1e088dc56c6))
+
 #### 0.5.1 (2020-01-20)
 
 ##### New Features
