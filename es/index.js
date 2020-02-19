@@ -1,15 +1,15 @@
-import { PREDEFINE_RELATIONS, MODEL_NAME_PREDEFINE } from '@codetanzania/ewea-internals';
+import { PREDEFINE_RELATIONS, MODEL_NAME_PREDEFINE, PARTY_RELATIONS, EVENT_RELATIONS, MODEL_NAME_PARTY, MODEL_NAME_EVENT } from '@codetanzania/ewea-internals';
 export * from '@codetanzania/ewea-internals';
 import { waterfall } from 'async';
-import { connect as connect$1, syncIndexes as syncIndexes$1 } from '@lykmapipo/mongoose-common';
+import { connect as connect$1, syncIndexes as syncIndexes$1, model } from '@lykmapipo/mongoose-common';
 import { createModels } from '@lykmapipo/file';
 import { join, resolve } from 'path';
-import { toLower, mapKeys, split, forEach, isEmpty } from 'lodash';
-import { pluralize, mergeObjects, join as join$1, sortedUniq, compact } from '@lykmapipo/common';
+import { toLower, mapKeys, split, map, forEach, isArray, first, omit, keys, isEmpty, endsWith, isFunction } from 'lodash';
+import { pluralize, mergeObjects, join as join$1, compact, sortedUniq } from '@lykmapipo/common';
 import { getString } from '@lykmapipo/env';
 import { debug, warn } from '@lykmapipo/logger';
-import { readCsv } from '@lykmapipo/geo-tools';
-import { transformToPredefine, listPermissions, Predefine } from '@lykmapipo/predefine';
+import { readCsv, readJson } from '@lykmapipo/geo-tools';
+import { transformToPredefine, listPermissions } from '@lykmapipo/predefine';
 import { Permission } from '@lykmapipo/permission';
 
 /**
@@ -205,10 +205,9 @@ const geoJsonPathFor = modelName => {
  *
  * jsonPathFor('events');
  * => /home/ewea/seeds/events.json
- * => /home/ewea/seeds/events.js
  */
 const jsonPathFor = modelName => {
-  const fileName = `${pluralize(toLower(modelName))}`;
+  const fileName = `${pluralize(toLower(modelName))}.json`;
   const jsonFilePath = dataPathFor(fileName);
   return jsonFilePath;
 };
@@ -249,6 +248,49 @@ const transformSeedKeys = seed => {
 };
 
 /**
+ * @function applyTransformsOn
+ * @name applyTransformsOn
+ * @description Transform and normalize seed
+ * @param {object|object[]} seed valid seed(s)
+ * @param {...Function} [transformers] transform to apply on seed
+ * @returns {object} transformed seed
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.3.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * applyTransformsOn({ Name: 'John Doe' });
+ * => { name: 'John Doe' }
+ */
+const applyTransformsOn = (seed, ...transformers) => {
+  // copy seed
+  let data = compact([].concat(seed));
+
+  data = map(data, value => {
+    // copy value
+    let transformed = mergeObjects(value);
+
+    // ensure transformers
+    const transforms = compact([transformSeedKeys].concat(transformers));
+
+    // apply transform sequentially
+    forEach(transforms, applyTransformOn => {
+      transformed = applyTransformOn(transformed);
+    });
+
+    // return transformed
+    return transformed;
+  });
+
+  // return
+  data = isArray(seed) ? data : first(data);
+  return data;
+};
+
+/**
  * @function transformToPredefineSeed
  * @name transformToPredefineSeed
  * @description Transform and normalize given seed to predefine seed
@@ -270,7 +312,7 @@ const transformToPredefineSeed = seed => {
   const data = mergeObjects(seed);
 
   // normalize to predefine
-  const predefine = transformToPredefine(data);
+  let predefine = transformToPredefine(data);
 
   // transform relations
   const populate = {};
@@ -278,61 +320,118 @@ const transformToPredefineSeed = seed => {
     const hasRelation = key && seed[key];
     if (hasRelation) {
       const options = mergeObjects(value);
-      const path = `relations.${key}`;
-      const model = options.ref || MODEL_NAME_PREDEFINE;
+      const path = `relations.${options.path || key}`;
+      const modelName = options.ref || MODEL_NAME_PREDEFINE;
       const array = options.array || false;
       const vals = sortedUniq(split(seed[key], ','));
       const match =
-        model === MODEL_NAME_PREDEFINE
+        modelName === MODEL_NAME_PREDEFINE
           ? { 'strings.name.en': { $in: vals } }
           : { name: { $in: vals } };
-      populate[path] = { model, match, array };
+      populate[path] = { model: modelName, match, array };
     }
   });
   predefine.populate = populate;
 
   // return
+  predefine = omit(predefine, ...[...keys(PREDEFINE_RELATIONS), 'relations']);
   return predefine;
 };
 
 /**
- * @function applyTransformsOn
- * @name applyTransformsOn
- * @description Transform and normalize seed
+ * @function transformToPartySeed
+ * @name transformToPartySeed
+ * @description Transform and normalize given seed to party seed
  * @param {object} seed valid seed
- * @param {...Function} [transformers] transform to apply on seed
- * @returns {object} transformed seed
+ * @returns {object} valid party seed
  * @author lally elias <lallyelias87@gmail.com>
  * @license MIT
- * @since 0.3.0
+ * @since 0.6.0
  * @version 0.1.0
  * @static
  * @public
  * @example
  *
- * applyTransformsOn({ Name: 'John Doe' });
+ * transformToPartySeed({ Name: 'John Doe' });
  * => { name: 'John Doe' }
  */
-const applyTransformsOn = (seed, ...transformers) => {
+const transformToPartySeed = seed => {
   // copy seed
   let data = mergeObjects(seed);
 
-  // ensure transformers
-  const transforms = compact([transformSeedKeys].concat(transformers));
-
-  // apply transform sequentially
-  forEach(transforms, applyTransformOn => {
-    data = applyTransformOn(data);
+  // transform relations
+  const populate = {};
+  forEach(PARTY_RELATIONS, (value, key) => {
+    const hasRelation = key && data[key];
+    if (hasRelation) {
+      const options = mergeObjects(value);
+      const path = `${options.path || key}`;
+      const modelName = options.ref || MODEL_NAME_PREDEFINE;
+      const array = options.array || false;
+      const vals = sortedUniq(split(data[key], ','));
+      const match =
+        modelName === MODEL_NAME_PREDEFINE
+          ? { 'strings.name.en': { $in: vals } }
+          : { name: { $in: vals } };
+      populate[path] = { model: modelName, match, array };
+    }
   });
+  data.populate = populate;
 
   // return
+  data = omit(data, ...[...keys(PARTY_RELATIONS), 'relations', 'namespace']);
   return data;
 };
 
 /**
- * @function seedCsv
- * @name seedCsv
- * @description Read csv seed and apply see transforms
+ * @function transformToEventSeed
+ * @name transformToEventSeed
+ * @description Transform and normalize given seed to event seed
+ * @param {object} seed valid seed
+ * @returns {object} valid party seed
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.6.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * transformToEventSeed({ Name: 'John Doe' });
+ * => { name: 'John Doe' }
+ */
+const transformToEventSeed = seed => {
+  // copy seed
+  let data = mergeObjects(seed);
+
+  // transform relations
+  const populate = {};
+  forEach(EVENT_RELATIONS, (value, key) => {
+    const hasRelation = key && data[key];
+    if (hasRelation) {
+      const options = mergeObjects(value);
+      const path = `${options.path || key}`;
+      const modelName = options.ref || MODEL_NAME_PREDEFINE;
+      const array = options.array || false;
+      const vals = sortedUniq(split(data[key], ','));
+      const match =
+        modelName === MODEL_NAME_PREDEFINE
+          ? { 'strings.name.en': { $in: vals } }
+          : { name: { $in: vals } };
+      populate[path] = { model: modelName, match, array };
+    }
+  });
+  data.populate = populate;
+
+  // return
+  data = omit(data, ...[...keys(EVENT_RELATIONS), 'relations', 'namespace']);
+  return data;
+};
+
+/**
+ * @function readCsvFile
+ * @name readCsvFile
+ * @description Read csv seed and apply seed transforms
  * @param {string} path valid csv path
  * @param {Function[]} [transformers] transforms to apply on seed
  * @param {Function} done callback to invoke on next seed
@@ -345,9 +444,9 @@ const applyTransformsOn = (seed, ...transformers) => {
  * @public
  * @example
  *
- * seedCsv(path, transforms, (error, { finished, feature, next }) => { ... });
+ * readCsvFile(path, transforms, (error, { finished, feature, next }) => { ... });
  */
-const seedCsv = (path, transformers, done) => {
+const readCsvFile = (path, transformers, done) => {
   return readCsv({ path }, (error, { finished, feature, next }) => {
     let data = feature;
     if (!isEmpty(feature) && next && !finished) {
@@ -358,10 +457,229 @@ const seedCsv = (path, transformers, done) => {
 };
 
 /**
+ * @function processCsvSeed
+ * @name processCsvSeed
+ * @description process each csv row (data)
+ * @param {object} [options] valid options
+ * @param {string} [options.Model=undefined] valid model name
+ * @param {object} [options.properties={}] valid extra properties to merge on each seed
+ * @param {string} [options.namespace=undefined] valid predefine namespace
+ * @param {boolean} [options.throws=false] whether to throw error
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Function} call back function
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.3.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * const options = { Model = undefined, properties = {}, namespace = undefined, throws = false }
+ * processCsvSeed((options,done) => (error,{finished,feature,next}) => { ... });
+ */
+const processCsvSeed = (
+  { Model = undefined, properties = {}, namespace = undefined, throws = false },
+  done
+) => (error, { finished, feature, next }) => {
+  // handle file read errors
+  if (error) {
+    return throws ? done(error) : done();
+  }
+  // handle read finish
+  if (finished) {
+    return done();
+  }
+  // process datas
+  if (feature && next) {
+    // seed data & next chunk from csv read stream
+    const data = mergeObjects(properties, { namespace }, feature);
+    return Model.seed(data, next);
+  }
+  // request next chunk from csv read stream
+  return next && next();
+};
+
+/**
+ * @function seedFromCsv
+ * @name seedFromCsv
+ * @description Seed given model from csv file
+ * @param {object} optns valid seed options
+ * @param {string} [optns.modelName] valid model name
+ * @param {string} [optns.namespace] valid predefine namespace
+ * @param {boolean} [optns.throws=false] whether to throw error
+ * @param {string} [optns.filePath=undefined] valid full file path for csv seed
+ * @param {object} [optns.properties={}] extra properties to merge on each seed
+ * @param {Function[]} [optns.transformers] valid predefine transformers
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.6.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * const opts = { modelName: ..., transformers: [ ... ] };
+ * seedFromCsv(optns, error => { ... });
+ */
+const seedFromCsv = (optns, done) => {
+  // normalize options
+  const {
+    filePath = undefined,
+    properties = {},
+    modelName = undefined,
+    namespace = undefined,
+    throws = false,
+    transformers = [],
+  } = mergeObjects(optns);
+
+  // do: seed data to model if exists
+  const Model = model(modelName);
+  if (Model) {
+    // prepare seed options
+    const isPredefine =
+      modelName === MODEL_NAME_PREDEFINE && !isEmpty(namespace);
+    const csvFilePath = filePath || csvPathFor(namespace || modelName);
+    const appliedTransformers = isPredefine
+      ? [transformToPredefineSeed, ...transformers]
+      : [...transformers];
+
+    // seed from csv
+    return readCsvFile(
+      csvFilePath,
+      appliedTransformers,
+      processCsvSeed({ Model, properties, throws }, done)
+    );
+  }
+
+  // backoff: no data model found
+  return done();
+};
+
+/**
+ * @function seedFromJson
+ * @name seedFromJson
+ * @description Seed given model from json file
+ * @param {object} optns valid seed options
+ * @param {string} [optns.modelName] valid model name
+ * @param {string} [optns.namespace] valid predefine namespace
+ * @param {boolean} [optns.throws=false] whether to throw error
+ * @param {string} [optns.filePath=undefined] valid full file path for json seed
+ * @param {object} [optns.properties={}] extra properties to merge on each seed
+ * @param {Function[]} [optns.transformers] valid predefine transformers
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.6.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * const opts = { modelName: ..., transformers: [ ... ] };
+ * seedFromJson(optns, error => { ... });
+ */
+const seedFromJson = (optns, done) => {
+  // normalize options
+  const {
+    filePath = undefined,
+    properties = {},
+    modelName = undefined,
+    namespace = undefined,
+    throws = false,
+    transformers = [],
+  } = mergeObjects(optns);
+
+  // do: seed data to model if exists
+  const Model = model(modelName);
+  if (Model) {
+    // prepare seed options
+    const isPredefine =
+      modelName === MODEL_NAME_PREDEFINE && !isEmpty(namespace);
+    const jsonFilePath = filePath || jsonPathFor(namespace || modelName);
+    const appliedTransformers = isPredefine
+      ? [transformToPredefineSeed, ...transformers]
+      : [...transformers];
+
+    // prepare json seed stages
+    const path = endsWith(jsonFilePath, '.json')
+      ? jsonFilePath
+      : `${jsonFilePath}.json`;
+    return readJson({ path, throws }, (error, data) => {
+      if (!isEmpty(data)) {
+        const transform = seed => {
+          const merged = mergeObjects(properties, { namespace }, seed);
+          return applyTransformsOn(merged, ...appliedTransformers);
+        };
+        return Model.seed({ data, transform }, done);
+      }
+      return done(error, data);
+    });
+  }
+  // backoff: no data model found
+  return done();
+};
+
+/**
+ * @function seedFromSeeds
+ * @name seedFromSeeds
+ * @description Seed given model from seeds file
+ * @param {object} optns valid seed options
+ * @param {string} [optns.modelName] valid model name
+ * @param {boolean} [optns.throws=false] whether to throw error
+ * @param {Function} [optns.filter=undefined] seed data filter
+ * @param {Function} [optns.transform=undefined] seed data transformer
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.6.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * const opts = { modelName: ... };
+ * seedFromSeeds(optns, error => { ... });
+ */
+const seedFromSeeds = (optns, done) => {
+  // normalize options
+  const {
+    modelName = undefined,
+    throws = false,
+    filter,
+    transform,
+  } = mergeObjects(optns);
+
+  // do: seed data to model if seeds exists
+  const Model = model(modelName);
+  const canSeed = Model && isFunction(Model.seed);
+  if (canSeed) {
+    // filter, transform & seed
+    return Model.seed({ filter, transform }, (error, results) => {
+      // reply with errors
+      if (throws) {
+        return done(error, results);
+      }
+      // ignore errors
+      return done(null, results);
+    });
+  }
+  // backoff: no data model found
+  return done();
+};
+
+/**
  * @function seedPredefine
  * @name seedPredefine
  * @description Seed given predefine namespace
- * @param {string} namespace valid predefine namespace
+ * @param {object} optns valid seed options
+ * @param {string} optns.namespace valid predefine namespace
+ * @param {boolean} [optns.throws=false] whether to ignore error
+ * @param {Function[]} optns.transformers valid predefine transformers
  * @param {Function} done callback to invoke on success or error
  * @returns {Error|undefined} error if fails else undefined
  * @author lally elias <lallyelias87@gmail.com>
@@ -372,39 +690,128 @@ const seedCsv = (path, transformers, done) => {
  * @public
  * @example
  *
- * seedPredefine(namespace, error => { ... });
+ * seedPredefine(optns, error => { ... });
  */
-const seedPredefine = (namespace, done) => {
-  const csvFilePath = csvPathFor(namespace);
-  const transformers = [transformToPredefineSeed];
-  const stages = [
-    then => {
-      seedCsv(
-        csvFilePath,
-        transformers,
-        (error, { finished, feature, next }) => {
-          // handle read errors
-          if (error) {
-            return then(error);
-          }
-          // handle read finish
-          if (finished) {
-            return then();
-          }
-          // process features
-          if (feature && next) {
-            // seed feature
-            const data = mergeObjects(feature, { namespace });
-            return Predefine.seed(data, (err, seeded) => {
-              return next(err, seeded);
-            });
-          }
-          // request next chunk from stream
-          return next && next();
-        }
-      );
-    },
-  ];
+const seedPredefine = (optns, done) => {
+  // normalize options
+  const {
+    modelName = MODEL_NAME_PREDEFINE,
+    namespace = undefined,
+    throws = false,
+    transformers = [],
+  } = mergeObjects(optns);
+
+  // prepare namespace filter
+  const filter = seed => seed.namespace === namespace;
+
+  // prepare options
+  const options = { modelName, namespace, throws, transformers, filter };
+
+  // prepare predefine seed stages
+  const fromSeeds = next => seedFromSeeds(options, error => next(error));
+  const fromJson = next => seedFromJson(options, error => next(error));
+  const fromCsv = next => seedFromCsv(options, error => next(error));
+  const stages = [fromSeeds, fromJson, fromCsv];
+
+  // do seed predefine
+  return waterfall(stages, done);
+};
+
+/**
+ * @function seedParty
+ * @name seedParty
+ * @description Seed given parties
+ * @param {object} optns valid seed options
+ * @param {string} optns.type valid party type
+ * @param {boolean} [optns.throws=false] whether to ignore error
+ * @param {Function[]} optns.transformers valid party transformers
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.3.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedParty(optns, error => { ... });
+ */
+const seedParty = (optns, done) => {
+  // normalize options
+  const {
+    modelName = MODEL_NAME_PARTY,
+    type = 'Focal',
+    throws = false,
+    transformers = [],
+  } = mergeObjects(optns);
+
+  // prepare type filter
+  const filter = seed => seed.type === type;
+
+  // prepare options
+  const options = {
+    modelName,
+    namespace: type,
+    properties: { type },
+    type,
+    throws,
+    transformers: [transformToPartySeed, ...transformers],
+    filter,
+  };
+
+  // prepare party seed stages
+  const fromSeeds = next => seedFromSeeds(options, error => next(error));
+  const fromJson = next => seedFromJson(options, error => next(error));
+  const fromCsv = next => seedFromCsv(options, error => next(error));
+  const stages = [fromSeeds, fromJson, fromCsv];
+
+  // do seed party
+  return waterfall(stages, done);
+};
+
+/**
+ * @function seedEvent
+ * @name seedEvent
+ * @description Seed given events
+ * @param {object} optns valid seed options
+ * @param {boolean} [optns.throws=false] whether to ignore error
+ * @param {Function[]} optns.transformers valid event transformers
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.3.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedEvent(optns, error => { ... });
+ */
+const seedEvent = (optns, done) => {
+  // normalize options
+  const {
+    modelName = MODEL_NAME_EVENT,
+    throws = false,
+    transformers = [],
+  } = mergeObjects(optns);
+
+  // prepare options
+  const options = {
+    modelName,
+    properties: {},
+    throws,
+    transformers: [transformToEventSeed, ...transformers],
+  };
+
+  // prepare event seed stages
+  const fromSeeds = next => seedFromSeeds(options, error => next(error));
+  const fromJson = next => seedFromJson(options, error => next(error));
+  const fromCsv = next => seedFromCsv(options, error => next(error));
+  const stages = [fromSeeds, fromJson, fromCsv];
+
+  // do seed event
   return waterfall(stages, done);
 };
 
@@ -426,16 +833,22 @@ const seedPredefine = (namespace, done) => {
  */
 const seedPermissions = done => {
   debug('Start Seeding Permissions Data');
-  return waterfall(
-    [
-      next => Permission.seed(error => next(error)),
-      next => Permission.seed(listPermissions(), error => next(error)),
-    ],
-    error => {
-      debug('Finish Seeding Permissions Data');
-      return done(error);
-    }
-  );
+
+  // prepare permissions seed stages
+  const seedResourcePermissions = next => {
+    return Permission.seed(error => next(error));
+  };
+  const seedPredefineNamespacePermissions = next => {
+    const namespacePermissions = listPermissions();
+    return Permission.seed(namespacePermissions, error => next(error));
+  };
+  const stages = [seedResourcePermissions, seedPredefineNamespacePermissions];
+
+  // do seed permissions
+  return waterfall(stages, error => {
+    debug('Finish Seeding Permissions Data');
+    return done(error);
+  });
 };
 
 /**
@@ -456,7 +869,8 @@ const seedPermissions = done => {
  */
 const seedUnits = done => {
   debug('Start Seeding Units Data');
-  return seedPredefine('Unit', error => {
+  const namespace = 'Unit';
+  return seedPredefine({ namespace }, error => {
     debug('Finish Seeding Units Data');
     return done(error);
   });
@@ -480,7 +894,8 @@ const seedUnits = done => {
  */
 const seedAdministrativeLevels = done => {
   debug('Start Seeding Administrative Levels Data');
-  return seedPredefine('AdministrativeLevel', error => {
+  const namespace = 'AdministrativeLevel';
+  return seedPredefine({ namespace }, error => {
     debug('Finish Seeding Administrative Levels Data');
     return done(error);
   });
@@ -504,7 +919,8 @@ const seedAdministrativeLevels = done => {
  */
 const seedFeatureTypes = done => {
   debug('Start Seeding Feature Types Data');
-  return seedPredefine('FeatureType', error => {
+  const namespace = 'FeatureType';
+  return seedPredefine({ namespace }, error => {
     debug('Finish Seeding Feature Types Data');
     return done(error);
   });
@@ -528,7 +944,8 @@ const seedFeatureTypes = done => {
  */
 const seedEventIndicators = done => {
   debug('Start Seeding Event Indicators Data');
-  return seedPredefine('EventIndicator', error => {
+  const namespace = 'EventIndicator';
+  return seedPredefine({ namespace }, error => {
     debug('Finish Seeding Event Indicators Data');
     return done(error);
   });
@@ -552,7 +969,8 @@ const seedEventIndicators = done => {
  */
 const seedEventSeverities = done => {
   debug('Start Seeding Event Severities Data');
-  return seedPredefine('EventSeverity', error => {
+  const namespace = 'EventSeverity';
+  return seedPredefine({ namespace }, error => {
     debug('Finish Seeding Event Severities Data');
     return done(error);
   });
@@ -576,7 +994,8 @@ const seedEventSeverities = done => {
  */
 const seedEventCertainties = done => {
   debug('Start Seeding Event Certainties Data');
-  return seedPredefine('EventCertainty', error => {
+  const namespace = 'EventCertainty';
+  return seedPredefine({ namespace }, error => {
     debug('Finish Seeding Event Certainties Data');
     return done(error);
   });
@@ -600,7 +1019,8 @@ const seedEventCertainties = done => {
  */
 const seedEventStatuses = done => {
   debug('Start Seeding Event Statuses Data');
-  return seedPredefine('EventStatus', error => {
+  const namespace = 'EventStatus';
+  return seedPredefine({ namespace }, error => {
     debug('Finish Seeding Event Statuses Data');
     return done(error);
   });
@@ -624,7 +1044,8 @@ const seedEventStatuses = done => {
  */
 const seedEventUrgencies = done => {
   debug('Start Seeding Event Urgencies Data');
-  return seedPredefine('EventUrgency', error => {
+  const namespace = 'EventUrgency';
+  return seedPredefine({ namespace }, error => {
     debug('Finish Seeding Event Urgencies Data');
     return done(error);
   });
@@ -648,7 +1069,8 @@ const seedEventUrgencies = done => {
  */
 const seedPartyGroups = done => {
   debug('Start Seeding Party Groups Data');
-  return seedPredefine('PartyGroup', error => {
+  const namespace = 'PartyGroup';
+  return seedPredefine({ namespace }, error => {
     debug('Finish Seeding Party Groups Data');
     return done(error);
   });
@@ -672,7 +1094,8 @@ const seedPartyGroups = done => {
  */
 const seedPartyRoles = done => {
   debug('Start Seeding Party Roles Data');
-  return seedPredefine('PartyRole', error => {
+  const namespace = 'PartyRole';
+  return seedPredefine({ namespace }, error => {
     debug('Finish Seeding Party Roles Data');
     return done(error);
   });
@@ -696,7 +1119,8 @@ const seedPartyRoles = done => {
  */
 const seedEventGroups = done => {
   debug('Start Seeding Event Groups Data');
-  return seedPredefine('EventGroup', error => {
+  const namespace = 'EventGroup';
+  return seedPredefine({ namespace }, error => {
     debug('Finish Seeding Event Groups Data');
     return done(error);
   });
@@ -720,7 +1144,8 @@ const seedEventGroups = done => {
  */
 const seedEventTypes = done => {
   debug('Start Seeding Event Types Data');
-  return seedPredefine('EventType', error => {
+  const namespace = 'EventType';
+  return seedPredefine({ namespace }, error => {
     debug('Finish Seeding Event Types Data');
     return done(error);
   });
@@ -744,7 +1169,8 @@ const seedEventTypes = done => {
  */
 const seedEventFunctions = done => {
   debug('Start Seeding Event Functions Data');
-  return seedPredefine('EventFunction', error => {
+  const namespace = 'EventFunction';
+  return seedPredefine({ namespace }, error => {
     debug('Finish Seeding Event Functions Data');
     return done(error);
   });
@@ -768,7 +1194,8 @@ const seedEventFunctions = done => {
  */
 const seedEventActions = done => {
   debug('Start Seeding Event Actions Data');
-  return seedPredefine('EventAction', error => {
+  const namespace = 'EventAction';
+  return seedPredefine({ namespace }, error => {
     debug('Finish Seeding Event Actions Data');
     return done(error);
   });
@@ -792,7 +1219,8 @@ const seedEventActions = done => {
  */
 const seedEventQuestions = done => {
   debug('Start Seeding Event Questions Data');
-  return seedPredefine('EventQuestion', error => {
+  const namespace = 'EventQuestion';
+  return seedPredefine({ namespace }, error => {
     debug('Finish Seeding Event Questions Data');
     return done(error);
   });
@@ -816,8 +1244,59 @@ const seedEventQuestions = done => {
  */
 const seedAdministrativeAreas = done => {
   debug('Start Seeding Administrative Areas Data');
-  return seedPredefine('AdministrativeArea', error => {
+  const namespace = 'AdministrativeArea';
+  return seedPredefine({ namespace }, error => {
     debug('Finish Seeding Administrative Areas Data');
+    return done(error);
+  });
+};
+
+/**
+ * @function seedAgencies
+ * @name seedAgencies
+ * @description Seed agencies
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.4.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedAgencies(error => { ... });
+ */
+const seedAgencies = done => {
+  debug('Start Seeding Agencies Data');
+  const type = 'Agency';
+  return seedParty({ type }, error => {
+    debug('Finish Seeding Agencies Data');
+    return done(error);
+  });
+};
+
+/**
+ * @function seedFocals
+ * @name seedFocals
+ * @description Seed agencies
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.4.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedFocals(error => { ... });
+ */
+const seedFocals = done => {
+  debug('Start Seeding Focals Data');
+  const type = 'Focal';
+  return seedParty({ type }, error => {
+    debug('Finish Seeding Focals Data');
     return done(error);
   });
 };
@@ -840,7 +1319,8 @@ const seedAdministrativeAreas = done => {
  */
 const seedFeatures = done => {
   debug('Start Seeding Features Data');
-  return seedPredefine('Feature', error => {
+  const namespace = 'Feature';
+  return seedPredefine({ namespace }, error => {
     debug('Finish Seeding Features Data');
     return done(error);
   });
@@ -864,7 +1344,8 @@ const seedFeatures = done => {
  */
 const seedEventCatalogues = done => {
   debug('Start Seeding Event Catalogues Data');
-  return seedPredefine('EventCatalogue', error => {
+  const namespace = 'EventCatalogue';
+  return seedPredefine({ namespace }, error => {
     debug('Finish Seeding Event Catalogues Data');
     return done(error);
   });
@@ -888,8 +1369,33 @@ const seedEventCatalogues = done => {
  */
 const seedNotificationTemplates = done => {
   debug('Start Seeding Notification Templates Data');
-  return seedPredefine('NotificationTemplate', error => {
+  const namespace = 'NotificationTemplate';
+  return seedPredefine({ namespace }, error => {
     debug('Finish Seeding Notification Templates Data');
+    return done(error);
+  });
+};
+
+/**
+ * @function seedEvents
+ * @name seedEvents
+ * @description seed events
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.4.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedEvents(error => { ... });
+ */
+const seedEvents = done => {
+  debug('Start Seeding Events Data');
+  return seedEvent({}, error => {
+    debug('Finish Seeding Events Data');
     return done(error);
   });
 };
@@ -930,11 +1436,12 @@ const seed = done => {
     seedEventActions,
     seedEventQuestions,
     seedAdministrativeAreas,
-    // seedParties(seedAgencies, seedFocals),
+    seedAgencies,
+    seedFocals,
     seedFeatures,
     seedEventCatalogues,
     seedNotificationTemplates,
-    // seedEvents,
+    seedEvents,
     // seedEventChangeLogs,
   ];
 
@@ -950,4 +1457,4 @@ const seed = done => {
   });
 };
 
-export { applyTransformsOn, connect, csvPathFor, dataPathFor, geoJsonPathFor, jsonPathFor, pathFor, seed, seedAdministrativeAreas, seedAdministrativeLevels, seedCsv, seedEventActions, seedEventCatalogues, seedEventCertainties, seedEventFunctions, seedEventGroups, seedEventIndicators, seedEventQuestions, seedEventSeverities, seedEventStatuses, seedEventTypes, seedEventUrgencies, seedFeatureTypes, seedFeatures, seedNotificationTemplates, seedPartyGroups, seedPartyRoles, seedPathFor, seedPermissions, seedPredefine, seedUnits, shapeFilePathFor, syncIndexes, transformSeedKeys, transformToPredefineSeed };
+export { applyTransformsOn, connect, csvPathFor, dataPathFor, geoJsonPathFor, jsonPathFor, pathFor, processCsvSeed, readCsvFile, seed, seedAdministrativeAreas, seedAdministrativeLevels, seedAgencies, seedEvent, seedEventActions, seedEventCatalogues, seedEventCertainties, seedEventFunctions, seedEventGroups, seedEventIndicators, seedEventQuestions, seedEventSeverities, seedEventStatuses, seedEventTypes, seedEventUrgencies, seedEvents, seedFeatureTypes, seedFeatures, seedFocals, seedFromCsv, seedFromJson, seedFromSeeds, seedNotificationTemplates, seedParty, seedPartyGroups, seedPartyRoles, seedPathFor, seedPermissions, seedPredefine, seedUnits, shapeFilePathFor, syncIndexes, transformSeedKeys, transformToEventSeed, transformToPartySeed, transformToPredefineSeed };
