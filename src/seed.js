@@ -937,6 +937,32 @@ export const seedEventIndicators = done => {
 };
 
 /**
+ * @function seedEventLevels
+ * @name seedEventLevels
+ * @description Seed event levels
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @author ricardo aggrey <richardaggrey7@gmail.com>
+ * @license MIT
+ * @since 0.3.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedEventLevels(error => { ... });
+ */
+export const seedEventLevels = done => {
+  debug('Start Seeding Event Levels Data');
+  const namespace = 'EventLevel';
+  return seedPredefine({ namespace }, error => {
+    debug('Finish Seeding Event Levels Data');
+    return done(error);
+  });
+};
+
+/**
  * @function seedEventSeverities
  * @name seedEventSeverities
  * @description Seed event severities
@@ -1409,6 +1435,7 @@ export const seed = done => {
     seedAdministrativeLevels,
     seedFeatureTypes,
     seedEventIndicators,
+    seedEventLevels,
     seedEventSeverities,
     seedEventCertainties,
     seedEventStatuses,
