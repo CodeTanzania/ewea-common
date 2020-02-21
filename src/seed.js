@@ -937,6 +937,32 @@ export const seedEventIndicators = done => {
 };
 
 /**
+ * @function seedEventTopics
+ * @name seedEventTopics
+ * @description Seed event topics
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @author ricardo aggrey <richardaggrey7@gmail.com>
+ * @license MIT
+ * @since 0.3.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedEventTopics(error => { ... });
+ */
+export const seedEventTopics = done => {
+  debug('Start Seeding Event Topics Data');
+  const namespace = 'EventTopic';
+  return seedPredefine({ namespace }, error => {
+    debug('Finish Seeding Event Topics Data');
+    return done(error);
+  });
+};
+
+/**
  * @function seedEventLevels
  * @name seedEventLevels
  * @description Seed event levels
@@ -1435,6 +1461,7 @@ export const seed = done => {
     seedAdministrativeLevels,
     seedFeatureTypes,
     seedEventIndicators,
+    seedEventTopics,
     seedEventLevels,
     seedEventSeverities,
     seedEventCertainties,

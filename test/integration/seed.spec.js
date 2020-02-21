@@ -16,6 +16,7 @@ import {
   seedAdministrativeLevels,
   seedFeatureTypes,
   seedEventIndicators,
+  seedEventTopics,
   seedEventLevels,
   seedEventSeverities,
   seedEventCertainties,
@@ -201,6 +202,13 @@ describe('seed', () => {
 
   it('should seed event indicators', done => {
     seedEventIndicators(error => {
+      expect(error).to.not.exist;
+      done(error);
+    });
+  });
+
+  it('should seed event topics', done => {
+    seedEventTopics(error => {
       expect(error).to.not.exist;
       done(error);
     });
