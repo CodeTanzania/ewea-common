@@ -16,6 +16,8 @@ import {
   seedAdministrativeLevels,
   seedFeatureTypes,
   seedEventIndicators,
+  seedEventTopics,
+  seedEventLevels,
   seedEventSeverities,
   seedEventCertainties,
   seedEventStatuses,
@@ -31,7 +33,7 @@ import {
   seedAgencies,
   seedFocals,
   seedFeatures,
-  seedEventCatalogues,
+  seedEventActionCatalogues,
   seedNotificationTemplates,
   seedEvents,
   seed,
@@ -150,7 +152,8 @@ describe('seed', () => {
   });
 
   it('should seed predefines', done => {
-    seedPredefine({}, error => {
+    const optns = {};
+    seedPredefine(optns, error => {
       expect(error).to.not.exist;
       done(error);
     });
@@ -200,6 +203,20 @@ describe('seed', () => {
 
   it('should seed event indicators', done => {
     seedEventIndicators(error => {
+      expect(error).to.not.exist;
+      done(error);
+    });
+  });
+
+  it('should seed event topics', done => {
+    seedEventTopics(error => {
+      expect(error).to.not.exist;
+      done(error);
+    });
+  });
+
+  it('should seed event levels', done => {
+    seedEventLevels(error => {
       expect(error).to.not.exist;
       done(error);
     });
@@ -311,7 +328,7 @@ describe('seed', () => {
   });
 
   it('should seed event catalogues', done => {
-    seedEventCatalogues(error => {
+    seedEventActionCatalogues(error => {
       expect(error).to.not.exist;
       done(error);
     });
