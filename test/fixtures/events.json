@@ -2,6 +2,7 @@
   {
     "group": "Hydrological",
     "type": "Floods",
+    "level": "White",
     "certainity": "Observed",
     "severity": "Extreme",
     "status": "Exercise",
