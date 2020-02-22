@@ -461,7 +461,7 @@ export const readCsvFile = (path, transformers, done) => {
  * @example
  *
  * const options = { Model = undefined, properties = {}, namespace = undefined, throws = false }
- * processCsvSeed((options,done) => (error,{finished,feature,next}) => { ... });
+ * processCsvSeed((options, done) => (error, {finished, feature, next}) => { ... });
  */
 export const processCsvSeed = (
   { Model = undefined, properties = {}, namespace = undefined, throws = false },
@@ -516,7 +516,7 @@ export const seedFromCsv = (optns, done) => {
     properties = {},
     modelName = undefined,
     namespace = undefined,
-    throws = false,
+    throws = true,
     transformers = [],
   } = mergeObjects(optns);
 
@@ -535,7 +535,7 @@ export const seedFromCsv = (optns, done) => {
     return readCsvFile(
       csvFilePath,
       appliedTransformers,
-      processCsvSeed({ Model, properties, throws }, done)
+      processCsvSeed({ Model, properties, namespace, throws }, done)
     );
   }
 
@@ -1330,6 +1330,7 @@ export const seedAgencies = done => {
  * seedFocals(error => { ... });
  */
 export const seedFocals = done => {
+  // TODO: merge administrator
   debug('Start Seeding Focals Data');
   const type = 'Focal';
   return seedParty({ type }, error => {
@@ -1364,9 +1365,9 @@ export const seedFeatures = done => {
 };
 
 /**
- * @function seedEventCatalogues
- * @name seedEventCatalogues
- * @description Seed event catalogues
+ * @function seedEventActionCatalogues
+ * @name seedEventActionCatalogues
+ * @description Seed event action catalogues
  * @param {Function} done callback to invoke on success or error
  * @returns {Error|undefined} error if fails else undefined
  * @author lally elias <lallyelias87@gmail.com>
@@ -1377,13 +1378,13 @@ export const seedFeatures = done => {
  * @public
  * @example
  *
- * seedEventCatalogues(error => { ... });
+ * seedEventActionCatalogues(error => { ... });
  */
-export const seedEventCatalogues = done => {
-  debug('Start Seeding Event Catalogues Data');
-  const namespace = 'EventCatalogue';
+export const seedEventActionCatalogues = done => {
+  debug('Start Seeding Event Action Catalogues Data');
+  const namespace = 'EventActionCatalogue';
   return seedPredefine({ namespace }, error => {
-    debug('Finish Seeding Event Catalogues Data');
+    debug('Finish Seeding Event Action Catalogues Data');
     return done(error);
   });
 };
@@ -1478,7 +1479,7 @@ export const seed = done => {
     seedAgencies,
     seedFocals,
     seedFeatures,
-    seedEventCatalogues,
+    seedEventActionCatalogues,
     seedNotificationTemplates,
     seedEvents,
     // seedEventChangeLogs,

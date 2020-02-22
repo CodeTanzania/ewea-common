@@ -1,3 +1,27 @@
+#### 0.5.4 (2020-02-22)
+
+##### Chores
+
+* **deps:**
+  *  force latest version & audit fix ([9c36bad8](https://github.com/codetanzania/ewea-common/commit/9c36bad86c890a653c820866a4602c53530e6919))
+  *  force latest version & audit fix ([23cdd98a](https://github.com/codetanzania/ewea-common/commit/23cdd98a4a0f9bc9b8c2dff1e02ab2dddf70b32b))
+
+##### New Features
+
+* **seed:**  add event action catalogue seeder ([e2117dd9](https://github.com/codetanzania/ewea-common/commit/e2117dd92249de4002cff83ff8fe34b94970a353))
+
+##### Refactors
+
+* **seed:**
+  *  add question topic ([fb2501a7](https://github.com/codetanzania/ewea-common/commit/fb2501a74a3cc78a76c48b7ce22fedb764e9b1c7))
+  *  add level to event ([0e54b842](https://github.com/codetanzania/ewea-common/commit/0e54b842e4fc48e6f6da85d0ed5fde0235dac26e))
+  *  implement seed action for eventlevels ([e0219ec1](https://github.com/codetanzania/ewea-common/commit/e0219ec1ef218e8eecf016f52090b68a79636813))
+* **eventtopics:**  implement seed for eventtopics ([429c74ec](https://github.com/codetanzania/ewea-common/commit/429c74ec0fb6be8ff307e05500e48abd9911bc3b))
+
+##### Tests
+
+* **fixtures:**  retain only one seed on event levels ([9e605ded](https://github.com/codetanzania/ewea-common/commit/9e605ded636b43ff55840d9cd508153eba4dc8d5))
+
 #### 0.5.3 (2020-02-19)
 
 ##### Chores

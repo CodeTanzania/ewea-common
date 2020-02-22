@@ -33,7 +33,7 @@ import {
   seedAgencies,
   seedFocals,
   seedFeatures,
-  seedEventCatalogues,
+  seedEventActionCatalogues,
   seedNotificationTemplates,
   seedEvents,
   seed,
@@ -152,7 +152,8 @@ describe('seed', () => {
   });
 
   it('should seed predefines', done => {
-    seedPredefine({}, error => {
+    const optns = {};
+    seedPredefine(optns, error => {
       expect(error).to.not.exist;
       done(error);
     });
@@ -327,7 +328,7 @@ describe('seed', () => {
   });
 
   it('should seed event catalogues', done => {
-    seedEventCatalogues(error => {
+    seedEventActionCatalogues(error => {
       expect(error).to.not.exist;
       done(error);
     });

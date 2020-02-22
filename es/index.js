@@ -476,7 +476,7 @@ const readCsvFile = (path, transformers, done) => {
  * @example
  *
  * const options = { Model = undefined, properties = {}, namespace = undefined, throws = false }
- * processCsvSeed((options,done) => (error,{finished,feature,next}) => { ... });
+ * processCsvSeed((options, done) => (error, {finished, feature, next}) => { ... });
  */
 const processCsvSeed = (
   { Model = undefined, properties = {}, namespace = undefined, throws = false },
@@ -531,7 +531,7 @@ const seedFromCsv = (optns, done) => {
     properties = {},
     modelName = undefined,
     namespace = undefined,
-    throws = false,
+    throws = true,
     transformers = [],
   } = mergeObjects(optns);
 
@@ -550,7 +550,7 @@ const seedFromCsv = (optns, done) => {
     return readCsvFile(
       csvFilePath,
       appliedTransformers,
-      processCsvSeed({ Model, properties, throws }, done)
+      processCsvSeed({ Model, properties, namespace, throws }, done)
     );
   }
 
@@ -952,6 +952,58 @@ const seedEventIndicators = done => {
 };
 
 /**
+ * @function seedEventTopics
+ * @name seedEventTopics
+ * @description Seed event topics
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @author ricardo aggrey <richardaggrey7@gmail.com>
+ * @license MIT
+ * @since 0.3.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedEventTopics(error => { ... });
+ */
+const seedEventTopics = done => {
+  debug('Start Seeding Event Topics Data');
+  const namespace = 'EventTopic';
+  return seedPredefine({ namespace }, error => {
+    debug('Finish Seeding Event Topics Data');
+    return done(error);
+  });
+};
+
+/**
+ * @function seedEventLevels
+ * @name seedEventLevels
+ * @description Seed event levels
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @author ricardo aggrey <richardaggrey7@gmail.com>
+ * @license MIT
+ * @since 0.3.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedEventLevels(error => { ... });
+ */
+const seedEventLevels = done => {
+  debug('Start Seeding Event Levels Data');
+  const namespace = 'EventLevel';
+  return seedPredefine({ namespace }, error => {
+    debug('Finish Seeding Event Levels Data');
+    return done(error);
+  });
+};
+
+/**
  * @function seedEventSeverities
  * @name seedEventSeverities
  * @description Seed event severities
@@ -1293,6 +1345,7 @@ const seedAgencies = done => {
  * seedFocals(error => { ... });
  */
 const seedFocals = done => {
+  // TODO: merge administrator
   debug('Start Seeding Focals Data');
   const type = 'Focal';
   return seedParty({ type }, error => {
@@ -1327,9 +1380,9 @@ const seedFeatures = done => {
 };
 
 /**
- * @function seedEventCatalogues
- * @name seedEventCatalogues
- * @description Seed event catalogues
+ * @function seedEventActionCatalogues
+ * @name seedEventActionCatalogues
+ * @description Seed event action catalogues
  * @param {Function} done callback to invoke on success or error
  * @returns {Error|undefined} error if fails else undefined
  * @author lally elias <lallyelias87@gmail.com>
@@ -1340,13 +1393,13 @@ const seedFeatures = done => {
  * @public
  * @example
  *
- * seedEventCatalogues(error => { ... });
+ * seedEventActionCatalogues(error => { ... });
  */
-const seedEventCatalogues = done => {
-  debug('Start Seeding Event Catalogues Data');
-  const namespace = 'EventCatalogue';
+const seedEventActionCatalogues = done => {
+  debug('Start Seeding Event Action Catalogues Data');
+  const namespace = 'EventActionCatalogue';
   return seedPredefine({ namespace }, error => {
-    debug('Finish Seeding Event Catalogues Data');
+    debug('Finish Seeding Event Action Catalogues Data');
     return done(error);
   });
 };
@@ -1424,6 +1477,8 @@ const seed = done => {
     seedAdministrativeLevels,
     seedFeatureTypes,
     seedEventIndicators,
+    seedEventTopics,
+    seedEventLevels,
     seedEventSeverities,
     seedEventCertainties,
     seedEventStatuses,
@@ -1439,7 +1494,7 @@ const seed = done => {
     seedAgencies,
     seedFocals,
     seedFeatures,
-    seedEventCatalogues,
+    seedEventActionCatalogues,
     seedNotificationTemplates,
     seedEvents,
     // seedEventChangeLogs,
@@ -1457,4 +1512,4 @@ const seed = done => {
   });
 };
 
-export { applyTransformsOn, connect, csvPathFor, dataPathFor, geoJsonPathFor, jsonPathFor, pathFor, processCsvSeed, readCsvFile, seed, seedAdministrativeAreas, seedAdministrativeLevels, seedAgencies, seedEvent, seedEventActions, seedEventCatalogues, seedEventCertainties, seedEventFunctions, seedEventGroups, seedEventIndicators, seedEventQuestions, seedEventSeverities, seedEventStatuses, seedEventTypes, seedEventUrgencies, seedEvents, seedFeatureTypes, seedFeatures, seedFocals, seedFromCsv, seedFromJson, seedFromSeeds, seedNotificationTemplates, seedParty, seedPartyGroups, seedPartyRoles, seedPathFor, seedPermissions, seedPredefine, seedUnits, shapeFilePathFor, syncIndexes, transformSeedKeys, transformToEventSeed, transformToPartySeed, transformToPredefineSeed };
+export { applyTransformsOn, connect, csvPathFor, dataPathFor, geoJsonPathFor, jsonPathFor, pathFor, processCsvSeed, readCsvFile, seed, seedAdministrativeAreas, seedAdministrativeLevels, seedAgencies, seedEvent, seedEventActionCatalogues, seedEventActions, seedEventCertainties, seedEventFunctions, seedEventGroups, seedEventIndicators, seedEventLevels, seedEventQuestions, seedEventSeverities, seedEventStatuses, seedEventTopics, seedEventTypes, seedEventUrgencies, seedEvents, seedFeatureTypes, seedFeatures, seedFocals, seedFromCsv, seedFromJson, seedFromSeeds, seedNotificationTemplates, seedParty, seedPartyGroups, seedPartyRoles, seedPathFor, seedPermissions, seedPredefine, seedUnits, shapeFilePathFor, syncIndexes, transformSeedKeys, transformToEventSeed, transformToPartySeed, transformToPredefineSeed };

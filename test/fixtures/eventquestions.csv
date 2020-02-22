@@ -1,2 +1,3 @@
-Indicator,Unit,Name,Measure,Description
-Damages and Losses,person,Deaths,number,Deaths
+Indicator,Topic,Unit,Name,Measure,Description
+Damages and Losses,,person,Deaths,number,Deaths
+Need,Water,leter,Water Needs,number,Water Needs
