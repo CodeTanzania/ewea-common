@@ -1,3 +1,18 @@
+#### 0.6.0 (2020-02-24)
+
+##### Chores
+
+* **deps:**
+  *  force latest version & audit fix ([a0967f9d](https://github.com/codetanzania/ewea-common/commit/a0967f9de04faa1d324c4e608938c580be0813c0))
+  *  force latest version & audit fix ([9ee59a76](https://github.com/codetanzania/ewea-common/commit/9ee59a76dfa848bf2457bf67bf07f25b1b8a31ea))
+
+##### New Features
+
+* **seed:**
+  *  ensure name from event action catalogue:action ([ea0333db](https://github.com/codetanzania/ewea-common/commit/ea0333db1c0e0e3ea8778e7c6db47eed9dab0f66))
+  *  support location and centroid geo fields parsing ([c077c689](https://github.com/codetanzania/ewea-common/commit/c077c6893b35986f695ca28d4d2ecb030ecc820d))
+  *  transform geo fields ([77546447](https://github.com/codetanzania/ewea-common/commit/77546447c096a28cf577dc83744651c60c018489))
+
 #### 0.5.4 (2020-02-22)
 
 ##### Chores
