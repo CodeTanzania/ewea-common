@@ -1230,6 +1230,8 @@ export const seedEventFunctions = done => {
  * seedEventActions(error => { ... });
  */
 export const seedEventActions = done => {
+  // TODO: action and name are same
+  // TODO: action use code and name $or($in:name,code)
   debug('Start Seeding Event Actions Data');
   const namespace = 'EventAction';
   return seedPredefine({ namespace }, error => {
