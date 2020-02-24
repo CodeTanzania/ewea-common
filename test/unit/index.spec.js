@@ -272,7 +272,10 @@ describe('common', () => {
       populate: {
         'relations.group': {
           model: 'Predefine',
-          match: { 'strings.name.en': { $in: [data.group] } },
+          match: {
+            'strings.name.en': { $in: [data.group] },
+            namespace: { $in: ['EventGroup'] },
+          },
           array: false,
         },
         'relations.agencies': {
