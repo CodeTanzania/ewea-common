@@ -207,6 +207,22 @@ describe('common', () => {
     expect(seed.point.coordinates).to.be.an('array');
   });
 
+  it('should transform seed location geo fields', () => {
+    const seed = transformGeoFields({ location: '1,2' });
+    expect(seed).to.exist;
+    expect(seed.location).to.exist;
+    expect(seed.location.type).to.be.equal('Point');
+    expect(seed.location.coordinates).to.be.an('array');
+  });
+
+  it('should transform seed centroid geo fields', () => {
+    const seed = transformGeoFields({ centroid: '1,2' });
+    expect(seed).to.exist;
+    expect(seed.centroid).to.exist;
+    expect(seed.centroid.type).to.be.equal('Point');
+    expect(seed.centroid.coordinates).to.be.an('array');
+  });
+
   it('should transform seed point geo fields', () => {
     const seed = transformGeoFields({ point: '1,2' });
     expect(seed).to.exist;

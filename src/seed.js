@@ -255,6 +255,8 @@ export const transformGeoFields = seed => {
 
   // allowed geo fields
   const fields = {
+    location: 'location',
+    centroid: 'centroid',
     point: 'point',
     'geos.point': 'geos.point',
     circle: 'polygon',
