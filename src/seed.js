@@ -31,7 +31,7 @@ import {
 } from '@lykmapipo/common';
 import { getString } from '@lykmapipo/env';
 import { debug, warn } from '@lykmapipo/logger';
-import { readCsv, readJson } from '@lykmapipo/geo-tools';
+import { readCsv, readJson, parseCoordinateString } from '@lykmapipo/geo-tools';
 import { model } from '@lykmapipo/mongoose-common';
 import { listPermissions, transformToPredefine } from '@lykmapipo/predefine';
 import { Permission } from '@lykmapipo/permission';
@@ -233,6 +233,63 @@ export const transformSeedKeys = seed => {
 };
 
 /**
+ * @function transformGeoFields
+ * @name transformGeoFields
+ * @description Transform and normalize seed geo fields
+ * @param {object} seed valid seed
+ * @returns {object} transformed seed
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.6.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * transformGeoFields({ point: '1,2' });
+ * => { point: { type: 'Point', coordinates: [ 1, 2 ] } }
+ */
+export const transformGeoFields = seed => {
+  // copy seed
+  const transformed = mergeObjects(seed);
+
+  // allowed geo fields
+  const fields = {
+    point: 'point',
+    'geos.point': 'geos.point',
+    circle: 'polygon',
+    'geos.circle': 'geos.polygon',
+    polygon: 'polygon',
+    'geos.polygon': 'geos.polygon',
+    geometry: 'geometry',
+  };
+
+  // transform geo fields
+  forEach(fields, (seedPath, originalPath) => {
+    // parse coordinates to geometry
+    try {
+      const geometry = parseCoordinateString(seed[originalPath]);
+      if (geometry) {
+        transformed[seedPath] = geometry;
+      }
+    } catch (e) {
+      // ignore on error
+    }
+  });
+
+  // otherwise tranform longitude and latitude
+  if (transformed.longitude && transformed.latitude) {
+    transformed.point = {
+      type: 'Point',
+      coordinates: [transformed.longitude, transformed.latitude],
+    };
+  }
+
+  // return
+  return transformed;
+};
+
+/**
  * @function applyTransformsOn
  * @name applyTransformsOn
  * @description Transform and normalize seed
@@ -259,7 +316,8 @@ export const applyTransformsOn = (seed, ...transformers) => {
     let transformed = mergeObjects(value);
 
     // ensure transformers
-    const transforms = compact([transformSeedKeys].concat(transformers));
+    const baseTransformers = [transformSeedKeys, transformGeoFields];
+    const transforms = compact(baseTransformers.concat(transformers));
 
     // apply transform sequentially
     forEach(transforms, applyTransformOn => {
