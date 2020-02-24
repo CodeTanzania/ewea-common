@@ -76,7 +76,7 @@
     "@babel/register": "^7.8.3",
     "@benmaruchu/faker": "^4.3.0",
     "@codetanzania/emis-stakeholder": "^2.1.0",
-    "@codetanzania/ewea-event": "^0.5.1",
+    "@codetanzania/ewea-event": "^0.5.2",
     "@commitlint/cli": "^8.3.5",
     "@commitlint/config-conventional": "^8.3.4",
     "@commitlint/travis-cli": "^8.3.5",
