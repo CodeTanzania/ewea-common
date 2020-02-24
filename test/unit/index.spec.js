@@ -14,6 +14,7 @@ import {
   geoJsonPathFor,
   jsonPathFor,
   transformSeedKeys,
+  transformGeoFields,
   applyTransformsOn,
   transformToPredefineSeed,
   seedFromCsv,
@@ -198,6 +199,62 @@ describe('common', () => {
     });
   });
 
+  it('should transform seed longitude,latitude geo fields', () => {
+    const seed = transformGeoFields({ longitude: 1, latitude: 2 });
+    expect(seed).to.exist;
+    expect(seed.point).to.exist;
+    expect(seed.point.type).to.be.equal('Point');
+    expect(seed.point.coordinates).to.be.an('array');
+  });
+
+  it('should transform seed location geo fields', () => {
+    const seed = transformGeoFields({ location: '1,2' });
+    expect(seed).to.exist;
+    expect(seed.location).to.exist;
+    expect(seed.location.type).to.be.equal('Point');
+    expect(seed.location.coordinates).to.be.an('array');
+  });
+
+  it('should transform seed centroid geo fields', () => {
+    const seed = transformGeoFields({ centroid: '1,2' });
+    expect(seed).to.exist;
+    expect(seed.centroid).to.exist;
+    expect(seed.centroid.type).to.be.equal('Point');
+    expect(seed.centroid.coordinates).to.be.an('array');
+  });
+
+  it('should transform seed point geo fields', () => {
+    const seed = transformGeoFields({ point: '1,2' });
+    expect(seed).to.exist;
+    expect(seed.point).to.exist;
+    expect(seed.point.type).to.be.equal('Point');
+    expect(seed.point.coordinates).to.be.an('array');
+  });
+
+  it('should transform seed circle geo fields', () => {
+    const seed = transformGeoFields({ circle: '1,2 3' });
+    expect(seed).to.exist;
+    expect(seed.polygon).to.exist;
+    expect(seed.polygon.type).to.be.equal('Polygon');
+    expect(seed.polygon.coordinates).to.be.an('array');
+  });
+
+  it('should transform seed polygon geo fields', () => {
+    const seed = transformGeoFields({ polygon: '1,2 1.3,2.3, 1.9,2.9 1,2' });
+    expect(seed).to.exist;
+    expect(seed.polygon).to.exist;
+    expect(seed.polygon.type).to.be.equal('Polygon');
+    expect(seed.polygon.coordinates).to.be.an('array');
+  });
+
+  it('should transform seed geometry geo fields', () => {
+    const seed = transformGeoFields({ geometry: '1,2 1.3,2.3, 1.9,2.9 1,2' });
+    expect(seed).to.exist;
+    expect(seed.geometry).to.exist;
+    expect(seed.geometry.type).to.be.equal('Polygon');
+    expect(seed.geometry.coordinates).to.be.an('array');
+  });
+
   it('should transform to predefine seed', () => {
     const data = {
       name: 'Two',
@@ -215,7 +272,10 @@ describe('common', () => {
       populate: {
         'relations.group': {
           model: 'Predefine',
-          match: { 'strings.name.en': { $in: [data.group] } },
+          match: {
+            'strings.name.en': { $in: [data.group] },
+            namespace: { $in: ['EventGroup'] },
+          },
           array: false,
         },
         'relations.agencies': {

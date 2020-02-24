@@ -31,7 +31,7 @@ import {
 } from '@lykmapipo/common';
 import { getString } from '@lykmapipo/env';
 import { debug, warn } from '@lykmapipo/logger';
-import { readCsv, readJson } from '@lykmapipo/geo-tools';
+import { readCsv, readJson, parseCoordinateString } from '@lykmapipo/geo-tools';
 import { model } from '@lykmapipo/mongoose-common';
 import { listPermissions, transformToPredefine } from '@lykmapipo/predefine';
 import { Permission } from '@lykmapipo/permission';
@@ -233,6 +233,102 @@ export const transformSeedKeys = seed => {
 };
 
 /**
+ * @function transformGeoFields
+ * @name transformGeoFields
+ * @description Transform and normalize seed geo fields
+ * @param {object} seed valid seed
+ * @returns {object} transformed seed
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.6.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * transformGeoFields({ point: '1,2' });
+ * => { point: { type: 'Point', coordinates: [ 1, 2 ] } }
+ */
+export const transformGeoFields = seed => {
+  // copy seed
+  const transformed = mergeObjects(seed);
+
+  // allowed geo fields
+  const fields = {
+    location: 'location',
+    centroid: 'centroid',
+    point: 'point',
+    'geos.point': 'geos.point',
+    circle: 'polygon',
+    'geos.circle': 'geos.polygon',
+    polygon: 'polygon',
+    'geos.polygon': 'geos.polygon',
+    geometry: 'geometry',
+  };
+
+  // transform geo fields
+  forEach(fields, (seedPath, originalPath) => {
+    // parse coordinates to geometry
+    try {
+      const geometry = parseCoordinateString(seed[originalPath]);
+      if (geometry) {
+        transformed[seedPath] = geometry;
+      }
+    } catch (e) {
+      // ignore on error
+    }
+  });
+
+  // otherwise tranform longitude and latitude
+  if (transformed.longitude && transformed.latitude) {
+    transformed.point = {
+      type: 'Point',
+      coordinates: [transformed.longitude, transformed.latitude],
+    };
+  }
+
+  // return
+  return transformed;
+};
+
+/**
+ * @function transformOtherFields
+ * @name transformOtherFields
+ * @description Transform and normalize other seed fields
+ * @param {object} seed valid seed
+ * @returns {object} transformed seed
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.6.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * transformOtherFields({ action: '...' });
+ * => { name: '...', action: '...' }
+ */
+export const transformOtherFields = seed => {
+  // copy seed
+  const transformed = mergeObjects(seed);
+
+  // ensure event action catalogue.name from action
+  if (isEmpty(transformed.name) && !isEmpty(transformed.action)) {
+    transformed.name = transformed.action;
+  }
+
+  // ensure weight from level & order
+  if (transformed.level || transformed.order) {
+    const weight = transformed.level || transformed.order;
+    transformed.weight = weight;
+    transformed.numbers = mergeObjects(transformed.numbers, { weight });
+  }
+
+  // return
+  return transformed;
+};
+
+/**
  * @function applyTransformsOn
  * @name applyTransformsOn
  * @description Transform and normalize seed
@@ -259,7 +355,12 @@ export const applyTransformsOn = (seed, ...transformers) => {
     let transformed = mergeObjects(value);
 
     // ensure transformers
-    const transforms = compact([transformSeedKeys].concat(transformers));
+    const baseTransformers = [
+      transformSeedKeys,
+      transformGeoFields,
+      transformOtherFields,
+    ];
+    const transforms = compact(baseTransformers.concat(transformers));
 
     // apply transform sequentially
     forEach(transforms, applyTransformOn => {
@@ -307,11 +408,12 @@ export const transformToPredefineSeed = seed => {
       const options = mergeObjects(value);
       const path = `relations.${options.path || key}`;
       const modelName = options.ref || MODEL_NAME_PREDEFINE;
+      const namespaces = compact([].concat(options.namespace));
       const array = options.array || false;
       const vals = sortedUniq(split(seed[key], ','));
       const match =
         modelName === MODEL_NAME_PREDEFINE
-          ? { 'strings.name.en': { $in: vals } }
+          ? { 'strings.name.en': { $in: vals }, namespace: { $in: namespaces } }
           : { name: { $in: vals } };
       populate[path] = { model: modelName, match, array };
     }
@@ -352,11 +454,12 @@ export const transformToPartySeed = seed => {
       const options = mergeObjects(value);
       const path = `${options.path || key}`;
       const modelName = options.ref || MODEL_NAME_PREDEFINE;
+      const namespaces = compact([].concat(options.namespace));
       const array = options.array || false;
       const vals = sortedUniq(split(data[key], ','));
       const match =
         modelName === MODEL_NAME_PREDEFINE
-          ? { 'strings.name.en': { $in: vals } }
+          ? { 'strings.name.en': { $in: vals }, namespace: { $in: namespaces } }
           : { name: { $in: vals } };
       populate[path] = { model: modelName, match, array };
     }
@@ -397,11 +500,12 @@ export const transformToEventSeed = seed => {
       const options = mergeObjects(value);
       const path = `${options.path || key}`;
       const modelName = options.ref || MODEL_NAME_PREDEFINE;
+      const namespaces = compact([].concat(options.namespace));
       const array = options.array || false;
       const vals = sortedUniq(split(data[key], ','));
       const match =
         modelName === MODEL_NAME_PREDEFINE
-          ? { 'strings.name.en': { $in: vals } }
+          ? { 'strings.name.en': { $in: vals }, namespace: { $in: namespaces } }
           : { name: { $in: vals } };
       populate[path] = { model: modelName, match, array };
     }
@@ -1330,7 +1434,7 @@ export const seedAgencies = done => {
  * seedFocals(error => { ... });
  */
 export const seedFocals = done => {
-  // TODO: merge administrator
+  // TODO: merge administrator|seedAdministrator
   debug('Start Seeding Focals Data');
   const type = 'Focal';
   return seedParty({ type }, error => {
@@ -1356,6 +1460,7 @@ export const seedFocals = done => {
  * seedFeatures(error => { ... });
  */
 export const seedFeatures = done => {
+  // TODO: seed per feature type i.e hospitals, buildings etc
   debug('Start Seeding Features Data');
   const namespace = 'Feature';
   return seedPredefine({ namespace }, error => {

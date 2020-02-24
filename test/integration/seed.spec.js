@@ -327,7 +327,7 @@ describe('seed', () => {
     });
   });
 
-  it('should seed event catalogues', done => {
+  it('should seed event action catalogues', done => {
     seedEventActionCatalogues(error => {
       expect(error).to.not.exist;
       done(error);

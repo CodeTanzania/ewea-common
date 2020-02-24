@@ -4,11 +4,11 @@ import { waterfall } from 'async';
 import { connect as connect$1, syncIndexes as syncIndexes$1, model } from '@lykmapipo/mongoose-common';
 import { createModels } from '@lykmapipo/file';
 import { join, resolve } from 'path';
-import { toLower, mapKeys, split, map, forEach, isArray, first, omit, keys, isEmpty, endsWith, isFunction } from 'lodash';
+import { toLower, mapKeys, split, forEach, isEmpty, map, isArray, first, omit, keys, endsWith, isFunction } from 'lodash';
 import { pluralize, mergeObjects, join as join$1, compact, sortedUniq } from '@lykmapipo/common';
 import { getString } from '@lykmapipo/env';
 import { debug, warn } from '@lykmapipo/logger';
-import { readCsv, readJson } from '@lykmapipo/geo-tools';
+import { parseCoordinateString, readCsv, readJson } from '@lykmapipo/geo-tools';
 import { transformToPredefine, listPermissions } from '@lykmapipo/predefine';
 import { Permission } from '@lykmapipo/permission';
 
@@ -248,6 +248,102 @@ const transformSeedKeys = seed => {
 };
 
 /**
+ * @function transformGeoFields
+ * @name transformGeoFields
+ * @description Transform and normalize seed geo fields
+ * @param {object} seed valid seed
+ * @returns {object} transformed seed
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.6.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * transformGeoFields({ point: '1,2' });
+ * => { point: { type: 'Point', coordinates: [ 1, 2 ] } }
+ */
+const transformGeoFields = seed => {
+  // copy seed
+  const transformed = mergeObjects(seed);
+
+  // allowed geo fields
+  const fields = {
+    location: 'location',
+    centroid: 'centroid',
+    point: 'point',
+    'geos.point': 'geos.point',
+    circle: 'polygon',
+    'geos.circle': 'geos.polygon',
+    polygon: 'polygon',
+    'geos.polygon': 'geos.polygon',
+    geometry: 'geometry',
+  };
+
+  // transform geo fields
+  forEach(fields, (seedPath, originalPath) => {
+    // parse coordinates to geometry
+    try {
+      const geometry = parseCoordinateString(seed[originalPath]);
+      if (geometry) {
+        transformed[seedPath] = geometry;
+      }
+    } catch (e) {
+      // ignore on error
+    }
+  });
+
+  // otherwise tranform longitude and latitude
+  if (transformed.longitude && transformed.latitude) {
+    transformed.point = {
+      type: 'Point',
+      coordinates: [transformed.longitude, transformed.latitude],
+    };
+  }
+
+  // return
+  return transformed;
+};
+
+/**
+ * @function transformOtherFields
+ * @name transformOtherFields
+ * @description Transform and normalize other seed fields
+ * @param {object} seed valid seed
+ * @returns {object} transformed seed
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.6.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * transformOtherFields({ action: '...' });
+ * => { name: '...', action: '...' }
+ */
+const transformOtherFields = seed => {
+  // copy seed
+  const transformed = mergeObjects(seed);
+
+  // ensure event action catalogue.name from action
+  if (isEmpty(transformed.name) && !isEmpty(transformed.action)) {
+    transformed.name = transformed.action;
+  }
+
+  // ensure weight from level & order
+  if (transformed.level || transformed.order) {
+    const weight = transformed.level || transformed.order;
+    transformed.weight = weight;
+    transformed.numbers = mergeObjects(transformed.numbers, { weight });
+  }
+
+  // return
+  return transformed;
+};
+
+/**
  * @function applyTransformsOn
  * @name applyTransformsOn
  * @description Transform and normalize seed
@@ -274,7 +370,12 @@ const applyTransformsOn = (seed, ...transformers) => {
     let transformed = mergeObjects(value);
 
     // ensure transformers
-    const transforms = compact([transformSeedKeys].concat(transformers));
+    const baseTransformers = [
+      transformSeedKeys,
+      transformGeoFields,
+      transformOtherFields,
+    ];
+    const transforms = compact(baseTransformers.concat(transformers));
 
     // apply transform sequentially
     forEach(transforms, applyTransformOn => {
@@ -322,11 +423,12 @@ const transformToPredefineSeed = seed => {
       const options = mergeObjects(value);
       const path = `relations.${options.path || key}`;
       const modelName = options.ref || MODEL_NAME_PREDEFINE;
+      const namespaces = compact([].concat(options.namespace));
       const array = options.array || false;
       const vals = sortedUniq(split(seed[key], ','));
       const match =
         modelName === MODEL_NAME_PREDEFINE
-          ? { 'strings.name.en': { $in: vals } }
+          ? { 'strings.name.en': { $in: vals }, namespace: { $in: namespaces } }
           : { name: { $in: vals } };
       populate[path] = { model: modelName, match, array };
     }
@@ -367,11 +469,12 @@ const transformToPartySeed = seed => {
       const options = mergeObjects(value);
       const path = `${options.path || key}`;
       const modelName = options.ref || MODEL_NAME_PREDEFINE;
+      const namespaces = compact([].concat(options.namespace));
       const array = options.array || false;
       const vals = sortedUniq(split(data[key], ','));
       const match =
         modelName === MODEL_NAME_PREDEFINE
-          ? { 'strings.name.en': { $in: vals } }
+          ? { 'strings.name.en': { $in: vals }, namespace: { $in: namespaces } }
           : { name: { $in: vals } };
       populate[path] = { model: modelName, match, array };
     }
@@ -412,11 +515,12 @@ const transformToEventSeed = seed => {
       const options = mergeObjects(value);
       const path = `${options.path || key}`;
       const modelName = options.ref || MODEL_NAME_PREDEFINE;
+      const namespaces = compact([].concat(options.namespace));
       const array = options.array || false;
       const vals = sortedUniq(split(data[key], ','));
       const match =
         modelName === MODEL_NAME_PREDEFINE
-          ? { 'strings.name.en': { $in: vals } }
+          ? { 'strings.name.en': { $in: vals }, namespace: { $in: namespaces } }
           : { name: { $in: vals } };
       populate[path] = { model: modelName, match, array };
     }
@@ -1345,7 +1449,7 @@ const seedAgencies = done => {
  * seedFocals(error => { ... });
  */
 const seedFocals = done => {
-  // TODO: merge administrator
+  // TODO: merge administrator|seedAdministrator
   debug('Start Seeding Focals Data');
   const type = 'Focal';
   return seedParty({ type }, error => {
@@ -1371,6 +1475,7 @@ const seedFocals = done => {
  * seedFeatures(error => { ... });
  */
 const seedFeatures = done => {
+  // TODO: seed per feature type i.e hospitals, buildings etc
   debug('Start Seeding Features Data');
   const namespace = 'Feature';
   return seedPredefine({ namespace }, error => {
@@ -1512,4 +1617,4 @@ const seed = done => {
   });
 };
 
-export { applyTransformsOn, connect, csvPathFor, dataPathFor, geoJsonPathFor, jsonPathFor, pathFor, processCsvSeed, readCsvFile, seed, seedAdministrativeAreas, seedAdministrativeLevels, seedAgencies, seedEvent, seedEventActionCatalogues, seedEventActions, seedEventCertainties, seedEventFunctions, seedEventGroups, seedEventIndicators, seedEventLevels, seedEventQuestions, seedEventSeverities, seedEventStatuses, seedEventTopics, seedEventTypes, seedEventUrgencies, seedEvents, seedFeatureTypes, seedFeatures, seedFocals, seedFromCsv, seedFromJson, seedFromSeeds, seedNotificationTemplates, seedParty, seedPartyGroups, seedPartyRoles, seedPathFor, seedPermissions, seedPredefine, seedUnits, shapeFilePathFor, syncIndexes, transformSeedKeys, transformToEventSeed, transformToPartySeed, transformToPredefineSeed };
+export { applyTransformsOn, connect, csvPathFor, dataPathFor, geoJsonPathFor, jsonPathFor, pathFor, processCsvSeed, readCsvFile, seed, seedAdministrativeAreas, seedAdministrativeLevels, seedAgencies, seedEvent, seedEventActionCatalogues, seedEventActions, seedEventCertainties, seedEventFunctions, seedEventGroups, seedEventIndicators, seedEventLevels, seedEventQuestions, seedEventSeverities, seedEventStatuses, seedEventTopics, seedEventTypes, seedEventUrgencies, seedEvents, seedFeatureTypes, seedFeatures, seedFocals, seedFromCsv, seedFromJson, seedFromSeeds, seedNotificationTemplates, seedParty, seedPartyGroups, seedPartyRoles, seedPathFor, seedPermissions, seedPredefine, seedUnits, shapeFilePathFor, syncIndexes, transformGeoFields, transformOtherFields, transformSeedKeys, transformToEventSeed, transformToPartySeed, transformToPredefineSeed };
