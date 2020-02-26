@@ -115,7 +115,7 @@
     "mongoose": ">=5.9.2"
   },
   "dependencies": {
-    "@codetanzania/ewea-internals": ">=0.6.1",
+    "@codetanzania/ewea-internals": ">=0.6.2",
     "@lykmapipo/common": ">=0.30.5",
     "@lykmapipo/env": ">=0.16.7",
     "@lykmapipo/express-common": ">=0.17.21",
@@ -128,7 +128,7 @@
     "@lykmapipo/mongoose-sequenceable": ">=0.2.8",
     "@lykmapipo/permission": ">=0.8.19",
     "@lykmapipo/postman": ">=0.17.1",
-    "@lykmapipo/predefine": ">=1.7.1",
+    "@lykmapipo/predefine": ">=1.7.2",
     "async": ">=3.2.0",
     "lodash": ">=4.17.15",
     "mongoose-geojson-schemas": ">=0.11.8",
