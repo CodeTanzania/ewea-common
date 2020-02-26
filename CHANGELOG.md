@@ -1,3 +1,10 @@
+#### 0.6.1 (2020-02-26)
+
+##### Chores
+
+* **release:**  compile latest source & release notes ([4ecf3eb6](https://github.com/codetanzania/ewea-common/commit/4ecf3eb6634071d17b5456bdd953f20047aa4af5))
+* **deps:**  force latest version & audit fix ([c7e030f5](https://github.com/codetanzania/ewea-common/commit/c7e030f569d6a85d515440ad4ecc11f47dd25fb2))
+
 #### 0.6.0 (2020-02-24)
 
 ##### Chores
