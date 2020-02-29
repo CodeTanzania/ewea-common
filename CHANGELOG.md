@@ -1,3 +1,9 @@
+#### 0.6.3 (2020-02-29)
+
+##### Refactors
+
+* **focals:**  ensure default password ([82d7b8da](https://github.com/codetanzania/ewea-common/commit/82d7b8da6d743ce5ae2f7ebb324afe631bd5093f))
+
 #### 0.6.1 (2020-02-26)
 
 ##### Chores

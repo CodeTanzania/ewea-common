@@ -461,6 +461,14 @@ const transformToPartySeed = seed => {
   // copy seed
   let data = mergeObjects(seed);
 
+  // ensure default password
+  if (isEmpty(data.password)) {
+    data.password = getString(
+      'DEFAULT_HASHED_PASSWORD',
+      '$2a$10$rwpL/BhU8xY4fkf8SG7fHugF4PCioTJqy8BLU7BZ8N0YV.8Y1dXem'
+    );
+  }
+
   // transform relations
   const populate = {};
   forEach(PARTY_RELATIONS, (value, key) => {
