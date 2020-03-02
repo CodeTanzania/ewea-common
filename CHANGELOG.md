@@ -1,3 +1,9 @@
+#### 0.6.5 (2020-03-02)
+
+##### Bug Fixes
+
+* **seed:**  esnure party confirmedAt ([5bc7e921](https://github.com/codetanzania/ewea-common/commit/5bc7e921558818a9101915bccd684015e8c55424))
+
 #### 0.6.4 (2020-03-02)
 
 ##### Bug Fixes
