@@ -1,3 +1,9 @@
+#### 0.6.4 (2020-03-02)
+
+##### Bug Fixes
+
+* **seed:**  ensure seed order of csv, json & seeds ([712eecff](https://github.com/codetanzania/ewea-common/commit/712eecff2125f6bc185d0acd57518a37c94b4d88))
+
 #### 0.6.3 (2020-02-29)
 
 ##### Refactors

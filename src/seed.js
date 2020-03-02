@@ -808,7 +808,7 @@ export const seedPredefine = (optns, done) => {
   const fromSeeds = next => seedFromSeeds(options, error => next(error));
   const fromJson = next => seedFromJson(options, error => next(error));
   const fromCsv = next => seedFromCsv(options, error => next(error));
-  const stages = [fromSeeds, fromJson, fromCsv];
+  const stages = [fromCsv, fromJson, fromSeeds];
 
   // do seed predefine
   return waterfall(stages, done);
@@ -861,7 +861,7 @@ export const seedParty = (optns, done) => {
   const fromSeeds = next => seedFromSeeds(options, error => next(error));
   const fromJson = next => seedFromJson(options, error => next(error));
   const fromCsv = next => seedFromCsv(options, error => next(error));
-  const stages = [fromSeeds, fromJson, fromCsv];
+  const stages = [fromCsv, fromJson, fromSeeds];
 
   // do seed party
   return waterfall(stages, done);
@@ -906,7 +906,7 @@ export const seedEvent = (optns, done) => {
   const fromSeeds = next => seedFromSeeds(options, error => next(error));
   const fromJson = next => seedFromJson(options, error => next(error));
   const fromCsv = next => seedFromCsv(options, error => next(error));
-  const stages = [fromSeeds, fromJson, fromCsv];
+  const stages = [fromCsv, fromJson, fromSeeds];
 
   // do seed event
   return waterfall(stages, done);
