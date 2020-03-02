@@ -454,6 +454,9 @@ export const transformToPartySeed = seed => {
     );
   }
 
+  // ensure confirmed time
+  data.confirmedAt = new Date();
+
   // transform relations
   const populate = {};
   forEach(PARTY_RELATIONS, (value, key) => {
