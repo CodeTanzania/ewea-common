@@ -1,3 +1,11 @@
+#### 0.6.6 (2020-03-06)
+
+##### Chores
+
+* **deps:**
+  *  force latest version & audit fix ([364f3ec0](https://github.com/codetanzania/ewea-common/commit/364f3ec05d2e4b4c0b67023274e5f8856a2f5aa8))
+  *  force latest version & audit fix ([5369e4be](https://github.com/codetanzania/ewea-common/commit/5369e4be44fd2f8cc124a161e3982467d6b1c861))
+
 #### 0.6.5 (2020-03-02)
 
 ##### Bug Fixes
