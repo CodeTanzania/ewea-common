@@ -1,3 +1,14 @@
+#### 0.7.0 (2020-03-06)
+
+##### Chores
+
+* **deps:**  force latest version & audit fix ([b0779f65](https://github.com/codetanzania/ewea-common/commit/b0779f65a86700e1366801a0495cde05083daf76))
+* **seed:**  update seed data for resources ([2dbc1572](https://github.com/codetanzania/ewea-common/commit/2dbc1572fe2659369ec305a2ba3f5f8b268b42f2))
+
+##### New Features
+
+* **seed:**  add event responses ([b948f977](https://github.com/codetanzania/ewea-common/commit/b948f9772e0b5f55eb528f1a2897ecee5b974d0c))
+
 #### 0.6.6 (2020-03-06)
 
 ##### Chores
