@@ -1219,6 +1219,31 @@ const seedEventUrgencies = done => {
 };
 
 /**
+ * @function seedEventResponses
+ * @name seedEventResponses
+ * @description Seed event responses
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.7.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedEventResponses(error => { ... });
+ */
+const seedEventResponses = done => {
+  debug('Start Seeding Event Responses Data');
+  const namespace = 'EventResponse';
+  return seedPredefine({ namespace }, error => {
+    debug('Finish Seeding Event Responses Data');
+    return done(error);
+  });
+};
+
+/**
  * @function seedPartyGroups
  * @name seedPartyGroups
  * @description Seed party groups
@@ -1599,6 +1624,7 @@ const seed = done => {
     seedEventCertainties,
     seedEventStatuses,
     seedEventUrgencies,
+    seedEventResponses,
     seedPartyGroups,
     seedPartyRoles,
     seedEventGroups,
@@ -1628,4 +1654,4 @@ const seed = done => {
   });
 };
 
-export { applyTransformsOn, connect, csvPathFor, dataPathFor, geoJsonPathFor, jsonPathFor, pathFor, processCsvSeed, readCsvFile, seed, seedAdministrativeAreas, seedAdministrativeLevels, seedAgencies, seedEvent, seedEventActionCatalogues, seedEventActions, seedEventCertainties, seedEventFunctions, seedEventGroups, seedEventIndicators, seedEventLevels, seedEventQuestions, seedEventSeverities, seedEventStatuses, seedEventTopics, seedEventTypes, seedEventUrgencies, seedEvents, seedFeatureTypes, seedFeatures, seedFocals, seedFromCsv, seedFromJson, seedFromSeeds, seedNotificationTemplates, seedParty, seedPartyGroups, seedPartyRoles, seedPathFor, seedPermissions, seedPredefine, seedUnits, shapeFilePathFor, syncIndexes, transformGeoFields, transformOtherFields, transformSeedKeys, transformToEventSeed, transformToPartySeed, transformToPredefineSeed };
+export { applyTransformsOn, connect, csvPathFor, dataPathFor, geoJsonPathFor, jsonPathFor, pathFor, processCsvSeed, readCsvFile, seed, seedAdministrativeAreas, seedAdministrativeLevels, seedAgencies, seedEvent, seedEventActionCatalogues, seedEventActions, seedEventCertainties, seedEventFunctions, seedEventGroups, seedEventIndicators, seedEventLevels, seedEventQuestions, seedEventResponses, seedEventSeverities, seedEventStatuses, seedEventTopics, seedEventTypes, seedEventUrgencies, seedEvents, seedFeatureTypes, seedFeatures, seedFocals, seedFromCsv, seedFromJson, seedFromSeeds, seedNotificationTemplates, seedParty, seedPartyGroups, seedPartyRoles, seedPathFor, seedPermissions, seedPredefine, seedUnits, shapeFilePathFor, syncIndexes, transformGeoFields, transformOtherFields, transformSeedKeys, transformToEventSeed, transformToPartySeed, transformToPredefineSeed };

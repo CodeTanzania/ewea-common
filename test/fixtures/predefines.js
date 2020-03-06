@@ -1,15 +1,7 @@
-const severities = [
+const predefines = [
   {
     namespace: 'EventSeverity',
     strings: { name: { en: 'Extreme' } },
-  },
-  {
-    namespace: 'EventSeverity',
-    strings: { name: { en: 'Severe' } },
-  },
-  {
-    namespace: 'EventStatus',
-    strings: { name: { en: 'Actual' } },
   },
   {
     namespace: 'EventStatus',
@@ -17,4 +9,4 @@ const severities = [
   },
 ];
 
-module.exports = severities;
+module.exports = predefines;

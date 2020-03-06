@@ -22,6 +22,7 @@ import {
   seedEventCertainties,
   seedEventStatuses,
   seedEventUrgencies,
+  seedEventResponses,
   seedPartyGroups,
   seedPartyRoles,
   seedEventGroups,
@@ -245,6 +246,13 @@ describe('seed', () => {
 
   it('should seed event urgencies', done => {
     seedEventUrgencies(error => {
+      expect(error).to.not.exist;
+      done(error);
+    });
+  });
+
+  it('should seed event responses', done => {
+    seedEventResponses(error => {
       expect(error).to.not.exist;
       done(error);
     });
