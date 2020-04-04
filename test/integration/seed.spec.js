@@ -53,7 +53,7 @@ describe('seed', () => {
     process.env.SEED_PATH = `${__dirname}'/../fixtures`;
   });
 
-  it('should read csv seed file', done => {
+  it('should read csv seed file', (done) => {
     const path = `${__dirname}/../fixtures/eventseverities.csv`;
     readCsvFile(path, [], (error, { finished, feature, next }) => {
       if (error) {
@@ -72,18 +72,18 @@ describe('seed', () => {
     });
   });
 
-  it('should seed from csv if file exists', done => {
+  it('should seed from csv if file exists', (done) => {
     const modelName = MODEL_NAME_PREDEFINE;
     const namespace = PREDEFINE_NAMESPACE_EVENTSEVERITY;
     const optns = { modelName, namespace };
 
-    seedFromCsv(optns, error => {
+    seedFromCsv(optns, (error) => {
       expect(error).to.not.exist;
       done(error);
     });
   });
 
-  it('should seed from json if file exists', done => {
+  it('should seed from json if file exists', (done) => {
     const modelName = MODEL_NAME_PREDEFINE;
     const namespace = PREDEFINE_NAMESPACE_EVENTSEVERITY;
     const optns = { modelName, namespace };
@@ -95,7 +95,7 @@ describe('seed', () => {
     });
   });
 
-  it('should not seed from json if file exists', done => {
+  it('should not seed from json if file exists', (done) => {
     const modelName = MODEL_NAME_PREDEFINE;
     const namespace = 'Unknown';
     const optns = { modelName, namespace };
@@ -107,7 +107,7 @@ describe('seed', () => {
     });
   });
 
-  it('should seed from seeds file if exists', done => {
+  it('should seed from seeds file if exists', (done) => {
     const modelName = MODEL_NAME_PREDEFINE;
     const optns = { modelName };
 
@@ -118,9 +118,9 @@ describe('seed', () => {
     });
   });
 
-  it('should filter seed from seeds file if exists', done => {
+  it('should filter seed from seeds file if exists', (done) => {
     const modelName = MODEL_NAME_PREDEFINE;
-    const filter = val => val.namespace === PREDEFINE_NAMESPACE_EVENTSEVERITY;
+    const filter = (val) => val.namespace === PREDEFINE_NAMESPACE_EVENTSEVERITY;
     const optns = { modelName, filter };
 
     seedFromSeeds(optns, (error, results) => {
@@ -130,7 +130,7 @@ describe('seed', () => {
     });
   });
 
-  it('should not seed from seeds file if not exists', done => {
+  it('should not seed from seeds file if not exists', (done) => {
     const modelName = 'Unknown';
     const optns = { modelName };
 
@@ -141,7 +141,7 @@ describe('seed', () => {
     });
   });
 
-  it.skip('should not seed from seeds file if throws is true', done => {
+  it.skip('should not seed from seeds file if throws is true', (done) => {
     const modelName = MODEL_NAME_PREDEFINE;
     const optns = { modelName, throws: true };
 
@@ -152,212 +152,212 @@ describe('seed', () => {
     });
   });
 
-  it('should seed predefines', done => {
+  it('should seed predefines', (done) => {
     const optns = {};
-    seedPredefine(optns, error => {
+    seedPredefine(optns, (error) => {
       expect(error).to.not.exist;
       done(error);
     });
   });
 
-  it('should seed parties', done => {
-    seedParty({}, error => {
+  it('should seed parties', (done) => {
+    seedParty({}, (error) => {
       expect(error).to.not.exist;
       done(error);
     });
   });
 
-  it('should seed event', done => {
-    seedEvent({}, error => {
+  it('should seed event', (done) => {
+    seedEvent({}, (error) => {
       expect(error).to.not.exist;
       done(error);
     });
   });
 
-  it('should seed permissions', done => {
-    seedPermissions(error => {
+  it('should seed permissions', (done) => {
+    seedPermissions((error) => {
       expect(error).to.not.exist;
       done(error);
     });
   });
 
-  it('should seed units', done => {
-    seedUnits(error => {
+  it('should seed units', (done) => {
+    seedUnits((error) => {
       expect(error).to.not.exist;
       done(error);
     });
   });
 
-  it('should seed administrative levels', done => {
-    seedAdministrativeLevels(error => {
+  it('should seed administrative levels', (done) => {
+    seedAdministrativeLevels((error) => {
       expect(error).to.not.exist;
       done(error);
     });
   });
 
-  it('should seed feature types', done => {
-    seedFeatureTypes(error => {
+  it('should seed feature types', (done) => {
+    seedFeatureTypes((error) => {
       expect(error).to.not.exist;
       done(error);
     });
   });
 
-  it('should seed event indicators', done => {
-    seedEventIndicators(error => {
+  it('should seed event indicators', (done) => {
+    seedEventIndicators((error) => {
       expect(error).to.not.exist;
       done(error);
     });
   });
 
-  it('should seed event topics', done => {
-    seedEventTopics(error => {
+  it('should seed event topics', (done) => {
+    seedEventTopics((error) => {
       expect(error).to.not.exist;
       done(error);
     });
   });
 
-  it('should seed event levels', done => {
-    seedEventLevels(error => {
+  it('should seed event levels', (done) => {
+    seedEventLevels((error) => {
       expect(error).to.not.exist;
       done(error);
     });
   });
 
-  it('should seed event severities', done => {
-    seedEventSeverities(error => {
+  it('should seed event severities', (done) => {
+    seedEventSeverities((error) => {
       expect(error).to.not.exist;
       done(error);
     });
   });
 
-  it('should seed event certainties', done => {
-    seedEventCertainties(error => {
+  it('should seed event certainties', (done) => {
+    seedEventCertainties((error) => {
       expect(error).to.not.exist;
       done(error);
     });
   });
 
-  it('should seed event statuses', done => {
-    seedEventStatuses(error => {
+  it('should seed event statuses', (done) => {
+    seedEventStatuses((error) => {
       expect(error).to.not.exist;
       done(error);
     });
   });
 
-  it('should seed event urgencies', done => {
-    seedEventUrgencies(error => {
+  it('should seed event urgencies', (done) => {
+    seedEventUrgencies((error) => {
       expect(error).to.not.exist;
       done(error);
     });
   });
 
-  it('should seed event responses', done => {
-    seedEventResponses(error => {
+  it('should seed event responses', (done) => {
+    seedEventResponses((error) => {
       expect(error).to.not.exist;
       done(error);
     });
   });
 
-  it('should seed party groups', done => {
-    seedPartyGroups(error => {
+  it('should seed party groups', (done) => {
+    seedPartyGroups((error) => {
       expect(error).to.not.exist;
       done(error);
     });
   });
 
-  it('should seed party roles', done => {
-    seedPartyRoles(error => {
+  it('should seed party roles', (done) => {
+    seedPartyRoles((error) => {
       expect(error).to.not.exist;
       done(error);
     });
   });
 
-  it('should seed event groups', done => {
-    seedEventGroups(error => {
+  it('should seed event groups', (done) => {
+    seedEventGroups((error) => {
       expect(error).to.not.exist;
       done(error);
     });
   });
 
-  it('should seed event types', done => {
-    seedEventTypes(error => {
+  it('should seed event types', (done) => {
+    seedEventTypes((error) => {
       expect(error).to.not.exist;
       done(error);
     });
   });
 
-  it('should seed event functions', done => {
-    seedEventFunctions(error => {
+  it('should seed event functions', (done) => {
+    seedEventFunctions((error) => {
       expect(error).to.not.exist;
       done(error);
     });
   });
 
-  it('should seed event actions', done => {
-    seedEventActions(error => {
+  it('should seed event actions', (done) => {
+    seedEventActions((error) => {
       expect(error).to.not.exist;
       done(error);
     });
   });
 
-  it('should seed event questions', done => {
-    seedEventQuestions(error => {
+  it('should seed event questions', (done) => {
+    seedEventQuestions((error) => {
       expect(error).to.not.exist;
       done(error);
     });
   });
 
-  it('should seed administrative areas', done => {
-    seedAdministrativeAreas(error => {
+  it('should seed administrative areas', (done) => {
+    seedAdministrativeAreas((error) => {
       expect(error).to.not.exist;
       done(error);
     });
   });
 
-  it('should seed agencies', done => {
-    seedAgencies(error => {
+  it('should seed agencies', (done) => {
+    seedAgencies((error) => {
       expect(error).to.not.exist;
       done(error);
     });
   });
 
-  it('should seed focals', done => {
-    seedFocals(error => {
+  it('should seed focals', (done) => {
+    seedFocals((error) => {
       expect(error).to.not.exist;
       done(error);
     });
   });
 
-  it('should seed features', done => {
-    seedFeatures(error => {
+  it('should seed features', (done) => {
+    seedFeatures((error) => {
       expect(error).to.not.exist;
       done(error);
     });
   });
 
-  it('should seed event action catalogues', done => {
-    seedEventActionCatalogues(error => {
+  it('should seed event action catalogues', (done) => {
+    seedEventActionCatalogues((error) => {
       expect(error).to.not.exist;
       done(error);
     });
   });
 
-  it('should seed notification templates', done => {
-    seedNotificationTemplates(error => {
+  it('should seed notification templates', (done) => {
+    seedNotificationTemplates((error) => {
       expect(error).to.not.exist;
       done(error);
     });
   });
 
-  it('should seed events', done => {
-    seedEvents(error => {
+  it('should seed events', (done) => {
+    seedEvents((error) => {
       expect(error).to.not.exist;
       done(error);
     });
   });
 
-  it('should seed data', done => {
-    seed(error => {
+  it('should seed data', (done) => {
+    seed((error) => {
       expect(error).to.not.exist;
       done(error);
     });

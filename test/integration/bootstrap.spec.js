@@ -14,8 +14,8 @@ process.env.JWT_SUBJECT = 'ewea';
 process.env.JWT_EXPIRES_IN = '7 days';
 process.env.JWT_API_TOKEN_EXPIRES_IN = '1000y';
 
-before(done => connect(done));
+before((done) => connect(done));
 
-before(done => clear(done));
+before((done) => clear(done));
 
-after(done => drop(done));
+after((done) => drop(done));

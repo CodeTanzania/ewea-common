@@ -78,7 +78,7 @@ export const pathFor = (...paths) => {
  * dataPathFor('events.csv');
  * => /home/ewea/data/events.csv
  */
-export const dataPathFor = fileName => {
+export const dataPathFor = (fileName) => {
   const path = getString('DATA_PATH', pathFor('data'));
   return resolvePath(path, fileName);
 };
@@ -100,7 +100,7 @@ export const dataPathFor = fileName => {
  * seedPathFor('events.json');
  * => /home/ewea/seeds/events.json
  */
-export const seedPathFor = fileName => {
+export const seedPathFor = (fileName) => {
   const path = getString('SEED_PATH', pathFor('seeds'));
   return resolvePath(path, fileName);
 };
@@ -122,7 +122,7 @@ export const seedPathFor = fileName => {
  * csvPathFor('events');
  * => /home/ewea/data/events.csv
  */
-export const csvPathFor = modelName => {
+export const csvPathFor = (modelName) => {
   const fileName = `${pluralize(toLower(modelName))}.csv`;
   const csvPath = dataPathFor(fileName);
   return csvPath;
@@ -145,7 +145,7 @@ export const csvPathFor = modelName => {
  * shapeFilePathFor('events');
  * => /home/ewea/data/events.shp
  */
-export const shapeFilePathFor = modelName => {
+export const shapeFilePathFor = (modelName) => {
   const fileName = `${pluralize(toLower(modelName))}.shp`;
   const shapeFilePath = dataPathFor(fileName);
   return shapeFilePath;
@@ -168,7 +168,7 @@ export const shapeFilePathFor = modelName => {
  * geoJsonPathFor('events');
  * => /home/ewea/data/events.geojson
  */
-export const geoJsonPathFor = modelName => {
+export const geoJsonPathFor = (modelName) => {
   const fileName = `${pluralize(toLower(modelName))}.geojson`;
   const geoJsonFilePath = dataPathFor(fileName);
   return geoJsonFilePath;
@@ -191,7 +191,7 @@ export const geoJsonPathFor = modelName => {
  * jsonPathFor('events');
  * => /home/ewea/seeds/events.json
  */
-export const jsonPathFor = modelName => {
+export const jsonPathFor = (modelName) => {
   const fileName = `${pluralize(toLower(modelName))}.json`;
   const jsonFilePath = dataPathFor(fileName);
   return jsonFilePath;
@@ -214,7 +214,7 @@ export const jsonPathFor = modelName => {
  * transformSeedKeys({ Name: 'John Doe' });
  * => { name: 'John Doe' }
  */
-export const transformSeedKeys = seed => {
+export const transformSeedKeys = (seed) => {
   // copy seed
   const data = mergeObjects(seed);
 
@@ -249,7 +249,7 @@ export const transformSeedKeys = seed => {
  * transformGeoFields({ point: '1,2' });
  * => { point: { type: 'Point', coordinates: [ 1, 2 ] } }
  */
-export const transformGeoFields = seed => {
+export const transformGeoFields = (seed) => {
   // copy seed
   const transformed = mergeObjects(seed);
 
@@ -308,7 +308,7 @@ export const transformGeoFields = seed => {
  * transformOtherFields({ action: '...' });
  * => { name: '...', action: '...' }
  */
-export const transformOtherFields = seed => {
+export const transformOtherFields = (seed) => {
   // copy seed
   const transformed = mergeObjects(seed);
 
@@ -350,7 +350,7 @@ export const applyTransformsOn = (seed, ...transformers) => {
   // copy seed
   let data = compact([].concat(seed));
 
-  data = map(data, value => {
+  data = map(data, (value) => {
     // copy value
     let transformed = mergeObjects(value);
 
@@ -363,7 +363,7 @@ export const applyTransformsOn = (seed, ...transformers) => {
     const transforms = compact(baseTransformers.concat(transformers));
 
     // apply transform sequentially
-    forEach(transforms, applyTransformOn => {
+    forEach(transforms, (applyTransformOn) => {
       transformed = applyTransformOn(transformed);
     });
 
@@ -393,7 +393,7 @@ export const applyTransformsOn = (seed, ...transformers) => {
  * transformToPredefineSeed({ Name: 'John Doe' });
  * => { strings: { name: { en : 'John Doe' } } }
  */
-export const transformToPredefineSeed = seed => {
+export const transformToPredefineSeed = (seed) => {
   // copy seed
   const data = mergeObjects(seed);
 
@@ -442,7 +442,7 @@ export const transformToPredefineSeed = seed => {
  * transformToPartySeed({ Name: 'John Doe' });
  * => { name: 'John Doe' }
  */
-export const transformToPartySeed = seed => {
+export const transformToPartySeed = (seed) => {
   // copy seed
   let data = mergeObjects(seed);
 
@@ -499,7 +499,7 @@ export const transformToPartySeed = seed => {
  * transformToEventSeed({ Name: 'John Doe' });
  * => { name: 'John Doe' }
  */
-export const transformToEventSeed = seed => {
+export const transformToEventSeed = (seed) => {
   // copy seed
   let data = mergeObjects(seed);
 
@@ -710,7 +710,7 @@ export const seedFromJson = (optns, done) => {
       : `${jsonFilePath}.json`;
     return readJson({ path, throws }, (error, data) => {
       if (!isEmpty(data)) {
-        const transform = seed => {
+        const transform = (seed) => {
           const merged = mergeObjects(properties, { namespace }, seed);
           return applyTransformsOn(merged, ...appliedTransformers);
         };
@@ -802,15 +802,15 @@ export const seedPredefine = (optns, done) => {
   } = mergeObjects(optns);
 
   // prepare namespace filter
-  const filter = seed => seed.namespace === namespace;
+  const filter = (seed) => seed.namespace === namespace;
 
   // prepare options
   const options = { modelName, namespace, throws, transformers, filter };
 
   // prepare predefine seed stages
-  const fromSeeds = next => seedFromSeeds(options, error => next(error));
-  const fromJson = next => seedFromJson(options, error => next(error));
-  const fromCsv = next => seedFromCsv(options, error => next(error));
+  const fromSeeds = (next) => seedFromSeeds(options, (error) => next(error));
+  const fromJson = (next) => seedFromJson(options, (error) => next(error));
+  const fromCsv = (next) => seedFromCsv(options, (error) => next(error));
   const stages = [fromCsv, fromJson, fromSeeds];
 
   // do seed predefine
@@ -847,7 +847,7 @@ export const seedParty = (optns, done) => {
   } = mergeObjects(optns);
 
   // prepare type filter
-  const filter = seed => seed.type === type;
+  const filter = (seed) => seed.type === type;
 
   // prepare options
   const options = {
@@ -861,9 +861,9 @@ export const seedParty = (optns, done) => {
   };
 
   // prepare party seed stages
-  const fromSeeds = next => seedFromSeeds(options, error => next(error));
-  const fromJson = next => seedFromJson(options, error => next(error));
-  const fromCsv = next => seedFromCsv(options, error => next(error));
+  const fromSeeds = (next) => seedFromSeeds(options, (error) => next(error));
+  const fromJson = (next) => seedFromJson(options, (error) => next(error));
+  const fromCsv = (next) => seedFromCsv(options, (error) => next(error));
   const stages = [fromCsv, fromJson, fromSeeds];
 
   // do seed party
@@ -906,9 +906,9 @@ export const seedEvent = (optns, done) => {
   };
 
   // prepare event seed stages
-  const fromSeeds = next => seedFromSeeds(options, error => next(error));
-  const fromJson = next => seedFromJson(options, error => next(error));
-  const fromCsv = next => seedFromCsv(options, error => next(error));
+  const fromSeeds = (next) => seedFromSeeds(options, (error) => next(error));
+  const fromJson = (next) => seedFromJson(options, (error) => next(error));
+  const fromCsv = (next) => seedFromCsv(options, (error) => next(error));
   const stages = [fromCsv, fromJson, fromSeeds];
 
   // do seed event
@@ -931,21 +931,21 @@ export const seedEvent = (optns, done) => {
  *
  * seedPermissions(error => { ... });
  */
-export const seedPermissions = done => {
+export const seedPermissions = (done) => {
   debug('Start Seeding Permissions Data');
 
   // prepare permissions seed stages
-  const seedResourcePermissions = next => {
-    return Permission.seed(error => next(error));
+  const seedResourcePermissions = (next) => {
+    return Permission.seed((error) => next(error));
   };
-  const seedPredefineNamespacePermissions = next => {
+  const seedPredefineNamespacePermissions = (next) => {
     const namespacePermissions = listPermissions();
-    return Permission.seed(namespacePermissions, error => next(error));
+    return Permission.seed(namespacePermissions, (error) => next(error));
   };
   const stages = [seedResourcePermissions, seedPredefineNamespacePermissions];
 
   // do seed permissions
-  return waterfall(stages, error => {
+  return waterfall(stages, (error) => {
     debug('Finish Seeding Permissions Data');
     return done(error);
   });
@@ -967,10 +967,10 @@ export const seedPermissions = done => {
  *
  * seedUnits(error => { ... });
  */
-export const seedUnits = done => {
+export const seedUnits = (done) => {
   debug('Start Seeding Units Data');
   const namespace = 'Unit';
-  return seedPredefine({ namespace }, error => {
+  return seedPredefine({ namespace }, (error) => {
     debug('Finish Seeding Units Data');
     return done(error);
   });
@@ -992,10 +992,10 @@ export const seedUnits = done => {
  *
  * seedAdministrativeLevels(error => { ... });
  */
-export const seedAdministrativeLevels = done => {
+export const seedAdministrativeLevels = (done) => {
   debug('Start Seeding Administrative Levels Data');
   const namespace = 'AdministrativeLevel';
-  return seedPredefine({ namespace }, error => {
+  return seedPredefine({ namespace }, (error) => {
     debug('Finish Seeding Administrative Levels Data');
     return done(error);
   });
@@ -1017,10 +1017,10 @@ export const seedAdministrativeLevels = done => {
  *
  * seedFeatureTypes(error => { ... });
  */
-export const seedFeatureTypes = done => {
+export const seedFeatureTypes = (done) => {
   debug('Start Seeding Feature Types Data');
   const namespace = 'FeatureType';
-  return seedPredefine({ namespace }, error => {
+  return seedPredefine({ namespace }, (error) => {
     debug('Finish Seeding Feature Types Data');
     return done(error);
   });
@@ -1042,10 +1042,10 @@ export const seedFeatureTypes = done => {
  *
  * seedEventIndicators(error => { ... });
  */
-export const seedEventIndicators = done => {
+export const seedEventIndicators = (done) => {
   debug('Start Seeding Event Indicators Data');
   const namespace = 'EventIndicator';
-  return seedPredefine({ namespace }, error => {
+  return seedPredefine({ namespace }, (error) => {
     debug('Finish Seeding Event Indicators Data');
     return done(error);
   });
@@ -1068,10 +1068,10 @@ export const seedEventIndicators = done => {
  *
  * seedEventTopics(error => { ... });
  */
-export const seedEventTopics = done => {
+export const seedEventTopics = (done) => {
   debug('Start Seeding Event Topics Data');
   const namespace = 'EventTopic';
-  return seedPredefine({ namespace }, error => {
+  return seedPredefine({ namespace }, (error) => {
     debug('Finish Seeding Event Topics Data');
     return done(error);
   });
@@ -1094,10 +1094,10 @@ export const seedEventTopics = done => {
  *
  * seedEventLevels(error => { ... });
  */
-export const seedEventLevels = done => {
+export const seedEventLevels = (done) => {
   debug('Start Seeding Event Levels Data');
   const namespace = 'EventLevel';
-  return seedPredefine({ namespace }, error => {
+  return seedPredefine({ namespace }, (error) => {
     debug('Finish Seeding Event Levels Data');
     return done(error);
   });
@@ -1119,10 +1119,10 @@ export const seedEventLevels = done => {
  *
  * seedEventSeverities(error => { ... });
  */
-export const seedEventSeverities = done => {
+export const seedEventSeverities = (done) => {
   debug('Start Seeding Event Severities Data');
   const namespace = 'EventSeverity';
-  return seedPredefine({ namespace }, error => {
+  return seedPredefine({ namespace }, (error) => {
     debug('Finish Seeding Event Severities Data');
     return done(error);
   });
@@ -1144,10 +1144,10 @@ export const seedEventSeverities = done => {
  *
  * seedEventCertainties(error => { ... });
  */
-export const seedEventCertainties = done => {
+export const seedEventCertainties = (done) => {
   debug('Start Seeding Event Certainties Data');
   const namespace = 'EventCertainty';
-  return seedPredefine({ namespace }, error => {
+  return seedPredefine({ namespace }, (error) => {
     debug('Finish Seeding Event Certainties Data');
     return done(error);
   });
@@ -1169,10 +1169,10 @@ export const seedEventCertainties = done => {
  *
  * seedEventStatuses(error => { ... });
  */
-export const seedEventStatuses = done => {
+export const seedEventStatuses = (done) => {
   debug('Start Seeding Event Statuses Data');
   const namespace = 'EventStatus';
-  return seedPredefine({ namespace }, error => {
+  return seedPredefine({ namespace }, (error) => {
     debug('Finish Seeding Event Statuses Data');
     return done(error);
   });
@@ -1194,10 +1194,10 @@ export const seedEventStatuses = done => {
  *
  * seedEventUrgencies(error => { ... });
  */
-export const seedEventUrgencies = done => {
+export const seedEventUrgencies = (done) => {
   debug('Start Seeding Event Urgencies Data');
   const namespace = 'EventUrgency';
-  return seedPredefine({ namespace }, error => {
+  return seedPredefine({ namespace }, (error) => {
     debug('Finish Seeding Event Urgencies Data');
     return done(error);
   });
@@ -1219,10 +1219,10 @@ export const seedEventUrgencies = done => {
  *
  * seedEventResponses(error => { ... });
  */
-export const seedEventResponses = done => {
+export const seedEventResponses = (done) => {
   debug('Start Seeding Event Responses Data');
   const namespace = 'EventResponse';
-  return seedPredefine({ namespace }, error => {
+  return seedPredefine({ namespace }, (error) => {
     debug('Finish Seeding Event Responses Data');
     return done(error);
   });
@@ -1244,10 +1244,10 @@ export const seedEventResponses = done => {
  *
  * seedPartyGroups(error => { ... });
  */
-export const seedPartyGroups = done => {
+export const seedPartyGroups = (done) => {
   debug('Start Seeding Party Groups Data');
   const namespace = 'PartyGroup';
-  return seedPredefine({ namespace }, error => {
+  return seedPredefine({ namespace }, (error) => {
     debug('Finish Seeding Party Groups Data');
     return done(error);
   });
@@ -1269,10 +1269,10 @@ export const seedPartyGroups = done => {
  *
  * seedPartyRoles(error => { ... });
  */
-export const seedPartyRoles = done => {
+export const seedPartyRoles = (done) => {
   debug('Start Seeding Party Roles Data');
   const namespace = 'PartyRole';
-  return seedPredefine({ namespace }, error => {
+  return seedPredefine({ namespace }, (error) => {
     debug('Finish Seeding Party Roles Data');
     return done(error);
   });
@@ -1294,10 +1294,10 @@ export const seedPartyRoles = done => {
  *
  * seedEventGroups(error => { ... });
  */
-export const seedEventGroups = done => {
+export const seedEventGroups = (done) => {
   debug('Start Seeding Event Groups Data');
   const namespace = 'EventGroup';
-  return seedPredefine({ namespace }, error => {
+  return seedPredefine({ namespace }, (error) => {
     debug('Finish Seeding Event Groups Data');
     return done(error);
   });
@@ -1319,10 +1319,10 @@ export const seedEventGroups = done => {
  *
  * seedEventTypes(error => { ... });
  */
-export const seedEventTypes = done => {
+export const seedEventTypes = (done) => {
   debug('Start Seeding Event Types Data');
   const namespace = 'EventType';
-  return seedPredefine({ namespace }, error => {
+  return seedPredefine({ namespace }, (error) => {
     debug('Finish Seeding Event Types Data');
     return done(error);
   });
@@ -1344,10 +1344,10 @@ export const seedEventTypes = done => {
  *
  * seedEventFunctions(error => { ... });
  */
-export const seedEventFunctions = done => {
+export const seedEventFunctions = (done) => {
   debug('Start Seeding Event Functions Data');
   const namespace = 'EventFunction';
-  return seedPredefine({ namespace }, error => {
+  return seedPredefine({ namespace }, (error) => {
     debug('Finish Seeding Event Functions Data');
     return done(error);
   });
@@ -1369,10 +1369,10 @@ export const seedEventFunctions = done => {
  *
  * seedEventActions(error => { ... });
  */
-export const seedEventActions = done => {
+export const seedEventActions = (done) => {
   debug('Start Seeding Event Actions Data');
   const namespace = 'EventAction';
-  return seedPredefine({ namespace }, error => {
+  return seedPredefine({ namespace }, (error) => {
     debug('Finish Seeding Event Actions Data');
     return done(error);
   });
@@ -1394,10 +1394,10 @@ export const seedEventActions = done => {
  *
  * seedEventQuestions(error => { ... });
  */
-export const seedEventQuestions = done => {
+export const seedEventQuestions = (done) => {
   debug('Start Seeding Event Questions Data');
   const namespace = 'EventQuestion';
-  return seedPredefine({ namespace }, error => {
+  return seedPredefine({ namespace }, (error) => {
     debug('Finish Seeding Event Questions Data');
     return done(error);
   });
@@ -1419,10 +1419,10 @@ export const seedEventQuestions = done => {
  *
  * seedAdministrativeAreas(error => { ... });
  */
-export const seedAdministrativeAreas = done => {
+export const seedAdministrativeAreas = (done) => {
   debug('Start Seeding Administrative Areas Data');
   const namespace = 'AdministrativeArea';
-  return seedPredefine({ namespace }, error => {
+  return seedPredefine({ namespace }, (error) => {
     debug('Finish Seeding Administrative Areas Data');
     return done(error);
   });
@@ -1444,10 +1444,10 @@ export const seedAdministrativeAreas = done => {
  *
  * seedAgencies(error => { ... });
  */
-export const seedAgencies = done => {
+export const seedAgencies = (done) => {
   debug('Start Seeding Agencies Data');
   const type = 'Agency';
-  return seedParty({ type }, error => {
+  return seedParty({ type }, (error) => {
     debug('Finish Seeding Agencies Data');
     return done(error);
   });
@@ -1469,11 +1469,11 @@ export const seedAgencies = done => {
  *
  * seedFocals(error => { ... });
  */
-export const seedFocals = done => {
+export const seedFocals = (done) => {
   // TODO: merge administrator|seedAdministrator
   debug('Start Seeding Focals Data');
   const type = 'Focal';
-  return seedParty({ type }, error => {
+  return seedParty({ type }, (error) => {
     debug('Finish Seeding Focals Data');
     return done(error);
   });
@@ -1495,11 +1495,11 @@ export const seedFocals = done => {
  *
  * seedFeatures(error => { ... });
  */
-export const seedFeatures = done => {
+export const seedFeatures = (done) => {
   // TODO: seed per feature type i.e hospitals, buildings etc
   debug('Start Seeding Features Data');
   const namespace = 'Feature';
-  return seedPredefine({ namespace }, error => {
+  return seedPredefine({ namespace }, (error) => {
     debug('Finish Seeding Features Data');
     return done(error);
   });
@@ -1521,10 +1521,10 @@ export const seedFeatures = done => {
  *
  * seedEventActionCatalogues(error => { ... });
  */
-export const seedEventActionCatalogues = done => {
+export const seedEventActionCatalogues = (done) => {
   debug('Start Seeding Event Action Catalogues Data');
   const namespace = 'EventActionCatalogue';
-  return seedPredefine({ namespace }, error => {
+  return seedPredefine({ namespace }, (error) => {
     debug('Finish Seeding Event Action Catalogues Data');
     return done(error);
   });
@@ -1546,10 +1546,10 @@ export const seedEventActionCatalogues = done => {
  *
  * seedNotificationTemplates(error => { ... });
  */
-export const seedNotificationTemplates = done => {
+export const seedNotificationTemplates = (done) => {
   debug('Start Seeding Notification Templates Data');
   const namespace = 'NotificationTemplate';
-  return seedPredefine({ namespace }, error => {
+  return seedPredefine({ namespace }, (error) => {
     debug('Finish Seeding Notification Templates Data');
     return done(error);
   });
@@ -1571,9 +1571,9 @@ export const seedNotificationTemplates = done => {
  *
  * seedEvents(error => { ... });
  */
-export const seedEvents = done => {
+export const seedEvents = (done) => {
   debug('Start Seeding Events Data');
-  return seedEvent({}, error => {
+  return seedEvent({}, (error) => {
     debug('Finish Seeding Events Data');
     return done(error);
   });
@@ -1594,7 +1594,7 @@ export const seedEvents = done => {
  *
  * seed(error => { ... });
  */
-export const seed = done => {
+export const seed = (done) => {
   // prepare seed tasks
   const tasks = [
     syncIndexes,
