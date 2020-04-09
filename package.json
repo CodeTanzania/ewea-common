@@ -99,8 +99,8 @@
     "eslint-plugin-prettier": "^3.1.2",
     "generate-changelog": "^1.8.0",
     "handlebars": "^4.7.6",
-    "husky": "^4.2.3",
-    "lint-staged": "^10.1.2",
+    "husky": "^4.2.4",
+    "lint-staged": "^10.1.3",
     "lodash.template": "^4.5.0",
     "mocha": "^7.1.1",
     "mongoose": ">=5.9.7",
@@ -108,7 +108,7 @@
     "nyc": "^15.0.1",
     "prettier": "^2.0.4",
     "rimraf": "^3.0.2",
-    "rollup": "^2.3.4",
+    "rollup": "^2.3.5",
     "shelljs": "^0.8.3"
   },
   "peerDependencies": {
@@ -128,7 +128,7 @@
     "@lykmapipo/mongoose-sequenceable": ">=0.2.11",
     "@lykmapipo/permission": ">=0.8.22",
     "@lykmapipo/postman": ">=0.18.5",
-    "@lykmapipo/predefine": ">=1.8.0",
+    "@lykmapipo/predefine": ">=1.9.0",
     "async": ">=3.2.0",
     "lodash": ">=4.17.15",
     "mongoose-geojson-schemas": ">=0.11.11",
