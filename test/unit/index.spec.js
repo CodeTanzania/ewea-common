@@ -27,16 +27,16 @@ describe('process csv file', () => {
     const done = fake();
     const error = new Error();
     processCsvSeed({ throws: true }, done)(error, {});
-    expect(error).to.be.exist;
-    expect(done.calledWith(error)).to.be.true;
+    expect(error).to.exist;
+    expect(done).to.have.been.calledWith(error);
   });
 
-  it('should call done error if throw is false', () => {
+  it('should not call done with error if throw is false', () => {
     const done = fake();
     const error = new Error();
     processCsvSeed({ throws: false }, done)(error, {});
-    expect(error).to.be.exist;
-    expect(done).to.be.have.been.called;
+    expect(error).to.exist;
+    expect(done).to.have.not.been.calledWith(error);
   });
 
   it('should not call done if finished is false', () => {
@@ -65,7 +65,7 @@ describe('process csv file', () => {
     });
     Model.seed(data, next);
     expect(Model.seed).to.be.calledOnce;
-    expect(Model.seed.calledWith(data, next)).to.be.true;
+    expect(Model.seed).to.have.been.calledWith(data, next);
   });
 
   it('should not call model seed function next is false', () => {
@@ -86,7 +86,7 @@ describe('seed from csv', () => {
     const done = fake();
     const option = { modelName: undefined };
     seedFromCsv(option, done);
-    expect(done).to.be.called;
+    expect(done).to.have.been.called;
   });
 });
 
@@ -95,7 +95,7 @@ describe('seed from json', () => {
     const done = fake();
     const option = { modelName: undefined };
     seedFromJson(option, done);
-    expect(done).to.be.called;
+    expect(done).to.have.been.called;
   });
 });
 
@@ -104,7 +104,7 @@ describe('seed from seeds', () => {
     const done = fake();
     const option = {};
     seedFromSeeds(option, done);
-    expect(done).to.be.called;
+    expect(done).to.have.been.called;
   });
 
   it('should call done with error and result if throws is true', () => {
@@ -116,7 +116,7 @@ describe('seed from seeds', () => {
 
     Model.seed({ throws: true }, done(error, results));
     expect(error).to.exist;
-    expect(done).to.be.calledWith(error, results);
+    expect(done).to.have.been.calledWith(error, results);
   });
 
   it('should call done with result if throws is false', () => {
@@ -128,7 +128,7 @@ describe('seed from seeds', () => {
 
     Model.seed({ throws: false }, done(error, results));
     expect(error).to.not.exist;
-    expect(done).to.be.calledWith(null, results);
+    expect(done).to.have.been.calledWith(null, results);
   });
 });
 
