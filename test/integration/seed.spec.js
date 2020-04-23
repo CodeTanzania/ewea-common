@@ -2,7 +2,9 @@ import {
   MODEL_NAME_PREDEFINE,
   PREDEFINE_NAMESPACE_EVENTSEVERITY,
 } from '@codetanzania/ewea-internals';
+import { waterfall } from 'async';
 import { expect } from '@lykmapipo/mongoose-test-helpers';
+import { Predefine } from '@codetanzania/emis-stakeholder';
 import {
   readCsvFile,
   seedFromCsv,
@@ -39,13 +41,11 @@ import {
   seedEvents,
   seed,
 } from '../../src';
-import '@codetanzania/emis-stakeholder';
+
 import '@codetanzania/ewea-event';
 
 describe('seed', () => {
   const { BASE_PATH, DATA_PATH, SEED_PATH } = process.env;
-
-  // enableDebug();
 
   before(() => {
     process.env.BASE_PATH = __dirname;
@@ -354,6 +354,23 @@ describe('seed', () => {
       expect(error).to.not.exist;
       done(error);
     });
+  });
+
+  it('should not override same seed with different related', (done) => {
+    waterfall(
+      [
+        (next) => seedAdministrativeAreas(next),
+        (next) => Predefine.findAdministrativeArea(next),
+      ],
+      (error, areas) => {
+        expect(error).to.not.exist;
+        expect(areas).to.exist.and.have.length(3);
+        expect(areas.map((area) => area.strings.name.en)).to.have.length(
+          areas.length
+        );
+        done(error, areas);
+      }
+    );
   });
 
   it('should seed data', (done) => {

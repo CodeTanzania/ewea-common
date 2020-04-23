@@ -1,6 +1,11 @@
 import {
+  MODEL_NAME_PARTY,
+  MODEL_NAME_PREDEFINE,
   PREDEFINE_NAMESPACES,
   PREDEFINE_RELATIONS,
+  PREDEFINE_NAMESPACE_ADMINISTRATIVELEVEL,
+  PREDEFINE_NAMESPACE_EVENTLEVEL,
+  PREDEFINE_NAMESPACE_ADMINISTRATIVEAREA,
 } from '@codetanzania/ewea-internals';
 import { expect, fake } from '@lykmapipo/test-helpers';
 import { getStrings, getObject } from '@lykmapipo/env';
@@ -193,6 +198,10 @@ describe('common', () => {
       fid: 1,
       name: 'Two',
     });
+    expect(transformSeedKeys({ 'FID ': 1, Name: 'Two' })).to.be.eql({
+      fid: 1,
+      name: 'Two',
+    });
     expect(transformSeedKeys({ FID: 1, 'Name En': 'Two' })).to.be.eql({
       fid: 1,
       'name.en': 'Two',
@@ -259,6 +268,7 @@ describe('common', () => {
     const data = {
       name: 'Two',
       description: 'Two',
+      parent: 'One',
       group: 'Meteorological',
       agencies: 'Roads Agency',
       area: '',
@@ -270,18 +280,78 @@ describe('common', () => {
         description: { en: 'Two', sw: 'Two' },
       },
       populate: {
+        'relations.parent': {
+          model: MODEL_NAME_PREDEFINE,
+          match: {
+            'strings.name.en': { $in: [data.parent] },
+            namespace: { $in: [...PREDEFINE_NAMESPACES] },
+          },
+          array: false,
+          ignore: {},
+        },
         'relations.group': {
-          model: 'Predefine',
+          model: MODEL_NAME_PREDEFINE,
           match: {
             'strings.name.en': { $in: [data.group] },
             namespace: { $in: ['EventGroup'] },
           },
           array: false,
+          ignore: {},
         },
         'relations.agencies': {
-          model: 'Party',
+          model: MODEL_NAME_PARTY,
           match: { name: { $in: [data.agencies] } },
           array: true,
+          ignore: {},
+        },
+      },
+    });
+  });
+
+  it('should transform to administrative area seed', () => {
+    const data = {
+      namespace: PREDEFINE_NAMESPACE_ADMINISTRATIVEAREA,
+      level: 'Town',
+      name: 'Down Town',
+      parent: 'Up Town',
+    };
+    const seed = transformToPredefineSeed(data);
+    expect(seed).to.be.eql({
+      namespace: PREDEFINE_NAMESPACE_ADMINISTRATIVEAREA,
+      strings: {
+        name: { en: 'Down Town', sw: 'Down Town' },
+      },
+      populate: {
+        'relations.level': {
+          model: MODEL_NAME_PREDEFINE,
+          match: {
+            'strings.name.en': { $in: [data.level] },
+            namespace: {
+              $in: [
+                PREDEFINE_NAMESPACE_ADMINISTRATIVELEVEL,
+                PREDEFINE_NAMESPACE_EVENTLEVEL,
+              ],
+            },
+          },
+          array: false,
+          ignore: {},
+        },
+        'relations.parent': {
+          model: MODEL_NAME_PREDEFINE,
+          match: {
+            'strings.name.en': { $in: [data.parent] },
+            namespace: { $in: [...PREDEFINE_NAMESPACES] },
+          },
+          array: false,
+          ignore: {
+            model: MODEL_NAME_PREDEFINE,
+            path: 'relations.level',
+            match: {
+              'strings.name.en': { $in: [data.level] },
+              namespace: { $in: [PREDEFINE_NAMESPACE_ADMINISTRATIVELEVEL] },
+            },
+            array: false,
+          },
         },
       },
     });

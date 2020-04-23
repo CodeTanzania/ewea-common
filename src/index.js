@@ -17,4 +17,7 @@
 export * from '@codetanzania/ewea-internals';
 
 export * from './database';
+// export * from './samples';
+// export * from './functions';
+// export * from './queries';
 export * from './seed';

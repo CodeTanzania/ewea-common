@@ -2,6 +2,8 @@ import {
   MODEL_NAME_PREDEFINE,
   MODEL_NAME_PARTY,
   MODEL_NAME_EVENT,
+  PREDEFINE_NAMESPACE_ADMINISTRATIVELEVEL,
+  PREDEFINE_NAMESPACE_ADMINISTRATIVEAREA,
   PARTY_RELATIONS,
   PREDEFINE_RELATIONS,
   EVENT_RELATIONS,
@@ -14,11 +16,14 @@ import {
   isArray,
   isEmpty,
   isFunction,
+  isNaN,
   keys,
   map,
   mapKeys,
   split,
   toLower,
+  toNumber,
+  trim,
   omit,
 } from 'lodash';
 import { waterfall } from 'async';
@@ -221,7 +226,7 @@ export const transformSeedKeys = (seed) => {
   // normalize keys
   const transformed = mapKeys(data, (value, key) => {
     // key to lower
-    let path = toLower(key);
+    let path = toLower(trim(key));
     // key to path
     path = join(split(path, ' '), '.');
     // return normalized key
@@ -318,8 +323,8 @@ export const transformOtherFields = (seed) => {
   }
 
   // ensure weight from level & order
-  if (transformed.level || transformed.order) {
-    const weight = transformed.level || transformed.order;
+  const weight = toNumber(transformed.level || transformed.order);
+  if (!isNaN(weight)) {
     transformed.weight = weight;
     transformed.numbers = mergeObjects(transformed.numbers, { weight });
   }
@@ -401,6 +406,8 @@ export const transformToPredefineSeed = (seed) => {
   let predefine = transformToPredefine(data);
 
   // transform relations
+  // TODO: honor exist populate option
+  // TODO: handle parent of administrative area using level
   const populate = {};
   forEach(PREDEFINE_RELATIONS, (value, key) => {
     const hasRelation = key && seed[key];
@@ -415,7 +422,25 @@ export const transformToPredefineSeed = (seed) => {
         modelName === MODEL_NAME_PREDEFINE
           ? { 'strings.name.en': { $in: vals }, namespace: { $in: namespaces } }
           : { name: { $in: vals } };
-      populate[path] = { model: modelName, match, array };
+
+      // honour administrative area seed hierarchy
+      const handleAdministrativeArea =
+        seed.namespace === PREDEFINE_NAMESPACE_ADMINISTRATIVEAREA &&
+        key === 'parent' &&
+        seed.level;
+      const ignore = handleAdministrativeArea
+        ? {
+            model: modelName,
+            path: 'relations.level',
+            match: {
+              'strings.name.en': { $in: [seed.level] },
+              namespace: { $in: [PREDEFINE_NAMESPACE_ADMINISTRATIVELEVEL] },
+            },
+            array: false,
+          }
+        : {};
+
+      populate[path] = { model: modelName, match, array, ignore };
     }
   });
   predefine.populate = populate;
@@ -643,7 +668,11 @@ export const seedFromCsv = (optns, done) => {
       modelName === MODEL_NAME_PREDEFINE && !isEmpty(namespace);
     const csvFilePath = filePath || csvPathFor(namespace || modelName);
     const appliedTransformers = isPredefine
-      ? [transformToPredefineSeed, ...transformers]
+      ? map([transformToPredefineSeed, ...transformers], (fn) => {
+          return (seed) => {
+            return fn({ namespace, ...seed });
+          };
+        })
       : [...transformers];
 
     // seed from csv
@@ -701,7 +730,11 @@ export const seedFromJson = (optns, done) => {
       modelName === MODEL_NAME_PREDEFINE && !isEmpty(namespace);
     const jsonFilePath = filePath || jsonPathFor(namespace || modelName);
     const appliedTransformers = isPredefine
-      ? [transformToPredefineSeed, ...transformers]
+      ? map([transformToPredefineSeed, ...transformers], (fn) => {
+          return (seed) => {
+            return fn({ namespace, ...seed });
+          };
+        })
       : [...transformers];
 
     // prepare json seed stages
