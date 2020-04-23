@@ -85,7 +85,7 @@
     "@lykmapipo/test-helpers": "^0.5.15",
     "chai": "^4.2.0",
     "commitizen": "^4.0.4",
-    "coveralls": "^3.0.13",
+    "coveralls": "^3.0.14",
     "csv-parse": "^4.8.9",
     "csv-to-array": "^1.0.2",
     "cz-conventional-changelog": "^3.1.0",
