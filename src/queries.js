@@ -1,3 +1,4 @@
+import { PARTY_RELATIONS } from '@codetanzania/ewea-internals';
 import { isEmpty, forEach, filter, find, first } from 'lodash';
 import { waterfall } from 'async';
 import { compact, arrayToObject } from '@lykmapipo/common';
@@ -73,9 +74,38 @@ export const findDefaultPredefines = (done) => {
   return waterfall(tasks, done);
 };
 
+/**
+ * @function findPartyDefaults
+ * @name findPartyDefaults
+ * @description Find party default predefine values
+ * @param {Function} done callback to invoke on success or error
+ * @returns {object|Error} default values or error
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.8.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * findPartyDefaults((error, defaults) => { ... });
+ * //=> { role: {...}, ... }
+ *
+ */
 export const findPartyDefaults = (done) => {
-  // TODO derive defaults per party & merge
-  return done();
+  // find default predefines
+  return findDefaultPredefines((error, { predefines }) => {
+    if (error) {
+      return done(error);
+    }
+
+    // derive party defaults
+    const results = {};
+    forEach(PARTY_RELATIONS, ({ namespace }, key) => {
+      results[key] = find(predefines, { namespace });
+    });
+    return done(null, results);
+  });
 };
 
 export const findEventDefaults = (done) => {

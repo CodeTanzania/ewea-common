@@ -7,7 +7,7 @@ import {
   expect,
   // enableDebug,
 } from '@lykmapipo/mongoose-test-helpers';
-import { findDefaultPredefines } from '../../src';
+import { findDefaultPredefines, findPartyDefaults } from '../../src';
 
 describe('queries', () => {
   const unit = Predefine.fakeUnit();
@@ -24,6 +24,9 @@ describe('queries', () => {
 
   const role = Predefine.fakePartyRole();
   role.set({ strings: { name: { en: 'Unknown', sw: 'Unknown' } } });
+
+  const partyGroup = Predefine.fakePartyGroup();
+  partyGroup.set({ strings: { name: { en: 'Unknown', sw: 'Unknown' } } });
 
   const predefines = map(
     [
@@ -47,7 +50,7 @@ describe('queries', () => {
 
   before((done) => clear(done));
   before((done) => create(...predefines, done));
-  before((done) => create(role, done));
+  before((done) => create(role, partyGroup, done));
 
   it('should find default predefines', (done) => {
     findDefaultPredefines((error, defaults) => {
@@ -87,6 +90,24 @@ describe('queries', () => {
 
       expect(defaults.template).to.exist;
       expect(areSameInstance(defaults.template, template)).to.be.true;
+
+      done(error, defaults);
+    });
+  });
+
+  it('should find default predefines', (done) => {
+    findPartyDefaults((error, defaults) => {
+      expect(error).to.not.exist;
+      expect(defaults).to.exist.and.be.an('object');
+
+      expect(defaults.role).to.exist;
+      expect(areSameInstance(defaults.role, role)).to.be.true;
+
+      expect(defaults.area).to.exist;
+      expect(areSameInstance(defaults.area, area)).to.be.true;
+
+      expect(defaults.group).to.exist;
+      expect(areSameInstance(defaults.group, partyGroup)).to.be.true;
 
       done(error, defaults);
     });
