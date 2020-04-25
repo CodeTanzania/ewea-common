@@ -16,6 +16,7 @@
  *
  */
 export * from '@codetanzania/ewea-internals';
+export * from '@lykmapipo/constants';
 export * from './constants';
 export * from './database';
 export * from './seed';
