@@ -11,11 +11,14 @@
  * @license MIT
  * @example
  *
- * import { syncIndexes } from '@codetanzania/ewea-event';
+ * import { syncIndexes } from '@codetanzania/ewea-common';
  * syncIndexes(error => { ... });
+ *
  */
 export * from '@codetanzania/ewea-internals';
 
+export * from './constants';
+// export * from './defaults';
 export * from './database';
 // export * from './samples';
 // export * from './functions';
