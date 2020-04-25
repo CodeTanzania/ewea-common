@@ -1,3 +1,32 @@
+#### 0.8.0 (2020-04-25)
+
+##### Chores
+
+* **deps:**
+  *  force latest version & audit fix ([1cd267e0](https://github.com/codetanzania/ewea-common/commit/1cd267e013cad67749208128d19610ee14e87de2))
+  *  force latest version & audit fix ([26445e75](https://github.com/codetanzania/ewea-common/commit/26445e7537ea2214f488e93554be5098520bccb8))
+  *  force latest version & audit fix ([5be129d7](https://github.com/codetanzania/ewea-common/commit/5be129d70c89e271acf41082f1ffac252c456476))
+  *  force latest version & audit fix ([e78881e7](https://github.com/codetanzania/ewea-common/commit/e78881e7510cd274a0bef7b5af16c2b7cd751de1))
+  *  force latest version & audit fix ([77357b6f](https://github.com/codetanzania/ewea-common/commit/77357b6f6e194d1984140c6712173b02da3929bb))
+  *  force latest version & audit fix ([8cf380b9](https://github.com/codetanzania/ewea-common/commit/8cf380b94fedf09a381e64f19ce3be32ea98df5c))
+  *  force latest version & audit fix ([4576c4ad](https://github.com/codetanzania/ewea-common/commit/4576c4ad92f9e4ecf92f2e0fd128c0d6604d3f39))
+  *  force latest version & audit fix ([ed487627](https://github.com/codetanzania/ewea-common/commit/ed4876276fa968fb90d328c94e73786d12c263e7))
+
+##### New Features
+
+* **queries:**
+  *  add find party default helper ([b42b675c](https://github.com/codetanzania/ewea-common/commit/b42b675c803b938ceee8cb75993dca47523c9e4b))
+  *  allow recursive administrative area & level queries ([9dd3ba86](https://github.com/codetanzania/ewea-common/commit/9dd3ba86c58b40bca5b1046bdb88c4928207c282))
+  *  add default predefines finder ([38959f01](https://github.com/codetanzania/ewea-common/commit/38959f018e3b5ce40f194762966161809e242ca1))
+*  expose extra common constants ([de655015](https://github.com/codetanzania/ewea-common/commit/de6550159da294b9a3bcd58dfe6d139b76af97af))
+*  expose default constants ([e5f4c764](https://github.com/codetanzania/ewea-common/commit/e5f4c764fa381a7408db28d34188f9ec9cdceaa8))
+* **seed:**  prevent overerride with related ([df150163](https://github.com/codetanzania/ewea-common/commit/df150163e441ff3c10247c09bebbc4cab011f38e))
+
+##### Tests
+
+* **unit:**  improve assertions ([7320af6f](https://github.com/codetanzania/ewea-common/commit/7320af6f1be0680702d342153b265b12b121dff1))
+* **fixtures:**  update csv seeds ([510abade](https://github.com/codetanzania/ewea-common/commit/510abadeac95f2dc9688e6d2ad3fb45e383d8728))
+
 #### 0.7.0 (2020-03-06)
 
 ##### Chores
