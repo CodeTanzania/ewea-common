@@ -101,3 +101,95 @@ export const preloadEventRelated = (event, done) => {
 export const preloadChangelogRelated = (changelog, done) => {
   return done();
 };
+
+/**
+ * @function findAdministrativeLevelChildren
+ * @name findAdministrativeLevelChildren
+ * @description Find lower administrative levels recursive based on criteria
+ * @param {object} criteria valid lower query options
+ * @param {Function} done callback to invoke on success or error
+ * @returns {object[]|Error} found administrative levels or error
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.8.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * const criteria = { _id: ... }
+ * findAdministrativeLevelChildren(criteria,(error, levels) => { ... });
+ * //=> [ Predefine { ... }, ... ]
+ */
+export const findAdministrativeLevelChildren = (criteria, done) => {
+  return Predefine.findAdministrativeLevelChildren(criteria, done);
+};
+
+/**
+ * @function findAdministrativeLevelParents
+ * @name findAdministrativeLevelParents
+ * @description Find parent administrative levels recursive based on criteria
+ * @param {object} criteria valid parent query options
+ * @param {Function} done callback to invoke on success or error
+ * @returns {object[]|Error} found administrative levels or error
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.8.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * const criteria = { _id: ... }
+ * findAdministrativeLevelParents(criteria,(error, levels) => { ... });
+ * //=> [ Predefine { ... }, ... ]
+ */
+export const findAdministrativeLevelParents = (criteria, done) => {
+  return Predefine.findAdministrativeLevelParents(criteria, done);
+};
+
+/**
+ * @function findAdministrativeAreaChildren
+ * @name findAdministrativeAreaChildren
+ * @description Find lower administrative areas recursive based on criteria
+ * @param {object} criteria valid lower query options
+ * @param {Function} done callback to invoke on success or error
+ * @returns {object[]|Error} found administrative areas or error
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.8.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * const criteria = { _id: ... }
+ * findAdministrativeAreaChildren(criteria,(error, areas) => { ... });
+ * //=> [ Predefine { ... }, ... ]
+ */
+export const findAdministrativeAreaChildren = (criteria, done) => {
+  return Predefine.findAdministrativeAreaChildren(criteria, done);
+};
+
+/**
+ * @function findAdministrativeAreaParents
+ * @name findAdministrativeAreaParents
+ * @description Find parent administrative areas recursive based on criteria
+ * @param {object} criteria valid parent query options
+ * @param {Function} done callback to invoke on success or error
+ * @returns {object[]|Error} found administrative areas or error
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.8.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * const criteria = { _id: ... }
+ * findAdministrativeAreaParents(criteria,(error, areas) => { ... });
+ * //=> [ Predefine { ... }, ... ]
+ */
+export const findAdministrativeAreaParents = (criteria, done) => {
+  return Predefine.findAdministrativeAreaParents(criteria, done);
+};
