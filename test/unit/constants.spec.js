@@ -20,6 +20,7 @@ import {
   DEFAULT_EVENTQUESTION_NAME,
   DEFAULT_ADMINISTRATIVEAREA_NAME,
   DEFAULT_EVENT_NUMBER,
+  DEFAULT_NAMES,
 } from '../../src';
 
 describe('constants', () => {
@@ -44,5 +45,6 @@ describe('constants', () => {
     expect(DEFAULT_EVENTQUESTION_NAME).to.be.undefined;
     expect(DEFAULT_ADMINISTRATIVEAREA_NAME).to.be.undefined;
     expect(DEFAULT_EVENT_NUMBER).to.be.undefined;
+    expect(DEFAULT_NAMES).to.be.exist.and.be.an('array');
   });
 });

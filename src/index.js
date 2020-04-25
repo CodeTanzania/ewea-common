@@ -16,11 +16,11 @@
  *
  */
 export * from '@codetanzania/ewea-internals';
-
 export * from './constants';
-// export * from './defaults';
 export * from './database';
-// export * from './samples';
-// export * from './functions';
-// export * from './queries';
 export * from './seed';
+export * from './queries';
+// export * from './samples';
+// export * from './dataset';
+// export * from './functions';
+// export * from './middlewares';
