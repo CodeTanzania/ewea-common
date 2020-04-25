@@ -1,3 +1,9 @@
+#### 0.8.1 (2020-04-25)
+
+##### Bug Fixes
+
+* **build:**  ensure correct export orders ([54f5ae78](https://github.com/codetanzania/ewea-common/commit/54f5ae7860a08faa9c2b04e03a781a77b0da9ef4))
+
 #### 0.8.0 (2020-04-25)
 
 ##### Chores
