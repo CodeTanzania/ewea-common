@@ -1,2 +1,5 @@
-Name,Point ,Geometry,Level
-Dar es Salaam,,,
+Level,Code,Name,Point,Geometry,Parent
+Region,01,Dar es Salaam,,,
+Region,01,Dar es Salaam,,,
+District,02,Ilala,,,Dar es Salaam
+Ward,03,Ilala,,,Ilala

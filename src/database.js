@@ -21,8 +21,8 @@ import { createModels } from '@lykmapipo/file';
  *
  * connect(error => { ... });
  */
-export const connect = done => {
-  return connectToDatabase(error => {
+export const connect = (done) => {
+  return connectToDatabase((error) => {
     createModels();
     return done(error);
   });
@@ -44,4 +44,4 @@ export const connect = done => {
  *
  * syncIndexes(error => { ... });
  */
-export const syncIndexes = done => waterfall([connect, ensureIndexes], done);
+export const syncIndexes = (done) => waterfall([connect, ensureIndexes], done);

@@ -1,6 +1,11 @@
 import {
+  MODEL_NAME_PARTY,
+  MODEL_NAME_PREDEFINE,
   PREDEFINE_NAMESPACES,
   PREDEFINE_RELATIONS,
+  PREDEFINE_NAMESPACE_ADMINISTRATIVELEVEL,
+  PREDEFINE_NAMESPACE_EVENTLEVEL,
+  PREDEFINE_NAMESPACE_ADMINISTRATIVEAREA,
 } from '@codetanzania/ewea-internals';
 import { expect, fake } from '@lykmapipo/test-helpers';
 import { getStrings, getObject } from '@lykmapipo/env';
@@ -27,16 +32,16 @@ describe('process csv file', () => {
     const done = fake();
     const error = new Error();
     processCsvSeed({ throws: true }, done)(error, {});
-    expect(error).to.be.exist;
-    expect(done.calledWith(error)).to.be.true;
+    expect(error).to.exist;
+    expect(done).to.have.been.calledWith(error);
   });
 
-  it('should call done error if throw is false', () => {
+  it('should not call done with error if throw is false', () => {
     const done = fake();
     const error = new Error();
     processCsvSeed({ throws: false }, done)(error, {});
-    expect(error).to.be.exist;
-    expect(done).to.be.have.been.called;
+    expect(error).to.exist;
+    expect(done).to.have.not.been.calledWith(error);
   });
 
   it('should not call done if finished is false', () => {
@@ -65,7 +70,7 @@ describe('process csv file', () => {
     });
     Model.seed(data, next);
     expect(Model.seed).to.be.calledOnce;
-    expect(Model.seed.calledWith(data, next)).to.be.true;
+    expect(Model.seed).to.have.been.calledWith(data, next);
   });
 
   it('should not call model seed function next is false', () => {
@@ -86,7 +91,7 @@ describe('seed from csv', () => {
     const done = fake();
     const option = { modelName: undefined };
     seedFromCsv(option, done);
-    expect(done).to.be.called;
+    expect(done).to.have.been.called;
   });
 });
 
@@ -95,7 +100,7 @@ describe('seed from json', () => {
     const done = fake();
     const option = { modelName: undefined };
     seedFromJson(option, done);
-    expect(done).to.be.called;
+    expect(done).to.have.been.called;
   });
 });
 
@@ -104,7 +109,7 @@ describe('seed from seeds', () => {
     const done = fake();
     const option = {};
     seedFromSeeds(option, done);
-    expect(done).to.be.called;
+    expect(done).to.have.been.called;
   });
 
   it('should call done with error and result if throws is true', () => {
@@ -116,7 +121,7 @@ describe('seed from seeds', () => {
 
     Model.seed({ throws: true }, done(error, results));
     expect(error).to.exist;
-    expect(done).to.be.calledWith(error, results);
+    expect(done).to.have.been.calledWith(error, results);
   });
 
   it('should call done with result if throws is false', () => {
@@ -128,7 +133,7 @@ describe('seed from seeds', () => {
 
     Model.seed({ throws: false }, done(error, results));
     expect(error).to.not.exist;
-    expect(done).to.be.calledWith(null, results);
+    expect(done).to.have.been.calledWith(null, results);
   });
 });
 
@@ -190,6 +195,10 @@ describe('common', () => {
 
   it('should transform seed keys', () => {
     expect(transformSeedKeys({ FID: 1, Name: 'Two' })).to.be.eql({
+      fid: 1,
+      name: 'Two',
+    });
+    expect(transformSeedKeys({ 'FID ': 1, Name: 'Two' })).to.be.eql({
       fid: 1,
       name: 'Two',
     });
@@ -259,6 +268,7 @@ describe('common', () => {
     const data = {
       name: 'Two',
       description: 'Two',
+      parent: 'One',
       group: 'Meteorological',
       agencies: 'Roads Agency',
       area: '',
@@ -270,18 +280,78 @@ describe('common', () => {
         description: { en: 'Two', sw: 'Two' },
       },
       populate: {
+        'relations.parent': {
+          model: MODEL_NAME_PREDEFINE,
+          match: {
+            'strings.name.en': { $in: [data.parent] },
+            namespace: { $in: [...PREDEFINE_NAMESPACES] },
+          },
+          array: false,
+          ignore: {},
+        },
         'relations.group': {
-          model: 'Predefine',
+          model: MODEL_NAME_PREDEFINE,
           match: {
             'strings.name.en': { $in: [data.group] },
             namespace: { $in: ['EventGroup'] },
           },
           array: false,
+          ignore: {},
         },
         'relations.agencies': {
-          model: 'Party',
+          model: MODEL_NAME_PARTY,
           match: { name: { $in: [data.agencies] } },
           array: true,
+          ignore: {},
+        },
+      },
+    });
+  });
+
+  it('should transform to administrative area seed', () => {
+    const data = {
+      namespace: PREDEFINE_NAMESPACE_ADMINISTRATIVEAREA,
+      level: 'Town',
+      name: 'Down Town',
+      parent: 'Up Town',
+    };
+    const seed = transformToPredefineSeed(data);
+    expect(seed).to.be.eql({
+      namespace: PREDEFINE_NAMESPACE_ADMINISTRATIVEAREA,
+      strings: {
+        name: { en: 'Down Town', sw: 'Down Town' },
+      },
+      populate: {
+        'relations.level': {
+          model: MODEL_NAME_PREDEFINE,
+          match: {
+            'strings.name.en': { $in: [data.level] },
+            namespace: {
+              $in: [
+                PREDEFINE_NAMESPACE_ADMINISTRATIVELEVEL,
+                PREDEFINE_NAMESPACE_EVENTLEVEL,
+              ],
+            },
+          },
+          array: false,
+          ignore: {},
+        },
+        'relations.parent': {
+          model: MODEL_NAME_PREDEFINE,
+          match: {
+            'strings.name.en': { $in: [data.parent] },
+            namespace: { $in: [...PREDEFINE_NAMESPACES] },
+          },
+          array: false,
+          ignore: {
+            model: MODEL_NAME_PREDEFINE,
+            path: 'relations.level',
+            match: {
+              'strings.name.en': { $in: [data.level] },
+              namespace: { $in: [PREDEFINE_NAMESPACE_ADMINISTRATIVELEVEL] },
+            },
+            array: false,
+          },
         },
       },
     });
