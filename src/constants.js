@@ -21,6 +21,8 @@ import {
 } from '@codetanzania/ewea-internals';
 import { getString } from '@lykmapipo/env';
 
+export * from '@lykmapipo/constants';
+
 export const DEFAULT_UNIT_NAME = getString(
   'DEFAULT_UNIT_NAME',
   PREDEFINE_UNIT_NAME
