@@ -1651,7 +1651,7 @@ export const seed = (done) => {
     seedEventActions,
     seedEventQuestions,
     seedAdministrativeAreas,
-    // seedAdministrator,
+    // seedAdministrators,
     seedAgencies,
     seedFocals,
     seedFeatures,
