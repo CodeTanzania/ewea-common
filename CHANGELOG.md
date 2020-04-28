@@ -1,3 +1,20 @@
+#### 0.9.0 (2020-04-28)
+
+##### Chores
+
+* **deps:**
+  *  force latest version & audit fix ([ba27d84c](https://github.com/codetanzania/ewea-common/commit/ba27d84c9d4680f43df04ffb19cd65462166aa4c))
+  *  force latest version & audit fix ([e90b18ff](https://github.com/codetanzania/ewea-common/commit/e90b18ffa1d01ae1bc3fcdeac346fbeb6a496a27))
+  *  force latest version & audit fix ([d5bd6e30](https://github.com/codetanzania/ewea-common/commit/d5bd6e30933799e212cbef0cec8a09c291e732cb))
+
+##### New Features
+
+* **queries:**  add shortcuts ([3b445f89](https://github.com/codetanzania/ewea-common/commit/3b445f895d46ed3bed89e419230b06f0639b73a5))
+
+##### Tests
+
+*  reorder seed test cases ([fb90cb25](https://github.com/codetanzania/ewea-common/commit/fb90cb259693113b4e4ee87a258f384ba3bd724e))
+
 #### 0.8.1 (2020-04-25)
 
 ##### Bug Fixes
