@@ -13,6 +13,7 @@ import { parseCoordinateString, readCsv, readJson } from '@lykmapipo/geo-tools';
 import { transformToPredefine, listPermissions, Predefine } from '@lykmapipo/predefine';
 import { Permission } from '@lykmapipo/permission';
 import { localizedKeysFor } from 'mongoose-locale-schema';
+import { Party } from '@codetanzania/emis-stakeholder';
 
 const DEFAULT_UNIT_NAME = getString(
   'DEFAULT_UNIT_NAME',
@@ -1794,7 +1795,7 @@ const seed = (done) => {
     seedEventActions,
     seedEventQuestions,
     seedAdministrativeAreas,
-    // seedAdministrator,
+    // seedAdministrators,
     seedAgencies,
     seedFocals,
     seedFeatures,
@@ -2034,4 +2035,312 @@ const findAdministrativeAreaParents = (criteria, done) => {
   return Predefine.findAdministrativeAreaParents(criteria, done);
 };
 
-export { DEFAULT_ADMINISTRATIVEAREA_NAME, DEFAULT_ADMINISTRATIVELEVEL_NAME, DEFAULT_EVENTACTION_NAME, DEFAULT_EVENTCERTAINTY_NAME, DEFAULT_EVENTFUNCTION_NAME, DEFAULT_EVENTGROUP_NAME, DEFAULT_EVENTINDICATOR_NAME, DEFAULT_EVENTLEVEL_NAME, DEFAULT_EVENTQUESTION_NAME, DEFAULT_EVENTRESPONSE_NAME, DEFAULT_EVENTSEVERITY_NAME, DEFAULT_EVENTSTATUS_NAME, DEFAULT_EVENTTOPIC_NAME, DEFAULT_EVENTTYPE_NAME, DEFAULT_EVENTURGENCY_NAME, DEFAULT_EVENT_NUMBER, DEFAULT_FEATURETYPE_NAME, DEFAULT_NAMES, DEFAULT_PARTYGROUP_NAME, DEFAULT_PARTYROLE_NAME, DEFAULT_PATHS, DEFAULT_UNIT_NAME, applyTransformsOn, connect, csvPathFor, dataPathFor, findAdministrativeAreaChildren, findAdministrativeAreaParents, findAdministrativeLevelChildren, findAdministrativeLevelParents, findChangelogDefaults, findDefaultPredefines, findEventDefaults, findPartyDefaults, geoJsonPathFor, jsonPathFor, pathFor, preloadChangelogRelated, preloadEventRelated, preloadPartyRelated, preloadRelated, processCsvSeed, readCsvFile, seed, seedAdministrativeAreas, seedAdministrativeLevels, seedAgencies, seedEvent, seedEventActionCatalogues, seedEventActions, seedEventCertainties, seedEventFunctions, seedEventGroups, seedEventIndicators, seedEventLevels, seedEventQuestions, seedEventResponses, seedEventSeverities, seedEventStatuses, seedEventTopics, seedEventTypes, seedEventUrgencies, seedEvents, seedFeatureTypes, seedFeatures, seedFocals, seedFromCsv, seedFromJson, seedFromSeeds, seedNotificationTemplates, seedParty, seedPartyGroups, seedPartyRoles, seedPathFor, seedPermissions, seedPredefine, seedUnits, shapeFilePathFor, syncIndexes, transformGeoFields, transformOtherFields, transformSeedKeys, transformToEventSeed, transformToPartySeed, transformToPredefineSeed };
+// start:query shortcuts
+
+/* eslint-disable jsdoc/check-param-names */
+
+/**
+ * @function findPermissions
+ * @name findPermissions
+ * @description Find permissions
+ * @param {object} [filter] valid query condition
+ * @param {object} [projection] valid fields to select
+ * @param {object} [options] valid query options
+ * @param {Function} [callback] callback to invoke on success or error
+ * @param {*} [optns] valid query options
+ * @returns {object[]|Error} permissions or error
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.9.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * findPermissions((error, found) => { ... });
+ * //=> [ Permission { ... }, ... ]
+ */
+const findPermissions = (...optns) => {
+  return Permission.find(...optns);
+};
+
+/**
+ * @function findPermission
+ * @name findPermission
+ * @description Find permission
+ * @param {object} [filter] valid query condition
+ * @param {object} [projection] valid fields to select
+ * @param {object} [options] valid query options
+ * @param {Function} [callback] callback to invoke on success or error
+ * @param {*} [optns] valid query options
+ * @returns {object|Error} permission or error
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.9.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * findPermission((error, found) => { ... });
+ * //=> Permission { ... }
+ */
+const findPermission = (...optns) => {
+  return Permission.findOne(...optns);
+};
+
+/**
+ * @function findAdministrativeLevels
+ * @name findAdministrativeLevels
+ * @description Find administrative levels
+ * @param {object} [filter] valid query condition
+ * @param {object} [projection] valid fields to select
+ * @param {object} [options] valid query options
+ * @param {Function} [callback] callback to invoke on success or error
+ * @param {*} [optns] valid query options
+ * @returns {object[]|Error} administrative levels or error
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.9.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * findAdministrativeLevels((error, found) => { ... });
+ * //=> [ Predefine { ... }, ... ]
+ */
+const findAdministrativeLevels = (...optns) => {
+  return Predefine.findAdministrativeLevel(...optns);
+};
+
+/**
+ * @function findAdministrativeLevel
+ * @name findAdministrativeLevel
+ * @description Find administrative level
+ * @param {object} [filter] valid query condition
+ * @param {object} [projection] valid fields to select
+ * @param {object} [options] valid query options
+ * @param {Function} [callback] callback to invoke on success or error
+ * @param {*} [optns] valid query options
+ * @returns {object|Error} administrative level or error
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.9.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * findAdministrativeLevel((error, found) => { ... });
+ * //=> Predefine { ... }
+ */
+const findAdministrativeLevel = (...optns) => {
+  return Predefine.findOneAdministrativeLevel(...optns);
+};
+
+/**
+ * @function findPartyRoles
+ * @name findPartyRoles
+ * @description Find party roles
+ * @param {object} [filter] valid query condition
+ * @param {object} [projection] valid fields to select
+ * @param {object} [options] valid query options
+ * @param {Function} [callback] callback to invoke on success or error
+ * @param {*} [optns] valid query options
+ * @returns {object[]|Error} party roles or error
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.9.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * findPartyRoles((error, found) => { ... });
+ * //=> [ Predefine { ... }, ... ]
+ */
+const findPartyRoles = (...optns) => {
+  return Predefine.findPartyRole(...optns);
+};
+
+/**
+ * @function findPartyRole
+ * @name findPartyRole
+ * @description Find party role
+ * @param {object} [filter] valid query condition
+ * @param {object} [projection] valid fields to select
+ * @param {object} [options] valid query options
+ * @param {Function} [callback] callback to invoke on success or error
+ * @param {*} [optns] valid query options
+ * @returns {object|Error} party role or error
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.9.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * findPartyRole((error, found) => { ... });
+ * //=> Predefine { ... }
+ */
+const findPartyRole = (...optns) => {
+  return Predefine.findOnePartyRole(...optns);
+};
+
+/**
+ * @function findPartyGroups
+ * @name findPartyGroups
+ * @description Find party groups
+ * @param {object} [filter] valid query condition
+ * @param {object} [projection] valid fields to select
+ * @param {object} [options] valid query options
+ * @param {Function} [callback] callback to invoke on success or error
+ * @param {*} [optns] valid query options
+ * @returns {object[]|Error} party groups or error
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.9.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * findPartyGroups((error, found) => { ... });
+ * //=> [ Predefine { ... }, ... ]
+ */
+const findPartyGroups = (...optns) => {
+  return Predefine.findPartyGroup(...optns);
+};
+
+/**
+ * @function findPartyGroup
+ * @name findPartyGroup
+ * @description Find party group
+ * @param {object} [filter] valid query condition
+ * @param {object} [projection] valid fields to select
+ * @param {object} [options] valid query options
+ * @param {Function} [callback] callback to invoke on success or error
+ * @param {*} [optns] valid query options
+ * @returns {object|Error} party group or error
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.9.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * findPartyGroup((error, found) => { ... });
+ * //=> Predefine { ... }
+ */
+const findPartyGroup = (...optns) => {
+  return Predefine.findOnePartyGroup(...optns);
+};
+
+/**
+ * @function findAdministrativeAreas
+ * @name findAdministrativeAreas
+ * @description Find administrative areas
+ * @param {object} [filter] valid query condition
+ * @param {object} [projection] valid fields to select
+ * @param {object} [options] valid query options
+ * @param {Function} [callback] callback to invoke on success or error
+ * @param {*} [optns] valid query options
+ * @returns {object[]|Error} administrative areas or error
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.9.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * findAdministrativeAreas((error, found) => { ... });
+ * //=> [ Predefine { ... }, ... ]
+ */
+const findAdministrativeAreas = (...optns) => {
+  return Predefine.findAdministrativeArea(...optns);
+};
+
+/**
+ * @function findAdministrativeArea
+ * @name findAdministrativeArea
+ * @description Find administrative area
+ * @param {object} [filter] valid query condition
+ * @param {object} [projection] valid fields to select
+ * @param {object} [options] valid query options
+ * @param {Function} [callback] callback to invoke on success or error
+ * @param {*} [optns] valid query options
+ * @returns {object|Error} administrative area or error
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.9.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * findAdministrativeArea((error, found) => { ... });
+ * //=> Predefine { ... }
+ */
+const findAdministrativeArea = (...optns) => {
+  return Predefine.findOneAdministrativeArea(...optns);
+};
+
+/**
+ * @function findParties
+ * @name findParties
+ * @description Find parties
+ * @param {object} [filter] valid query condition
+ * @param {object} [projection] valid fields to select
+ * @param {object} [options] valid query options
+ * @param {Function} [callback] callback to invoke on success or error
+ * @param {*} [optns] valid query options
+ * @returns {object[]|Error} parties or error
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.9.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * findParties((error, found) => { ... });
+ * //=> [ Party { ... }, ... ]
+ */
+const findParties = (...optns) => {
+  return Party.find(...optns);
+};
+
+/**
+ * @function findParty
+ * @name findParty
+ * @description Find party
+ * @param {object} [filter] valid query condition
+ * @param {object} [projection] valid fields to select
+ * @param {object} [options] valid query options
+ * @param {Function} [callback] callback to invoke on success or error
+ * @param {*} [optns] valid query options
+ * @returns {object|Error} party or error
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.9.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * findParty((error, found) => { ... });
+ * //=> Party { ... }
+ */
+const findParty = (...optns) => {
+  return Party.findOne(...optns);
+};
+
+/* eslint-enable jsdoc/check-param-names */
+
+// start:query shortcuts
+
+export { DEFAULT_ADMINISTRATIVEAREA_NAME, DEFAULT_ADMINISTRATIVELEVEL_NAME, DEFAULT_EVENTACTION_NAME, DEFAULT_EVENTCERTAINTY_NAME, DEFAULT_EVENTFUNCTION_NAME, DEFAULT_EVENTGROUP_NAME, DEFAULT_EVENTINDICATOR_NAME, DEFAULT_EVENTLEVEL_NAME, DEFAULT_EVENTQUESTION_NAME, DEFAULT_EVENTRESPONSE_NAME, DEFAULT_EVENTSEVERITY_NAME, DEFAULT_EVENTSTATUS_NAME, DEFAULT_EVENTTOPIC_NAME, DEFAULT_EVENTTYPE_NAME, DEFAULT_EVENTURGENCY_NAME, DEFAULT_EVENT_NUMBER, DEFAULT_FEATURETYPE_NAME, DEFAULT_NAMES, DEFAULT_PARTYGROUP_NAME, DEFAULT_PARTYROLE_NAME, DEFAULT_PATHS, DEFAULT_UNIT_NAME, applyTransformsOn, connect, csvPathFor, dataPathFor, findAdministrativeArea, findAdministrativeAreaChildren, findAdministrativeAreaParents, findAdministrativeAreas, findAdministrativeLevel, findAdministrativeLevelChildren, findAdministrativeLevelParents, findAdministrativeLevels, findChangelogDefaults, findDefaultPredefines, findEventDefaults, findParties, findParty, findPartyDefaults, findPartyGroup, findPartyGroups, findPartyRole, findPartyRoles, findPermission, findPermissions, geoJsonPathFor, jsonPathFor, pathFor, preloadChangelogRelated, preloadEventRelated, preloadPartyRelated, preloadRelated, processCsvSeed, readCsvFile, seed, seedAdministrativeAreas, seedAdministrativeLevels, seedAgencies, seedEvent, seedEventActionCatalogues, seedEventActions, seedEventCertainties, seedEventFunctions, seedEventGroups, seedEventIndicators, seedEventLevels, seedEventQuestions, seedEventResponses, seedEventSeverities, seedEventStatuses, seedEventTopics, seedEventTypes, seedEventUrgencies, seedEvents, seedFeatureTypes, seedFeatures, seedFocals, seedFromCsv, seedFromJson, seedFromSeeds, seedNotificationTemplates, seedParty, seedPartyGroups, seedPartyRoles, seedPathFor, seedPermissions, seedPredefine, seedUnits, shapeFilePathFor, syncIndexes, transformGeoFields, transformOtherFields, transformSeedKeys, transformToEventSeed, transformToPartySeed, transformToPredefineSeed };
