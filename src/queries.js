@@ -3,7 +3,9 @@ import { isEmpty, forEach, filter, find, first } from 'lodash';
 import { waterfall } from 'async';
 import { compact, arrayToObject } from '@lykmapipo/common';
 import { localizedKeysFor } from 'mongoose-locale-schema';
+import { Permission } from '@lykmapipo/permission';
 import { Predefine } from '@lykmapipo/predefine';
+import { Party } from '@codetanzania/emis-stakeholder';
 import { DEFAULT_NAMES, DEFAULT_PATHS } from './constants';
 
 /**
@@ -223,3 +225,311 @@ export const findAdministrativeAreaChildren = (criteria, done) => {
 export const findAdministrativeAreaParents = (criteria, done) => {
   return Predefine.findAdministrativeAreaParents(criteria, done);
 };
+
+// start:query shortcuts
+
+/* eslint-disable jsdoc/check-param-names */
+
+/**
+ * @function findPermissions
+ * @name findPermissions
+ * @description Find permissions
+ * @param {object} [filter] valid query condition
+ * @param {object} [projection] valid fields to select
+ * @param {object} [options] valid query options
+ * @param {Function} [callback] callback to invoke on success or error
+ * @param {*} [optns] valid query options
+ * @returns {object[]|Error} permissions or error
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.9.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * findPermissions((error, found) => { ... });
+ * //=> [ Permission { ... }, ... ]
+ */
+export const findPermissions = (...optns) => {
+  return Permission.find(...optns);
+};
+
+/**
+ * @function findPermission
+ * @name findPermission
+ * @description Find permission
+ * @param {object} [filter] valid query condition
+ * @param {object} [projection] valid fields to select
+ * @param {object} [options] valid query options
+ * @param {Function} [callback] callback to invoke on success or error
+ * @param {*} [optns] valid query options
+ * @returns {object|Error} permission or error
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.9.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * findPermission((error, found) => { ... });
+ * //=> Permission { ... }
+ */
+export const findPermission = (...optns) => {
+  return Permission.findOne(...optns);
+};
+
+/**
+ * @function findAdministrativeLevels
+ * @name findAdministrativeLevels
+ * @description Find administrative levels
+ * @param {object} [filter] valid query condition
+ * @param {object} [projection] valid fields to select
+ * @param {object} [options] valid query options
+ * @param {Function} [callback] callback to invoke on success or error
+ * @param {*} [optns] valid query options
+ * @returns {object[]|Error} administrative levels or error
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.9.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * findAdministrativeLevels((error, found) => { ... });
+ * //=> [ Predefine { ... }, ... ]
+ */
+export const findAdministrativeLevels = (...optns) => {
+  return Predefine.findAdministrativeLevel(...optns);
+};
+
+/**
+ * @function findAdministrativeLevel
+ * @name findAdministrativeLevel
+ * @description Find administrative level
+ * @param {object} [filter] valid query condition
+ * @param {object} [projection] valid fields to select
+ * @param {object} [options] valid query options
+ * @param {Function} [callback] callback to invoke on success or error
+ * @param {*} [optns] valid query options
+ * @returns {object|Error} administrative level or error
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.9.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * findAdministrativeLevel((error, found) => { ... });
+ * //=> Predefine { ... }
+ */
+export const findAdministrativeLevel = (...optns) => {
+  return Predefine.findOneAdministrativeLevel(...optns);
+};
+
+/**
+ * @function findPartyRoles
+ * @name findPartyRoles
+ * @description Find party roles
+ * @param {object} [filter] valid query condition
+ * @param {object} [projection] valid fields to select
+ * @param {object} [options] valid query options
+ * @param {Function} [callback] callback to invoke on success or error
+ * @param {*} [optns] valid query options
+ * @returns {object[]|Error} party roles or error
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.9.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * findPartyRoles((error, found) => { ... });
+ * //=> [ Predefine { ... }, ... ]
+ */
+export const findPartyRoles = (...optns) => {
+  return Predefine.findPartyRole(...optns);
+};
+
+/**
+ * @function findPartyRole
+ * @name findPartyRole
+ * @description Find party role
+ * @param {object} [filter] valid query condition
+ * @param {object} [projection] valid fields to select
+ * @param {object} [options] valid query options
+ * @param {Function} [callback] callback to invoke on success or error
+ * @param {*} [optns] valid query options
+ * @returns {object|Error} party role or error
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.9.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * findPartyRole((error, found) => { ... });
+ * //=> Predefine { ... }
+ */
+export const findPartyRole = (...optns) => {
+  return Predefine.findOnePartyRole(...optns);
+};
+
+/**
+ * @function findPartyGroups
+ * @name findPartyGroups
+ * @description Find party groups
+ * @param {object} [filter] valid query condition
+ * @param {object} [projection] valid fields to select
+ * @param {object} [options] valid query options
+ * @param {Function} [callback] callback to invoke on success or error
+ * @param {*} [optns] valid query options
+ * @returns {object[]|Error} party groups or error
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.9.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * findPartyGroups((error, found) => { ... });
+ * //=> [ Predefine { ... }, ... ]
+ */
+export const findPartyGroups = (...optns) => {
+  return Predefine.findPartyGroup(...optns);
+};
+
+/**
+ * @function findPartyGroup
+ * @name findPartyGroup
+ * @description Find party group
+ * @param {object} [filter] valid query condition
+ * @param {object} [projection] valid fields to select
+ * @param {object} [options] valid query options
+ * @param {Function} [callback] callback to invoke on success or error
+ * @param {*} [optns] valid query options
+ * @returns {object|Error} party group or error
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.9.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * findPartyGroup((error, found) => { ... });
+ * //=> Predefine { ... }
+ */
+export const findPartyGroup = (...optns) => {
+  return Predefine.findOnePartyGroup(...optns);
+};
+
+/**
+ * @function findAdministrativeAreas
+ * @name findAdministrativeAreas
+ * @description Find administrative areas
+ * @param {object} [filter] valid query condition
+ * @param {object} [projection] valid fields to select
+ * @param {object} [options] valid query options
+ * @param {Function} [callback] callback to invoke on success or error
+ * @param {*} [optns] valid query options
+ * @returns {object[]|Error} administrative areas or error
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.9.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * findAdministrativeAreas((error, found) => { ... });
+ * //=> [ Predefine { ... }, ... ]
+ */
+export const findAdministrativeAreas = (...optns) => {
+  return Predefine.findAdministrativeArea(...optns);
+};
+
+/**
+ * @function findAdministrativeArea
+ * @name findAdministrativeArea
+ * @description Find administrative area
+ * @param {object} [filter] valid query condition
+ * @param {object} [projection] valid fields to select
+ * @param {object} [options] valid query options
+ * @param {Function} [callback] callback to invoke on success or error
+ * @param {*} [optns] valid query options
+ * @returns {object|Error} administrative area or error
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.9.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * findAdministrativeArea((error, found) => { ... });
+ * //=> Predefine { ... }
+ */
+export const findAdministrativeArea = (...optns) => {
+  return Predefine.findOneAdministrativeArea(...optns);
+};
+
+/**
+ * @function findParties
+ * @name findParties
+ * @description Find parties
+ * @param {object} [filter] valid query condition
+ * @param {object} [projection] valid fields to select
+ * @param {object} [options] valid query options
+ * @param {Function} [callback] callback to invoke on success or error
+ * @param {*} [optns] valid query options
+ * @returns {object[]|Error} parties or error
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.9.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * findParties((error, found) => { ... });
+ * //=> [ Party { ... }, ... ]
+ */
+export const findParties = (...optns) => {
+  return Party.find(...optns);
+};
+
+/**
+ * @function findParty
+ * @name findParty
+ * @description Find party
+ * @param {object} [filter] valid query condition
+ * @param {object} [projection] valid fields to select
+ * @param {object} [options] valid query options
+ * @param {Function} [callback] callback to invoke on success or error
+ * @param {*} [optns] valid query options
+ * @returns {object|Error} party or error
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.9.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * findParty((error, found) => { ... });
+ * //=> Party { ... }
+ */
+export const findParty = (...optns) => {
+  return Party.findOne(...optns);
+};
+
+/* eslint-enable jsdoc/check-param-names */
+
+// start:query shortcuts
