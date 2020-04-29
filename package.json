@@ -1,6 +1,6 @@
 {
   "name": "@codetanzania/ewea-common",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "description": "Common utilities for EWEA",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -70,9 +70,9 @@
   "homepage": "https://github.com/codetanzania/ewea-common",
   "devDependencies": {
     "@babel/cli": "^7.8.4",
-    "@babel/core": "^7.9.0",
+    "@babel/core": "^7.9.6",
     "@babel/node": "^7.8.7",
-    "@babel/preset-env": "^7.9.5",
+    "@babel/preset-env": "^7.9.6",
     "@babel/register": "^7.9.0",
     "@benmaruchu/faker": "^4.3.0",
     "@codetanzania/ewea-event": "^0.9.1",
@@ -107,7 +107,7 @@
     "nyc": "^15.0.1",
     "prettier": "^2.0.5",
     "rimraf": "^3.0.2",
-    "rollup": "^2.7.3",
+    "rollup": "^2.7.4",
     "shelljs": "^0.8.4"
   },
   "peerDependencies": {
@@ -124,7 +124,7 @@
     "@lykmapipo/file": ">=0.1.23",
     "@lykmapipo/geo-tools": ">=0.6.9",
     "@lykmapipo/logger": ">=0.5.11",
-    "@lykmapipo/mongoose-common": ">=0.32.1",
+    "@lykmapipo/mongoose-common": ">=0.33.0",
     "@lykmapipo/mongoose-exportable": ">=0.3.27",
     "@lykmapipo/mongoose-sequenceable": ">=0.2.13",
     "@lykmapipo/permission": ">=0.8.24",
