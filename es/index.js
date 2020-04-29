@@ -2,7 +2,8 @@ import { PREDEFINE_UNIT_NAME, PREDEFINE_ADMINISTRATIVELEVEL_NAME, PREDEFINE_FEAT
 export * from '@codetanzania/ewea-internals';
 export * from '@lykmapipo/constants';
 import { sortedUniq, mergeObjects, pluralize, join as join$1, compact, arrayToObject } from '@lykmapipo/common';
-import { getString } from '@lykmapipo/env';
+import { getString, getNumber } from '@lykmapipo/env';
+import { localizedValuesFor, localizedAbbreviationsFor, localizedKeysFor } from 'mongoose-locale-schema';
 import { waterfall } from 'async';
 import { connect as connect$1, syncIndexes as syncIndexes$1, model } from '@lykmapipo/mongoose-common';
 import { createModels } from '@lykmapipo/file';
@@ -12,8 +13,30 @@ import { debug, warn } from '@lykmapipo/logger';
 import { parseCoordinateString, readCsv, readJson } from '@lykmapipo/geo-tools';
 import { transformToPredefine, listPermissions, Predefine } from '@lykmapipo/predefine';
 import { Permission } from '@lykmapipo/permission';
-import { localizedKeysFor } from 'mongoose-locale-schema';
 import { Party } from '@codetanzania/emis-stakeholder';
+
+const DEFAULT_PREDEFINE_NAME = getString(
+  'DEFAULT_PREDEFINE_NAME',
+  'Unknown'
+);
+const DEFAULT_PREDEFINE_COLOR = getString(
+  'DEFAULT_PREDEFINE_COLOR',
+  '#6D9EEB'
+);
+const DEFAULT_PREDEFINE_WEIGHT = getNumber(
+  'DEFAULT_PREDEFINE_WEIGHT',
+  Number.MAX_SAFE_INTEGER
+);
+
+const DEFAULT_PREDEFINE_RELATION = {
+  _id: null,
+  strings: {
+    name: localizedValuesFor({ en: DEFAULT_PREDEFINE_NAME }),
+    abbreviation: localizedAbbreviationsFor({ en: DEFAULT_PREDEFINE_NAME }),
+    color: DEFAULT_PREDEFINE_COLOR,
+  },
+  numbers: { weight: DEFAULT_PREDEFINE_WEIGHT },
+};
 
 const DEFAULT_UNIT_NAME = getString(
   'DEFAULT_UNIT_NAME',
@@ -2343,4 +2366,4 @@ const findParty = (...optns) => {
 
 // start:query shortcuts
 
-export { DEFAULT_ADMINISTRATIVEAREA_NAME, DEFAULT_ADMINISTRATIVELEVEL_NAME, DEFAULT_EVENTACTION_NAME, DEFAULT_EVENTCERTAINTY_NAME, DEFAULT_EVENTFUNCTION_NAME, DEFAULT_EVENTGROUP_NAME, DEFAULT_EVENTINDICATOR_NAME, DEFAULT_EVENTLEVEL_NAME, DEFAULT_EVENTQUESTION_NAME, DEFAULT_EVENTRESPONSE_NAME, DEFAULT_EVENTSEVERITY_NAME, DEFAULT_EVENTSTATUS_NAME, DEFAULT_EVENTTOPIC_NAME, DEFAULT_EVENTTYPE_NAME, DEFAULT_EVENTURGENCY_NAME, DEFAULT_EVENT_NUMBER, DEFAULT_FEATURETYPE_NAME, DEFAULT_NAMES, DEFAULT_PARTYGROUP_NAME, DEFAULT_PARTYROLE_NAME, DEFAULT_PATHS, DEFAULT_UNIT_NAME, applyTransformsOn, connect, csvPathFor, dataPathFor, findAdministrativeArea, findAdministrativeAreaChildren, findAdministrativeAreaParents, findAdministrativeAreas, findAdministrativeLevel, findAdministrativeLevelChildren, findAdministrativeLevelParents, findAdministrativeLevels, findChangelogDefaults, findDefaultPredefines, findEventDefaults, findParties, findParty, findPartyDefaults, findPartyGroup, findPartyGroups, findPartyRole, findPartyRoles, findPermission, findPermissions, geoJsonPathFor, jsonPathFor, pathFor, preloadChangelogRelated, preloadEventRelated, preloadPartyRelated, preloadRelated, processCsvSeed, readCsvFile, seed, seedAdministrativeAreas, seedAdministrativeLevels, seedAgencies, seedEvent, seedEventActionCatalogues, seedEventActions, seedEventCertainties, seedEventFunctions, seedEventGroups, seedEventIndicators, seedEventLevels, seedEventQuestions, seedEventResponses, seedEventSeverities, seedEventStatuses, seedEventTopics, seedEventTypes, seedEventUrgencies, seedEvents, seedFeatureTypes, seedFeatures, seedFocals, seedFromCsv, seedFromJson, seedFromSeeds, seedNotificationTemplates, seedParty, seedPartyGroups, seedPartyRoles, seedPathFor, seedPermissions, seedPredefine, seedUnits, shapeFilePathFor, syncIndexes, transformGeoFields, transformOtherFields, transformSeedKeys, transformToEventSeed, transformToPartySeed, transformToPredefineSeed };
+export { DEFAULT_ADMINISTRATIVEAREA_NAME, DEFAULT_ADMINISTRATIVELEVEL_NAME, DEFAULT_EVENTACTION_NAME, DEFAULT_EVENTCERTAINTY_NAME, DEFAULT_EVENTFUNCTION_NAME, DEFAULT_EVENTGROUP_NAME, DEFAULT_EVENTINDICATOR_NAME, DEFAULT_EVENTLEVEL_NAME, DEFAULT_EVENTQUESTION_NAME, DEFAULT_EVENTRESPONSE_NAME, DEFAULT_EVENTSEVERITY_NAME, DEFAULT_EVENTSTATUS_NAME, DEFAULT_EVENTTOPIC_NAME, DEFAULT_EVENTTYPE_NAME, DEFAULT_EVENTURGENCY_NAME, DEFAULT_EVENT_NUMBER, DEFAULT_FEATURETYPE_NAME, DEFAULT_NAMES, DEFAULT_PARTYGROUP_NAME, DEFAULT_PARTYROLE_NAME, DEFAULT_PATHS, DEFAULT_PREDEFINE_COLOR, DEFAULT_PREDEFINE_NAME, DEFAULT_PREDEFINE_RELATION, DEFAULT_PREDEFINE_WEIGHT, DEFAULT_UNIT_NAME, applyTransformsOn, connect, csvPathFor, dataPathFor, findAdministrativeArea, findAdministrativeAreaChildren, findAdministrativeAreaParents, findAdministrativeAreas, findAdministrativeLevel, findAdministrativeLevelChildren, findAdministrativeLevelParents, findAdministrativeLevels, findChangelogDefaults, findDefaultPredefines, findEventDefaults, findParties, findParty, findPartyDefaults, findPartyGroup, findPartyGroups, findPartyRole, findPartyRoles, findPermission, findPermissions, geoJsonPathFor, jsonPathFor, pathFor, preloadChangelogRelated, preloadEventRelated, preloadPartyRelated, preloadRelated, processCsvSeed, readCsvFile, seed, seedAdministrativeAreas, seedAdministrativeLevels, seedAgencies, seedEvent, seedEventActionCatalogues, seedEventActions, seedEventCertainties, seedEventFunctions, seedEventGroups, seedEventIndicators, seedEventLevels, seedEventQuestions, seedEventResponses, seedEventSeverities, seedEventStatuses, seedEventTopics, seedEventTypes, seedEventUrgencies, seedEvents, seedFeatureTypes, seedFeatures, seedFocals, seedFromCsv, seedFromJson, seedFromSeeds, seedNotificationTemplates, seedParty, seedPartyGroups, seedPartyRoles, seedPathFor, seedPermissions, seedPredefine, seedUnits, shapeFilePathFor, syncIndexes, transformGeoFields, transformOtherFields, transformSeedKeys, transformToEventSeed, transformToPartySeed, transformToPredefineSeed };
