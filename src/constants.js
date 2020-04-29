@@ -24,7 +24,34 @@ import {
   EVENT_RELATIONS,
 } from '@codetanzania/ewea-internals';
 import { sortedUniq, mergeObjects } from '@lykmapipo/common';
-import { getString } from '@lykmapipo/env';
+import { getNumber, getString } from '@lykmapipo/env';
+import {
+  localizedValuesFor,
+  localizedAbbreviationsFor,
+} from 'mongoose-locale-schema';
+
+export const DEFAULT_PREDEFINE_NAME = getString(
+  'DEFAULT_PREDEFINE_NAME',
+  'Unknown'
+);
+export const DEFAULT_PREDEFINE_COLOR = getString(
+  'DEFAULT_PREDEFINE_COLOR',
+  '#6D9EEB'
+);
+export const DEFAULT_PREDEFINE_WEIGHT = getNumber(
+  'DEFAULT_PREDEFINE_WEIGHT',
+  Number.MAX_SAFE_INTEGER
+);
+
+export const DEFAULT_PREDEFINE_RELATION = {
+  _id: null,
+  strings: {
+    name: localizedValuesFor({ en: DEFAULT_PREDEFINE_NAME }),
+    abbreviation: localizedAbbreviationsFor({ en: DEFAULT_PREDEFINE_NAME }),
+    color: DEFAULT_PREDEFINE_COLOR,
+  },
+  numbers: { weight: DEFAULT_PREDEFINE_WEIGHT },
+};
 
 export const DEFAULT_UNIT_NAME = getString(
   'DEFAULT_UNIT_NAME',

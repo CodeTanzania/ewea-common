@@ -1,5 +1,9 @@
 import { expect } from '@lykmapipo/test-helpers';
 import {
+  DEFAULT_PREDEFINE_NAME,
+  DEFAULT_PREDEFINE_COLOR,
+  DEFAULT_PREDEFINE_WEIGHT,
+  DEFAULT_PREDEFINE_RELATION,
   DEFAULT_UNIT_NAME,
   DEFAULT_ADMINISTRATIVELEVEL_NAME,
   DEFAULT_FEATURETYPE_NAME,
@@ -24,6 +28,21 @@ import {
 } from '../../src';
 
 describe('constants', () => {
+  it('should expose default predefine relation', () => {
+    expect(DEFAULT_PREDEFINE_NAME).to.be.equal('Unknown');
+    expect(DEFAULT_PREDEFINE_COLOR).to.be.equal('#6D9EEB');
+    expect(DEFAULT_PREDEFINE_WEIGHT).to.be.equal(Number.MAX_SAFE_INTEGER);
+    expect(DEFAULT_PREDEFINE_RELATION).to.be.eql({
+      _id: null,
+      strings: {
+        name: { en: 'Unknown', sw: 'Unknown' },
+        abbreviation: { en: 'U', sw: 'U' },
+        color: '#6D9EEB',
+      },
+      numbers: { weight: Number.MAX_SAFE_INTEGER },
+    });
+  });
+
   it('should expose defaults', () => {
     expect(DEFAULT_UNIT_NAME).to.be.undefined;
     expect(DEFAULT_ADMINISTRATIVELEVEL_NAME).to.be.undefined;

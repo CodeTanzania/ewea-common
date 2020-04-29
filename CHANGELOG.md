@@ -1,3 +1,13 @@
+#### 0.10.0 (2020-04-29)
+
+##### Chores
+
+* **deps:**  force latest version & audit fix ([f85a0629](https://github.com/codetanzania/ewea-common/commit/f85a06296cc0c9b28749f09d16a9dd249dc2aa5a))
+
+##### New Features
+
+* **constants:**  expose default predefine value & relations ([eded0879](https://github.com/codetanzania/ewea-common/commit/eded08797e0d7dbb3c1006b3226cc007a4eecd91))
+
 #### 0.9.0 (2020-04-28)
 
 ##### Chores
