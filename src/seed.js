@@ -1262,6 +1262,31 @@ export const seedEventResponses = (done) => {
 };
 
 /**
+ * @function seedPartyOwnerships
+ * @name seedPartyOwnerships
+ * @description Seed party ownerships
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.11.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedPartyOwnerships(error => { ... });
+ */
+export const seedPartyOwnerships = (done) => {
+  debug('Start Seeding Party Ownerships Data');
+  const namespace = 'PartyOwnership';
+  return seedPredefine({ namespace }, (error) => {
+    debug('Finish Seeding Party Ownerships Data');
+    return done(error);
+  });
+};
+
+/**
  * @function seedPartyGroups
  * @name seedPartyGroups
  * @description Seed party groups
@@ -1643,6 +1668,7 @@ export const seed = (done) => {
     seedEventStatuses,
     seedEventUrgencies,
     seedEventResponses,
+    seedPartyOwnerships,
     seedPartyGroups,
     seedPartyRoles,
     seedEventGroups,

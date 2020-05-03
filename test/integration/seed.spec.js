@@ -3,7 +3,7 @@ import {
   PREDEFINE_NAMESPACE_EVENTSEVERITY,
 } from '@codetanzania/ewea-internals';
 import { waterfall } from 'async';
-import { expect } from '@lykmapipo/mongoose-test-helpers';
+import { expect, enableDebug } from '@lykmapipo/mongoose-test-helpers';
 import { Predefine } from '@codetanzania/emis-stakeholder';
 import {
   readCsvFile,
@@ -25,6 +25,7 @@ import {
   seedEventStatuses,
   seedEventUrgencies,
   seedEventResponses,
+  seedPartyOwnerships,
   seedPartyGroups,
   seedPartyRoles,
   seedEventGroups,
@@ -255,6 +256,14 @@ describe('seed', () => {
 
   it('should seed event responses', (done) => {
     seedEventResponses((error) => {
+      expect(error).to.not.exist;
+      done(error);
+    });
+  });
+
+  it.only('should seed party ownerships', (done) => {
+    enableDebug();
+    seedPartyOwnerships((error) => {
       expect(error).to.not.exist;
       done(error);
     });
