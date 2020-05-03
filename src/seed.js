@@ -1639,6 +1639,32 @@ export const seedFeatures = (done) => {
 };
 
 /**
+ * @function seedVehicles
+ * @name seedVehicles
+ * @description Seed vehicles
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.4.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedVehicles(error => { ... });
+ */
+export const seedVehicles = (done) => {
+  // TODO: seed per vehicle type i.e ambulances, fires etc
+  debug('Start Seeding Vehicles Data');
+  const namespace = 'Vehicle';
+  return seedPredefine({ namespace }, (error) => {
+    debug('Finish Seeding Vehicles Data');
+    return done(error);
+  });
+};
+
+/**
  * @function seedEventActionCatalogues
  * @name seedEventActionCatalogues
  * @description Seed event action catalogues
@@ -1759,6 +1785,7 @@ export const seed = (done) => {
     seedAgencies,
     seedFocals,
     seedFeatures,
+    seedVehicles,
     seedEventActionCatalogues,
     seedNotificationTemplates,
     seedEvents,
