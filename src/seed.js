@@ -1337,6 +1337,81 @@ export const seedPartyRoles = (done) => {
 };
 
 /**
+ * @function seedVehicleTypes
+ * @name seedVehicleTypes
+ * @description Seed vehicle types
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.11.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedVehicleTypes(error => { ... });
+ */
+export const seedVehicleTypes = (done) => {
+  debug('Start Seeding Vehicle Types Data');
+  const namespace = 'VehicleType';
+  return seedPredefine({ namespace }, (error) => {
+    debug('Finish Seeding Vehicle Types Data');
+    return done(error);
+  });
+};
+
+/**
+ * @function seedVehicleModels
+ * @name seedVehicleModels
+ * @description Seed vehicle models
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.11.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedVehicleModels(error => { ... });
+ */
+export const seedVehicleModels = (done) => {
+  debug('Start Seeding Vehicle Models Data');
+  const namespace = 'VehicleModel';
+  return seedPredefine({ namespace }, (error) => {
+    debug('Finish Seeding Vehicle Models Data');
+    return done(error);
+  });
+};
+
+/**
+ * @function seedVehicleMakes
+ * @name seedVehicleMakes
+ * @description Seed vehicle makes
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.11.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedVehicleMakes(error => { ... });
+ */
+export const seedVehicleMakes = (done) => {
+  debug('Start Seeding Vehicle Makes Data');
+  const namespace = 'VehicleMake';
+  return seedPredefine({ namespace }, (error) => {
+    debug('Finish Seeding Vehicle Makes Data');
+    return done(error);
+  });
+};
+
+/**
  * @function seedEventGroups
  * @name seedEventGroups
  * @description Seed event groups
@@ -1671,6 +1746,9 @@ export const seed = (done) => {
     seedPartyOwnerships,
     seedPartyGroups,
     seedPartyRoles,
+    seedVehicleTypes,
+    seedVehicleModels,
+    seedVehicleMakes,
     seedEventGroups,
     seedEventTypes,
     seedEventFunctions,

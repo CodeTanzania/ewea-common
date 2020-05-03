@@ -3,7 +3,7 @@ import {
   PREDEFINE_NAMESPACE_EVENTSEVERITY,
 } from '@codetanzania/ewea-internals';
 import { waterfall } from 'async';
-import { expect, enableDebug } from '@lykmapipo/mongoose-test-helpers';
+import { expect } from '@lykmapipo/mongoose-test-helpers';
 import { Predefine } from '@codetanzania/emis-stakeholder';
 import {
   readCsvFile,
@@ -28,6 +28,9 @@ import {
   seedPartyOwnerships,
   seedPartyGroups,
   seedPartyRoles,
+  seedVehicleTypes,
+  seedVehicleModels,
+  seedVehicleMakes,
   seedEventGroups,
   seedEventTypes,
   seedEventFunctions,
@@ -261,8 +264,7 @@ describe('seed', () => {
     });
   });
 
-  it.only('should seed party ownerships', (done) => {
-    enableDebug();
+  it('should seed party ownerships', (done) => {
     seedPartyOwnerships((error) => {
       expect(error).to.not.exist;
       done(error);
@@ -278,6 +280,27 @@ describe('seed', () => {
 
   it('should seed party roles', (done) => {
     seedPartyRoles((error) => {
+      expect(error).to.not.exist;
+      done(error);
+    });
+  });
+
+  it('should seed vehicle types', (done) => {
+    seedVehicleTypes((error) => {
+      expect(error).to.not.exist;
+      done(error);
+    });
+  });
+
+  it('should seed vehicle models', (done) => {
+    seedVehicleModels((error) => {
+      expect(error).to.not.exist;
+      done(error);
+    });
+  });
+
+  it('should seed vehicle makes', (done) => {
+    seedVehicleMakes((error) => {
       expect(error).to.not.exist;
       done(error);
     });
