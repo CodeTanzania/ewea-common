@@ -25,8 +25,12 @@ import {
   seedEventStatuses,
   seedEventUrgencies,
   seedEventResponses,
+  seedPartyOwnerships,
   seedPartyGroups,
   seedPartyRoles,
+  seedVehicleTypes,
+  seedVehicleModels,
+  seedVehicleMakes,
   seedEventGroups,
   seedEventTypes,
   seedEventFunctions,
@@ -37,6 +41,7 @@ import {
   seedAgencies,
   seedFocals,
   seedFeatures,
+  seedVehicles,
   seedEventActionCatalogues,
   seedNotificationTemplates,
   seedEvents,
@@ -260,6 +265,13 @@ describe('seed', () => {
     });
   });
 
+  it('should seed party ownerships', (done) => {
+    seedPartyOwnerships((error) => {
+      expect(error).to.not.exist;
+      done(error);
+    });
+  });
+
   it('should seed party groups', (done) => {
     seedPartyGroups((error) => {
       expect(error).to.not.exist;
@@ -269,6 +281,27 @@ describe('seed', () => {
 
   it('should seed party roles', (done) => {
     seedPartyRoles((error) => {
+      expect(error).to.not.exist;
+      done(error);
+    });
+  });
+
+  it('should seed vehicle types', (done) => {
+    seedVehicleTypes((error) => {
+      expect(error).to.not.exist;
+      done(error);
+    });
+  });
+
+  it('should seed vehicle models', (done) => {
+    seedVehicleModels((error) => {
+      expect(error).to.not.exist;
+      done(error);
+    });
+  });
+
+  it('should seed vehicle makes', (done) => {
+    seedVehicleMakes((error) => {
       expect(error).to.not.exist;
       done(error);
     });
@@ -332,6 +365,13 @@ describe('seed', () => {
 
   it('should seed features', (done) => {
     seedFeatures((error) => {
+      expect(error).to.not.exist;
+      done(error);
+    });
+  });
+
+  it('should seed vehicles', (done) => {
+    seedVehicles((error) => {
       expect(error).to.not.exist;
       done(error);
     });

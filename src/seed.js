@@ -1262,6 +1262,31 @@ export const seedEventResponses = (done) => {
 };
 
 /**
+ * @function seedPartyOwnerships
+ * @name seedPartyOwnerships
+ * @description Seed party ownerships
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.11.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedPartyOwnerships(error => { ... });
+ */
+export const seedPartyOwnerships = (done) => {
+  debug('Start Seeding Party Ownerships Data');
+  const namespace = 'PartyOwnership';
+  return seedPredefine({ namespace }, (error) => {
+    debug('Finish Seeding Party Ownerships Data');
+    return done(error);
+  });
+};
+
+/**
  * @function seedPartyGroups
  * @name seedPartyGroups
  * @description Seed party groups
@@ -1307,6 +1332,81 @@ export const seedPartyRoles = (done) => {
   const namespace = 'PartyRole';
   return seedPredefine({ namespace }, (error) => {
     debug('Finish Seeding Party Roles Data');
+    return done(error);
+  });
+};
+
+/**
+ * @function seedVehicleTypes
+ * @name seedVehicleTypes
+ * @description Seed vehicle types
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.11.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedVehicleTypes(error => { ... });
+ */
+export const seedVehicleTypes = (done) => {
+  debug('Start Seeding Vehicle Types Data');
+  const namespace = 'VehicleType';
+  return seedPredefine({ namespace }, (error) => {
+    debug('Finish Seeding Vehicle Types Data');
+    return done(error);
+  });
+};
+
+/**
+ * @function seedVehicleModels
+ * @name seedVehicleModels
+ * @description Seed vehicle models
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.11.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedVehicleModels(error => { ... });
+ */
+export const seedVehicleModels = (done) => {
+  debug('Start Seeding Vehicle Models Data');
+  const namespace = 'VehicleModel';
+  return seedPredefine({ namespace }, (error) => {
+    debug('Finish Seeding Vehicle Models Data');
+    return done(error);
+  });
+};
+
+/**
+ * @function seedVehicleMakes
+ * @name seedVehicleMakes
+ * @description Seed vehicle makes
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.11.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedVehicleMakes(error => { ... });
+ */
+export const seedVehicleMakes = (done) => {
+  debug('Start Seeding Vehicle Makes Data');
+  const namespace = 'VehicleMake';
+  return seedPredefine({ namespace }, (error) => {
+    debug('Finish Seeding Vehicle Makes Data');
     return done(error);
   });
 };
@@ -1539,6 +1639,32 @@ export const seedFeatures = (done) => {
 };
 
 /**
+ * @function seedVehicles
+ * @name seedVehicles
+ * @description Seed vehicles
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.4.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedVehicles(error => { ... });
+ */
+export const seedVehicles = (done) => {
+  // TODO: seed per vehicle type i.e ambulances, fires etc
+  debug('Start Seeding Vehicles Data');
+  const namespace = 'Vehicle';
+  return seedPredefine({ namespace }, (error) => {
+    debug('Finish Seeding Vehicles Data');
+    return done(error);
+  });
+};
+
+/**
  * @function seedEventActionCatalogues
  * @name seedEventActionCatalogues
  * @description Seed event action catalogues
@@ -1643,8 +1769,12 @@ export const seed = (done) => {
     seedEventStatuses,
     seedEventUrgencies,
     seedEventResponses,
+    seedPartyOwnerships,
     seedPartyGroups,
     seedPartyRoles,
+    seedVehicleTypes,
+    seedVehicleModels,
+    seedVehicleMakes,
     seedEventGroups,
     seedEventTypes,
     seedEventFunctions,
@@ -1655,6 +1785,7 @@ export const seed = (done) => {
     seedAgencies,
     seedFocals,
     seedFeatures,
+    seedVehicles,
     seedEventActionCatalogues,
     seedNotificationTemplates,
     seedEvents,
