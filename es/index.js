@@ -1429,6 +1429,31 @@ const seedEventResponses = (done) => {
 };
 
 /**
+ * @function seedPartyOwnerships
+ * @name seedPartyOwnerships
+ * @description Seed party ownerships
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.11.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedPartyOwnerships(error => { ... });
+ */
+const seedPartyOwnerships = (done) => {
+  debug('Start Seeding Party Ownerships Data');
+  const namespace = 'PartyOwnership';
+  return seedPredefine({ namespace }, (error) => {
+    debug('Finish Seeding Party Ownerships Data');
+    return done(error);
+  });
+};
+
+/**
  * @function seedPartyGroups
  * @name seedPartyGroups
  * @description Seed party groups
@@ -1474,6 +1499,81 @@ const seedPartyRoles = (done) => {
   const namespace = 'PartyRole';
   return seedPredefine({ namespace }, (error) => {
     debug('Finish Seeding Party Roles Data');
+    return done(error);
+  });
+};
+
+/**
+ * @function seedVehicleTypes
+ * @name seedVehicleTypes
+ * @description Seed vehicle types
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.11.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedVehicleTypes(error => { ... });
+ */
+const seedVehicleTypes = (done) => {
+  debug('Start Seeding Vehicle Types Data');
+  const namespace = 'VehicleType';
+  return seedPredefine({ namespace }, (error) => {
+    debug('Finish Seeding Vehicle Types Data');
+    return done(error);
+  });
+};
+
+/**
+ * @function seedVehicleModels
+ * @name seedVehicleModels
+ * @description Seed vehicle models
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.11.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedVehicleModels(error => { ... });
+ */
+const seedVehicleModels = (done) => {
+  debug('Start Seeding Vehicle Models Data');
+  const namespace = 'VehicleModel';
+  return seedPredefine({ namespace }, (error) => {
+    debug('Finish Seeding Vehicle Models Data');
+    return done(error);
+  });
+};
+
+/**
+ * @function seedVehicleMakes
+ * @name seedVehicleMakes
+ * @description Seed vehicle makes
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.11.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedVehicleMakes(error => { ... });
+ */
+const seedVehicleMakes = (done) => {
+  debug('Start Seeding Vehicle Makes Data');
+  const namespace = 'VehicleMake';
+  return seedPredefine({ namespace }, (error) => {
+    debug('Finish Seeding Vehicle Makes Data');
     return done(error);
   });
 };
@@ -1706,6 +1806,32 @@ const seedFeatures = (done) => {
 };
 
 /**
+ * @function seedVehicles
+ * @name seedVehicles
+ * @description Seed vehicles
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.4.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedVehicles(error => { ... });
+ */
+const seedVehicles = (done) => {
+  // TODO: seed per vehicle type i.e ambulances, fires etc
+  debug('Start Seeding Vehicles Data');
+  const namespace = 'Vehicle';
+  return seedPredefine({ namespace }, (error) => {
+    debug('Finish Seeding Vehicles Data');
+    return done(error);
+  });
+};
+
+/**
  * @function seedEventActionCatalogues
  * @name seedEventActionCatalogues
  * @description Seed event action catalogues
@@ -1810,8 +1936,12 @@ const seed = (done) => {
     seedEventStatuses,
     seedEventUrgencies,
     seedEventResponses,
+    seedPartyOwnerships,
     seedPartyGroups,
     seedPartyRoles,
+    seedVehicleTypes,
+    seedVehicleModels,
+    seedVehicleMakes,
     seedEventGroups,
     seedEventTypes,
     seedEventFunctions,
@@ -1822,6 +1952,7 @@ const seed = (done) => {
     seedAgencies,
     seedFocals,
     seedFeatures,
+    seedVehicles,
     seedEventActionCatalogues,
     seedNotificationTemplates,
     seedEvents,
@@ -2366,4 +2497,4 @@ const findParty = (...optns) => {
 
 // start:query shortcuts
 
-export { DEFAULT_ADMINISTRATIVEAREA_NAME, DEFAULT_ADMINISTRATIVELEVEL_NAME, DEFAULT_EVENTACTION_NAME, DEFAULT_EVENTCERTAINTY_NAME, DEFAULT_EVENTFUNCTION_NAME, DEFAULT_EVENTGROUP_NAME, DEFAULT_EVENTINDICATOR_NAME, DEFAULT_EVENTLEVEL_NAME, DEFAULT_EVENTQUESTION_NAME, DEFAULT_EVENTRESPONSE_NAME, DEFAULT_EVENTSEVERITY_NAME, DEFAULT_EVENTSTATUS_NAME, DEFAULT_EVENTTOPIC_NAME, DEFAULT_EVENTTYPE_NAME, DEFAULT_EVENTURGENCY_NAME, DEFAULT_EVENT_NUMBER, DEFAULT_FEATURETYPE_NAME, DEFAULT_NAMES, DEFAULT_PARTYGROUP_NAME, DEFAULT_PARTYROLE_NAME, DEFAULT_PATHS, DEFAULT_PREDEFINE_COLOR, DEFAULT_PREDEFINE_NAME, DEFAULT_PREDEFINE_RELATION, DEFAULT_PREDEFINE_WEIGHT, DEFAULT_UNIT_NAME, applyTransformsOn, connect, csvPathFor, dataPathFor, findAdministrativeArea, findAdministrativeAreaChildren, findAdministrativeAreaParents, findAdministrativeAreas, findAdministrativeLevel, findAdministrativeLevelChildren, findAdministrativeLevelParents, findAdministrativeLevels, findChangelogDefaults, findDefaultPredefines, findEventDefaults, findParties, findParty, findPartyDefaults, findPartyGroup, findPartyGroups, findPartyRole, findPartyRoles, findPermission, findPermissions, geoJsonPathFor, jsonPathFor, pathFor, preloadChangelogRelated, preloadEventRelated, preloadPartyRelated, preloadRelated, processCsvSeed, readCsvFile, seed, seedAdministrativeAreas, seedAdministrativeLevels, seedAgencies, seedEvent, seedEventActionCatalogues, seedEventActions, seedEventCertainties, seedEventFunctions, seedEventGroups, seedEventIndicators, seedEventLevels, seedEventQuestions, seedEventResponses, seedEventSeverities, seedEventStatuses, seedEventTopics, seedEventTypes, seedEventUrgencies, seedEvents, seedFeatureTypes, seedFeatures, seedFocals, seedFromCsv, seedFromJson, seedFromSeeds, seedNotificationTemplates, seedParty, seedPartyGroups, seedPartyRoles, seedPathFor, seedPermissions, seedPredefine, seedUnits, shapeFilePathFor, syncIndexes, transformGeoFields, transformOtherFields, transformSeedKeys, transformToEventSeed, transformToPartySeed, transformToPredefineSeed };
+export { DEFAULT_ADMINISTRATIVEAREA_NAME, DEFAULT_ADMINISTRATIVELEVEL_NAME, DEFAULT_EVENTACTION_NAME, DEFAULT_EVENTCERTAINTY_NAME, DEFAULT_EVENTFUNCTION_NAME, DEFAULT_EVENTGROUP_NAME, DEFAULT_EVENTINDICATOR_NAME, DEFAULT_EVENTLEVEL_NAME, DEFAULT_EVENTQUESTION_NAME, DEFAULT_EVENTRESPONSE_NAME, DEFAULT_EVENTSEVERITY_NAME, DEFAULT_EVENTSTATUS_NAME, DEFAULT_EVENTTOPIC_NAME, DEFAULT_EVENTTYPE_NAME, DEFAULT_EVENTURGENCY_NAME, DEFAULT_EVENT_NUMBER, DEFAULT_FEATURETYPE_NAME, DEFAULT_NAMES, DEFAULT_PARTYGROUP_NAME, DEFAULT_PARTYROLE_NAME, DEFAULT_PATHS, DEFAULT_PREDEFINE_COLOR, DEFAULT_PREDEFINE_NAME, DEFAULT_PREDEFINE_RELATION, DEFAULT_PREDEFINE_WEIGHT, DEFAULT_UNIT_NAME, applyTransformsOn, connect, csvPathFor, dataPathFor, findAdministrativeArea, findAdministrativeAreaChildren, findAdministrativeAreaParents, findAdministrativeAreas, findAdministrativeLevel, findAdministrativeLevelChildren, findAdministrativeLevelParents, findAdministrativeLevels, findChangelogDefaults, findDefaultPredefines, findEventDefaults, findParties, findParty, findPartyDefaults, findPartyGroup, findPartyGroups, findPartyRole, findPartyRoles, findPermission, findPermissions, geoJsonPathFor, jsonPathFor, pathFor, preloadChangelogRelated, preloadEventRelated, preloadPartyRelated, preloadRelated, processCsvSeed, readCsvFile, seed, seedAdministrativeAreas, seedAdministrativeLevels, seedAgencies, seedEvent, seedEventActionCatalogues, seedEventActions, seedEventCertainties, seedEventFunctions, seedEventGroups, seedEventIndicators, seedEventLevels, seedEventQuestions, seedEventResponses, seedEventSeverities, seedEventStatuses, seedEventTopics, seedEventTypes, seedEventUrgencies, seedEvents, seedFeatureTypes, seedFeatures, seedFocals, seedFromCsv, seedFromJson, seedFromSeeds, seedNotificationTemplates, seedParty, seedPartyGroups, seedPartyOwnerships, seedPartyRoles, seedPathFor, seedPermissions, seedPredefine, seedUnits, seedVehicleMakes, seedVehicleModels, seedVehicleTypes, seedVehicles, shapeFilePathFor, syncIndexes, transformGeoFields, transformOtherFields, transformSeedKeys, transformToEventSeed, transformToPartySeed, transformToPredefineSeed };

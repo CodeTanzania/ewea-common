@@ -1,3 +1,19 @@
+#### 0.11.0 (2020-05-03)
+
+##### Chores
+
+* **deps:**
+  *  force latest version & audit fix ([1d7194c0](https://github.com/codetanzania/ewea-common/commit/1d7194c04e4b30dcbcf62cad72c96c4457b939d2))
+  *  force latest version & audit fix ([cff94c7b](https://github.com/codetanzania/ewea-common/commit/cff94c7b9dc522230a504e4bafeecc59df58244e))
+  *  force latest version & audit fix ([1fea4345](https://github.com/codetanzania/ewea-common/commit/1fea43457deac455b2c745ed08fc9173ce441d1c))
+
+##### New Features
+
+* **seed:**
+  *  add vehicles ([69be2546](https://github.com/codetanzania/ewea-common/commit/69be2546775b98da143a4631599fd91363788a32))
+  *  add vehicle types, models and makes ([c5654f81](https://github.com/codetanzania/ewea-common/commit/c5654f81f3130092293e942e017544bdca82c57a))
+  *  add party ownership ([15e5747e](https://github.com/codetanzania/ewea-common/commit/15e5747e1145de44ad7cf15be716f0ec780c10e2))
+
 #### 0.10.0 (2020-04-29)
 
 ##### Chores
