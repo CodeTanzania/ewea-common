@@ -1,3 +1,13 @@
+#### 0.12.0 (2020-05-05)
+
+##### Chores
+
+* **deps:**  force latest version & audit fix ([02afc1ea](https://github.com/codetanzania/ewea-common/commit/02afc1ea2c6c0e8cb397fc8420dbfc5556596037))
+
+##### New Features
+
+* **seed:**  add vehicle statuses ([a72877e4](https://github.com/codetanzania/ewea-common/commit/a72877e42e98886d6203fee37e30964ef102b7ea))
+
 #### 0.11.0 (2020-05-03)
 
 ##### Chores
