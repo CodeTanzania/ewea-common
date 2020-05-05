@@ -31,6 +31,7 @@ import {
   seedVehicleTypes,
   seedVehicleModels,
   seedVehicleMakes,
+  seedVehicleStatuses,
   seedEventGroups,
   seedEventTypes,
   seedEventFunctions,
@@ -302,6 +303,13 @@ describe('seed', () => {
 
   it('should seed vehicle makes', (done) => {
     seedVehicleMakes((error) => {
+      expect(error).to.not.exist;
+      done(error);
+    });
+  });
+
+  it('should seed vehicle statuses', (done) => {
+    seedVehicleStatuses((error) => {
       expect(error).to.not.exist;
       done(error);
     });

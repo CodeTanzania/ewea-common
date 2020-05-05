@@ -1412,6 +1412,31 @@ export const seedVehicleMakes = (done) => {
 };
 
 /**
+ * @function seedVehicleStatuses
+ * @name seedVehicleStatuses
+ * @description Seed vehicle statuses
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.12.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedVehicleStatuses(error => { ... });
+ */
+export const seedVehicleStatuses = (done) => {
+  debug('Start Seeding Vehicle Statuses Data');
+  const namespace = 'VehicleStatus';
+  return seedPredefine({ namespace }, (error) => {
+    debug('Finish Seeding Vehicle Statuses Data');
+    return done(error);
+  });
+};
+
+/**
  * @function seedEventGroups
  * @name seedEventGroups
  * @description Seed event groups
@@ -1775,6 +1800,7 @@ export const seed = (done) => {
     seedVehicleTypes,
     seedVehicleModels,
     seedVehicleMakes,
+    seedVehicleStatuses,
     seedEventGroups,
     seedEventTypes,
     seedEventFunctions,
