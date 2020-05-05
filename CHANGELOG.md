@@ -1,3 +1,13 @@
+#### 0.13.0 (2020-05-05)
+
+##### Chores
+
+* **deps:**  force latest version & audit fix ([dfe9abe0](https://github.com/codetanzania/ewea-common/commit/dfe9abe064c0ef548bb7d8d021555926ff8b2a89))
+
+##### New Features
+
+* **seed:**  add party gender ([968fb6d0](https://github.com/codetanzania/ewea-common/commit/968fb6d0fd747d48e2f5c6d0212bd62cb0b14f76))
+
 #### 0.12.0 (2020-05-05)
 
 ##### Chores
