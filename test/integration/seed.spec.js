@@ -28,6 +28,7 @@ import {
   seedPartyOwnerships,
   seedPartyGroups,
   seedPartyRoles,
+  seedPartyGenders,
   seedVehicleTypes,
   seedVehicleModels,
   seedVehicleMakes,
@@ -282,6 +283,13 @@ describe('seed', () => {
 
   it('should seed party roles', (done) => {
     seedPartyRoles((error) => {
+      expect(error).to.not.exist;
+      done(error);
+    });
+  });
+
+  it('should seed party roles', (done) => {
+    seedPartyGenders((error) => {
       expect(error).to.not.exist;
       done(error);
     });
