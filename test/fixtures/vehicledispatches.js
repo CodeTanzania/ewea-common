@@ -56,6 +56,18 @@ const dispatches = [
         match: { namespace: 'EventType', 'strings.name.en': 'Floods' },
         model: 'Predefine',
       },
+      reporter: {
+        match: { name: 'Ali Mdoe' },
+        model: 'Party',
+      },
+      dispatcher: {
+        match: { name: 'Ali Mdoe' },
+        model: 'Party',
+      },
+      resolver: {
+        match: { name: 'Ali Mdoe' },
+        model: 'Party',
+      },
       'requester.facility': {
         match: { namespace: 'Feature', 'strings.name.en': 'Amana Hospital' },
         model: 'Predefine',

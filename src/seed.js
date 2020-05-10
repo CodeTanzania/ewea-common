@@ -2,11 +2,13 @@ import {
   MODEL_NAME_PREDEFINE,
   MODEL_NAME_PARTY,
   MODEL_NAME_EVENT,
+  MODEL_NAME_VEHICLEDISPATCH,
   PREDEFINE_NAMESPACE_ADMINISTRATIVELEVEL,
   PREDEFINE_NAMESPACE_ADMINISTRATIVEAREA,
   PARTY_RELATIONS,
   PREDEFINE_RELATIONS,
   EVENT_RELATIONS,
+  VEHICLE_DISPATCH_RELATIONS,
 } from '@codetanzania/ewea-internals';
 import { join as joinPath, resolve as resolvePath } from 'path';
 import {
@@ -512,7 +514,7 @@ export const transformToPartySeed = (seed) => {
  * @name transformToEventSeed
  * @description Transform and normalize given seed to event seed
  * @param {object} seed valid seed
- * @returns {object} valid party seed
+ * @returns {object} valid event seed
  * @author lally elias <lallyelias87@gmail.com>
  * @license MIT
  * @since 0.6.0
@@ -550,6 +552,55 @@ export const transformToEventSeed = (seed) => {
 
   // return
   data = omit(data, ...[...keys(EVENT_RELATIONS), 'relations', 'namespace']);
+  return data;
+};
+
+/**
+ * @function transformToVehicleDispatchSeed
+ * @name transformToVehicleDispatchSeed
+ * @description Transform and normalize given seed to vehicle dispatch seed
+ * @param {object} seed valid seed
+ * @returns {object} valid vehicle dispatch seed
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.14.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * transformToVehicleDispatchSeed({ Name: 'John Doe' });
+ * => { name: 'John Doe' }
+ */
+export const transformToVehicleDispatchSeed = (seed) => {
+  // copy seed
+  let data = mergeObjects(seed);
+
+  // transform relations
+  const populate = {};
+  forEach(VEHICLE_DISPATCH_RELATIONS, (value, key) => {
+    const hasRelation = key && data[key];
+    if (hasRelation) {
+      const options = mergeObjects(value);
+      const path = `${options.path || key}`;
+      const modelName = options.ref || MODEL_NAME_PREDEFINE;
+      const namespaces = compact([].concat(options.namespace));
+      const array = options.array || false;
+      const vals = sortedUniq(split(data[key], ','));
+      const match =
+        modelName === MODEL_NAME_PREDEFINE
+          ? { 'strings.name.en': { $in: vals }, namespace: { $in: namespaces } }
+          : { name: { $in: vals } };
+      populate[path] = { model: modelName, match, array };
+    }
+  });
+  data.populate = populate;
+
+  // return
+  data = omit(
+    data,
+    ...[...keys(VEHICLE_DISPATCH_RELATIONS), 'relations', 'namespace']
+  );
   return data;
 };
 
@@ -779,6 +830,8 @@ export const seedFromJson = (optns, done) => {
  * seedFromSeeds(optns, error => { ... });
  */
 export const seedFromSeeds = (optns, done) => {
+  // TODO: transform relations to populate?
+
   // normalize options
   const {
     modelName = undefined,
@@ -945,6 +998,51 @@ export const seedEvent = (optns, done) => {
   const stages = [fromCsv, fromJson, fromSeeds];
 
   // do seed event
+  return waterfall(stages, done);
+};
+
+/**
+ * @function seedVehicleDispatch
+ * @name seedVehicleDispatch
+ * @description Seed given vehicle dispatches
+ * @param {object} optns valid seed options
+ * @param {boolean} [optns.throws=false] whether to ignore error
+ * @param {Function[]} optns.transformers valid event transformers
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.14.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedVehicleDispatch(optns, error => { ... });
+ */
+export const seedVehicleDispatch = (optns, done) => {
+  // normalize options
+  const {
+    modelName = MODEL_NAME_VEHICLEDISPATCH,
+    throws = false,
+    transformers = [],
+  } = mergeObjects(optns);
+
+  // prepare options
+  const options = {
+    modelName,
+    properties: {},
+    throws,
+    transformers: [transformToVehicleDispatchSeed, ...transformers],
+  };
+
+  // prepare vehicle dispatch seed stages
+  const fromSeeds = (next) => seedFromSeeds(options, (error) => next(error));
+  const fromJson = (next) => seedFromJson(options, (error) => next(error));
+  const fromCsv = (next) => seedFromCsv(options, (error) => next(error));
+  const stages = [fromCsv, fromJson, fromSeeds];
+
+  // do seed vehicle dispatch
   return waterfall(stages, done);
 };
 
@@ -1789,6 +1887,30 @@ export const seedEvents = (done) => {
 };
 
 /**
+ * @function seedVehicleDispatches
+ * @name seedVehicleDispatches
+ * @description seed vehicle dispatches
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.14.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedVehicleDispatches(error => { ... });
+ */
+export const seedVehicleDispatches = (done) => {
+  debug('Start Seeding Vehicle Dispatches Data');
+  return seedVehicleDispatch({}, (error) => {
+    debug('Finish Seeding Vehicle Dispatches Data');
+    return done(error);
+  });
+};
+
+/**
  * @function seed
  * @name seed
  * @description Seed data
@@ -1842,6 +1964,7 @@ export const seed = (done) => {
     seedNotificationTemplates,
     seedEvents,
     // seedEventChangeLogs,
+    seedVehicleDispatches,
   ];
 
   // run seed tasks

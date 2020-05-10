@@ -108,7 +108,7 @@
     "nyc": "^15.0.1",
     "prettier": "^2.0.5",
     "rimraf": "^3.0.2",
-    "rollup": "^2.8.2",
+    "rollup": "^2.9.0",
     "shelljs": "^0.8.4"
   },
   "peerDependencies": {
@@ -125,12 +125,12 @@
     "@lykmapipo/file": ">=0.1.25",
     "@lykmapipo/geo-tools": ">=0.7.2",
     "@lykmapipo/logger": ">=0.5.13",
-    "@lykmapipo/mongoose-common": ">=0.34.1",
+    "@lykmapipo/mongoose-common": ">=0.34.2",
     "@lykmapipo/mongoose-exportable": ">=0.3.29",
     "@lykmapipo/mongoose-sequenceable": ">=0.2.15",
     "@lykmapipo/permission": ">=0.8.27",
     "@lykmapipo/postman": ">=0.18.11",
-    "@lykmapipo/predefine": ">=1.16.1",
+    "@lykmapipo/predefine": ">=1.17.0",
     "async": ">=3.2.0",
     "lodash": ">=4.17.15",
     "mongoose-geojson-schemas": ">=0.12.2",
