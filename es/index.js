@@ -1,4 +1,4 @@
-import { PREDEFINE_UNIT_NAME, PREDEFINE_ADMINISTRATIVELEVEL_NAME, PREDEFINE_FEATURETYPE_NAME, PREDEFINE_EVENTINDICATOR_NAME, PREDEFINE_EVENTTOPIC_NAME, PREDEFINE_EVENTLEVEL_NAME, PREDEFINE_EVENTSEVERITY_NAME, PREDEFINE_EVENTCERTAINTY_NAME, PREDEFINE_EVENTSTATUS_NAME, PREDEFINE_EVENTURGENCY_NAME, PREDEFINE_EVENTRESPONSE_NAME, PREDEFINE_PARTYGROUP_NAME, PREDEFINE_PARTYROLE_NAME, PREDEFINE_EVENTGROUP_NAME, PREDEFINE_EVENTTYPE_NAME, PREDEFINE_EVENTFUNCTION_NAME, PREDEFINE_EVENTACTION_NAME, PREDEFINE_EVENTQUESTION_NAME, PREDEFINE_ADMINISTRATIVEAREA_NAME, PREDEFINE_NAMESPACE_UNIT, PREDEFINE_NAMESPACE_PARTYROLE, PREDEFINE_NAMESPACE_NOTIFICATIONTEMPLATE, EVENT_RELATIONS, PREDEFINE_RELATIONS, MODEL_NAME_PREDEFINE, PREDEFINE_NAMESPACE_ADMINISTRATIVEAREA, PREDEFINE_NAMESPACE_ADMINISTRATIVELEVEL, PARTY_RELATIONS, MODEL_NAME_PARTY, MODEL_NAME_EVENT } from '@codetanzania/ewea-internals';
+import { PREDEFINE_UNIT_NAME, PREDEFINE_ADMINISTRATIVELEVEL_NAME, PREDEFINE_FEATURETYPE_NAME, PREDEFINE_EVENTINDICATOR_NAME, PREDEFINE_EVENTTOPIC_NAME, PREDEFINE_EVENTLEVEL_NAME, PREDEFINE_EVENTSEVERITY_NAME, PREDEFINE_EVENTCERTAINTY_NAME, PREDEFINE_EVENTSTATUS_NAME, PREDEFINE_EVENTURGENCY_NAME, PREDEFINE_EVENTRESPONSE_NAME, PREDEFINE_PARTYGROUP_NAME, PREDEFINE_PARTYROLE_NAME, PREDEFINE_EVENTGROUP_NAME, PREDEFINE_EVENTTYPE_NAME, PREDEFINE_EVENTFUNCTION_NAME, PREDEFINE_EVENTACTION_NAME, PREDEFINE_EVENTQUESTION_NAME, PREDEFINE_ADMINISTRATIVEAREA_NAME, PREDEFINE_NAMESPACE_UNIT, PREDEFINE_NAMESPACE_PARTYROLE, PREDEFINE_NAMESPACE_NOTIFICATIONTEMPLATE, EVENT_RELATIONS, PREDEFINE_RELATIONS, MODEL_NAME_PREDEFINE, PREDEFINE_NAMESPACE_ADMINISTRATIVEAREA, PREDEFINE_NAMESPACE_ADMINISTRATIVELEVEL, PARTY_RELATIONS, VEHICLE_DISPATCH_RELATIONS, MODEL_NAME_PARTY, MODEL_NAME_EVENT, MODEL_NAME_VEHICLEDISPATCH } from '@codetanzania/ewea-internals';
 export * from '@codetanzania/ewea-internals';
 export * from '@lykmapipo/constants';
 import { sortedUniq, mergeObjects, pluralize, join as join$1, compact, arrayToObject } from '@lykmapipo/common';
@@ -679,7 +679,7 @@ const transformToPartySeed = (seed) => {
  * @name transformToEventSeed
  * @description Transform and normalize given seed to event seed
  * @param {object} seed valid seed
- * @returns {object} valid party seed
+ * @returns {object} valid event seed
  * @author lally elias <lallyelias87@gmail.com>
  * @license MIT
  * @since 0.6.0
@@ -717,6 +717,55 @@ const transformToEventSeed = (seed) => {
 
   // return
   data = omit(data, ...[...keys(EVENT_RELATIONS), 'relations', 'namespace']);
+  return data;
+};
+
+/**
+ * @function transformToVehicleDispatchSeed
+ * @name transformToVehicleDispatchSeed
+ * @description Transform and normalize given seed to vehicle dispatch seed
+ * @param {object} seed valid seed
+ * @returns {object} valid vehicle dispatch seed
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.14.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * transformToVehicleDispatchSeed({ Name: 'John Doe' });
+ * => { name: 'John Doe' }
+ */
+const transformToVehicleDispatchSeed = (seed) => {
+  // copy seed
+  let data = mergeObjects(seed);
+
+  // transform relations
+  const populate = {};
+  forEach(VEHICLE_DISPATCH_RELATIONS, (value, key) => {
+    const hasRelation = key && data[key];
+    if (hasRelation) {
+      const options = mergeObjects(value);
+      const path = `${options.path || key}`;
+      const modelName = options.ref || MODEL_NAME_PREDEFINE;
+      const namespaces = compact([].concat(options.namespace));
+      const array = options.array || false;
+      const vals = sortedUniq(split(data[key], ','));
+      const match =
+        modelName === MODEL_NAME_PREDEFINE
+          ? { 'strings.name.en': { $in: vals }, namespace: { $in: namespaces } }
+          : { name: { $in: vals } };
+      populate[path] = { model: modelName, match, array };
+    }
+  });
+  data.populate = populate;
+
+  // return
+  data = omit(
+    data,
+    ...[...keys(VEHICLE_DISPATCH_RELATIONS), 'relations', 'namespace']
+  );
   return data;
 };
 
@@ -946,6 +995,8 @@ const seedFromJson = (optns, done) => {
  * seedFromSeeds(optns, error => { ... });
  */
 const seedFromSeeds = (optns, done) => {
+  // TODO: transform relations to populate?
+
   // normalize options
   const {
     modelName = undefined,
@@ -1112,6 +1163,51 @@ const seedEvent = (optns, done) => {
   const stages = [fromCsv, fromJson, fromSeeds];
 
   // do seed event
+  return waterfall(stages, done);
+};
+
+/**
+ * @function seedVehicleDispatch
+ * @name seedVehicleDispatch
+ * @description Seed given vehicle dispatches
+ * @param {object} optns valid seed options
+ * @param {boolean} [optns.throws=false] whether to ignore error
+ * @param {Function[]} optns.transformers valid event transformers
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.14.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedVehicleDispatch(optns, error => { ... });
+ */
+const seedVehicleDispatch = (optns, done) => {
+  // normalize options
+  const {
+    modelName = MODEL_NAME_VEHICLEDISPATCH,
+    throws = false,
+    transformers = [],
+  } = mergeObjects(optns);
+
+  // prepare options
+  const options = {
+    modelName,
+    properties: {},
+    throws,
+    transformers: [transformToVehicleDispatchSeed, ...transformers],
+  };
+
+  // prepare vehicle dispatch seed stages
+  const fromSeeds = (next) => seedFromSeeds(options, (error) => next(error));
+  const fromJson = (next) => seedFromJson(options, (error) => next(error));
+  const fromCsv = (next) => seedFromCsv(options, (error) => next(error));
+  const stages = [fromCsv, fromJson, fromSeeds];
+
+  // do seed vehicle dispatch
   return waterfall(stages, done);
 };
 
@@ -1956,6 +2052,30 @@ const seedEvents = (done) => {
 };
 
 /**
+ * @function seedVehicleDispatches
+ * @name seedVehicleDispatches
+ * @description seed vehicle dispatches
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.14.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedVehicleDispatches(error => { ... });
+ */
+const seedVehicleDispatches = (done) => {
+  debug('Start Seeding Vehicle Dispatches Data');
+  return seedVehicleDispatch({}, (error) => {
+    debug('Finish Seeding Vehicle Dispatches Data');
+    return done(error);
+  });
+};
+
+/**
  * @function seed
  * @name seed
  * @description Seed data
@@ -2009,6 +2129,7 @@ const seed = (done) => {
     seedNotificationTemplates,
     seedEvents,
     // seedEventChangeLogs,
+    seedVehicleDispatches,
   ];
 
   // run seed tasks
@@ -2549,4 +2670,4 @@ const findParty = (...optns) => {
 
 // start:query shortcuts
 
-export { DEFAULT_ADMINISTRATIVEAREA_NAME, DEFAULT_ADMINISTRATIVELEVEL_NAME, DEFAULT_EVENTACTION_NAME, DEFAULT_EVENTCERTAINTY_NAME, DEFAULT_EVENTFUNCTION_NAME, DEFAULT_EVENTGROUP_NAME, DEFAULT_EVENTINDICATOR_NAME, DEFAULT_EVENTLEVEL_NAME, DEFAULT_EVENTQUESTION_NAME, DEFAULT_EVENTRESPONSE_NAME, DEFAULT_EVENTSEVERITY_NAME, DEFAULT_EVENTSTATUS_NAME, DEFAULT_EVENTTOPIC_NAME, DEFAULT_EVENTTYPE_NAME, DEFAULT_EVENTURGENCY_NAME, DEFAULT_EVENT_NUMBER, DEFAULT_FEATURETYPE_NAME, DEFAULT_NAMES, DEFAULT_PARTYGROUP_NAME, DEFAULT_PARTYROLE_NAME, DEFAULT_PATHS, DEFAULT_PREDEFINE_COLOR, DEFAULT_PREDEFINE_NAME, DEFAULT_PREDEFINE_RELATION, DEFAULT_PREDEFINE_WEIGHT, DEFAULT_UNIT_NAME, applyTransformsOn, connect, csvPathFor, dataPathFor, findAdministrativeArea, findAdministrativeAreaChildren, findAdministrativeAreaParents, findAdministrativeAreas, findAdministrativeLevel, findAdministrativeLevelChildren, findAdministrativeLevelParents, findAdministrativeLevels, findChangelogDefaults, findDefaultPredefines, findEventDefaults, findParties, findParty, findPartyDefaults, findPartyGroup, findPartyGroups, findPartyRole, findPartyRoles, findPermission, findPermissions, geoJsonPathFor, jsonPathFor, pathFor, preloadChangelogRelated, preloadEventRelated, preloadPartyRelated, preloadRelated, processCsvSeed, readCsvFile, seed, seedAdministrativeAreas, seedAdministrativeLevels, seedAgencies, seedEvent, seedEventActionCatalogues, seedEventActions, seedEventCertainties, seedEventFunctions, seedEventGroups, seedEventIndicators, seedEventLevels, seedEventQuestions, seedEventResponses, seedEventSeverities, seedEventStatuses, seedEventTopics, seedEventTypes, seedEventUrgencies, seedEvents, seedFeatureTypes, seedFeatures, seedFocals, seedFromCsv, seedFromJson, seedFromSeeds, seedNotificationTemplates, seedParty, seedPartyGenders, seedPartyGroups, seedPartyOwnerships, seedPartyRoles, seedPathFor, seedPermissions, seedPredefine, seedUnits, seedVehicleMakes, seedVehicleModels, seedVehicleStatuses, seedVehicleTypes, seedVehicles, shapeFilePathFor, syncIndexes, transformGeoFields, transformOtherFields, transformSeedKeys, transformToEventSeed, transformToPartySeed, transformToPredefineSeed };
+export { DEFAULT_ADMINISTRATIVEAREA_NAME, DEFAULT_ADMINISTRATIVELEVEL_NAME, DEFAULT_EVENTACTION_NAME, DEFAULT_EVENTCERTAINTY_NAME, DEFAULT_EVENTFUNCTION_NAME, DEFAULT_EVENTGROUP_NAME, DEFAULT_EVENTINDICATOR_NAME, DEFAULT_EVENTLEVEL_NAME, DEFAULT_EVENTQUESTION_NAME, DEFAULT_EVENTRESPONSE_NAME, DEFAULT_EVENTSEVERITY_NAME, DEFAULT_EVENTSTATUS_NAME, DEFAULT_EVENTTOPIC_NAME, DEFAULT_EVENTTYPE_NAME, DEFAULT_EVENTURGENCY_NAME, DEFAULT_EVENT_NUMBER, DEFAULT_FEATURETYPE_NAME, DEFAULT_NAMES, DEFAULT_PARTYGROUP_NAME, DEFAULT_PARTYROLE_NAME, DEFAULT_PATHS, DEFAULT_PREDEFINE_COLOR, DEFAULT_PREDEFINE_NAME, DEFAULT_PREDEFINE_RELATION, DEFAULT_PREDEFINE_WEIGHT, DEFAULT_UNIT_NAME, applyTransformsOn, connect, csvPathFor, dataPathFor, findAdministrativeArea, findAdministrativeAreaChildren, findAdministrativeAreaParents, findAdministrativeAreas, findAdministrativeLevel, findAdministrativeLevelChildren, findAdministrativeLevelParents, findAdministrativeLevels, findChangelogDefaults, findDefaultPredefines, findEventDefaults, findParties, findParty, findPartyDefaults, findPartyGroup, findPartyGroups, findPartyRole, findPartyRoles, findPermission, findPermissions, geoJsonPathFor, jsonPathFor, pathFor, preloadChangelogRelated, preloadEventRelated, preloadPartyRelated, preloadRelated, processCsvSeed, readCsvFile, seed, seedAdministrativeAreas, seedAdministrativeLevels, seedAgencies, seedEvent, seedEventActionCatalogues, seedEventActions, seedEventCertainties, seedEventFunctions, seedEventGroups, seedEventIndicators, seedEventLevels, seedEventQuestions, seedEventResponses, seedEventSeverities, seedEventStatuses, seedEventTopics, seedEventTypes, seedEventUrgencies, seedEvents, seedFeatureTypes, seedFeatures, seedFocals, seedFromCsv, seedFromJson, seedFromSeeds, seedNotificationTemplates, seedParty, seedPartyGenders, seedPartyGroups, seedPartyOwnerships, seedPartyRoles, seedPathFor, seedPermissions, seedPredefine, seedUnits, seedVehicleDispatch, seedVehicleDispatches, seedVehicleMakes, seedVehicleModels, seedVehicleStatuses, seedVehicleTypes, seedVehicles, shapeFilePathFor, syncIndexes, transformGeoFields, transformOtherFields, transformSeedKeys, transformToEventSeed, transformToPartySeed, transformToPredefineSeed, transformToVehicleDispatchSeed };
