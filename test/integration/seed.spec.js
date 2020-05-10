@@ -3,7 +3,10 @@ import {
   PREDEFINE_NAMESPACE_EVENTSEVERITY,
 } from '@codetanzania/ewea-internals';
 import { waterfall } from 'async';
-import { expect } from '@lykmapipo/mongoose-test-helpers';
+import {
+  expect,
+  // enableDebug
+} from '@lykmapipo/mongoose-test-helpers';
 import { Predefine } from '@codetanzania/emis-stakeholder';
 import {
   readCsvFile,
@@ -48,10 +51,12 @@ import {
   seedNotificationTemplates,
   seedEvents,
   // seedEventChangeLogs,
+  seedVehicleDispatches,
   seed,
 } from '../../src';
 
 import '@codetanzania/ewea-event';
+import '@codetanzania/ewea-dispatch';
 
 describe('seed', () => {
   const { BASE_PATH, DATA_PATH, SEED_PATH } = process.env;
@@ -409,6 +414,13 @@ describe('seed', () => {
 
   it('should seed events', (done) => {
     seedEvents((error) => {
+      expect(error).to.not.exist;
+      done(error);
+    });
+  });
+
+  it('should seed vehicle dispatches', (done) => {
+    seedVehicleDispatches((error) => {
       expect(error).to.not.exist;
       done(error);
     });

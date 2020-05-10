@@ -3,7 +3,7 @@
     "group": "Hydrological",
     "type": "Floods",
     "level": "White",
-    "certainity": "Observed",
+    "certainty": "Observed",
     "severity": "Extreme",
     "status": "Exercise",
     "urgency": "Immediate",
