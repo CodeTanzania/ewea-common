@@ -1,3 +1,16 @@
+#### 0.14.0 (2020-05-10)
+
+##### Chores
+
+* **deps:**
+  *  force latest version & audit fix ([10814ad5](https://github.com/codetanzania/ewea-common/commit/10814ad5251243aa585967c1dbad148d96e84c2a))
+  *  force latest version & audit fix ([f943487b](https://github.com/codetanzania/ewea-common/commit/f943487bc82a19b3be54e77b4e596dbc2ff8fc70))
+  *  add dispatch for seed implement ([c5a1b141](https://github.com/codetanzania/ewea-common/commit/c5a1b141472b40090069d475c4e3fb46edec26fa))
+
+##### New Features
+
+* **seed:**  add vehicle dispatch ([e4c2082b](https://github.com/codetanzania/ewea-common/commit/e4c2082ba1f2d7ed9ca75ec9972c992a334cda71))
+
 #### 0.13.0 (2020-05-05)
 
 ##### Chores
