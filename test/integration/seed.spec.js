@@ -17,6 +17,7 @@ import {
   seedParty,
   seedEvent,
   seedPermissions,
+  // seedDefaults,
   seedUnits,
   seedPriorities,
   seedAdministrativeLevels,

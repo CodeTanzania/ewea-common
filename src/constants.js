@@ -20,9 +20,20 @@ import {
   PREDEFINE_ADMINISTRATIVEAREA_NAME,
   PREDEFINE_NAMESPACE_UNIT,
   PREDEFINE_NAMESPACE_PARTYROLE,
+  PREDEFINE_NAMESPACE_FEATURETYPE,
+  PREDEFINE_NAMESPACE_EVENTINDICATOR,
+  PREDEFINE_NAMESPACE_EVENTTOPIC,
+  PREDEFINE_NAMESPACE_VEHICLE,
+  PREDEFINE_NAMESPACE_EVENTFUNCTION,
+  PREDEFINE_NAMESPACE_EVENTACTION,
+  PREDEFINE_NAMESPACE_EVENTQUESTION,
+  PREDEFINE_NAMESPACE_FEATURE,
+  PREDEFINE_NAMESPACE_EVENTACTIONCATALOGUE,
   PREDEFINE_NAMESPACE_NOTIFICATIONTEMPLATE,
   EVENT_RELATIONS,
+  PREDEFINE_DEFAULTS,
 } from '@codetanzania/ewea-internals';
+import { mapValues, omit } from 'lodash';
 import { sortedUniq, mergeObjects } from '@lykmapipo/common';
 import { getNumber, getString } from '@lykmapipo/env';
 import {
@@ -40,7 +51,7 @@ export const DEFAULT_PREDEFINE_COLOR = getString(
 );
 export const DEFAULT_PREDEFINE_WEIGHT = getNumber(
   'DEFAULT_PREDEFINE_WEIGHT',
-  Number.MAX_SAFE_INTEGER
+  1000
 );
 
 export const DEFAULT_PREDEFINE_RELATION = {
@@ -182,4 +193,34 @@ export const DEFAULT_PATHS = mergeObjects(
     template: { namespace: PREDEFINE_NAMESPACE_NOTIFICATIONTEMPLATE },
   },
   EVENT_RELATIONS
+);
+
+export const DEFAULT_SEEDS_IGNORE = [
+  PREDEFINE_NAMESPACE_FEATURETYPE,
+  PREDEFINE_NAMESPACE_EVENTINDICATOR,
+  PREDEFINE_NAMESPACE_EVENTTOPIC,
+  PREDEFINE_NAMESPACE_VEHICLE,
+  PREDEFINE_NAMESPACE_EVENTFUNCTION,
+  PREDEFINE_NAMESPACE_EVENTACTION,
+  PREDEFINE_NAMESPACE_EVENTQUESTION,
+  PREDEFINE_NAMESPACE_FEATURE,
+  PREDEFINE_NAMESPACE_EVENTACTIONCATALOGUE,
+  PREDEFINE_NAMESPACE_NOTIFICATIONTEMPLATE,
+];
+
+export const DEFAULT_SEEDS = mapValues(
+  omit(PREDEFINE_DEFAULTS, ...DEFAULT_SEEDS_IGNORE),
+  (defaultValue, namespace) => {
+    return {
+      // _id: null, TODO: genarate default object ids
+      namespace,
+      strings: {
+        name: localizedValuesFor({ en: defaultValue }),
+        abbreviation: localizedAbbreviationsFor({ en: defaultValue }),
+        color: DEFAULT_PREDEFINE_COLOR,
+      },
+      numbers: { weight: DEFAULT_PREDEFINE_WEIGHT },
+      booleans: { default: true, system: true },
+    };
+  }
 );
