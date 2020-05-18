@@ -18,6 +18,7 @@ import {
   seedEvent,
   seedPermissions,
   seedUnits,
+  seedPriorities,
   seedAdministrativeLevels,
   seedFeatureTypes,
   seedEventIndicators,
@@ -197,6 +198,13 @@ describe('seed', () => {
 
   it('should seed units', (done) => {
     seedUnits((error) => {
+      expect(error).to.not.exist;
+      done(error);
+    });
+  });
+
+  it('should seed priorities', (done) => {
+    seedPriorities((error) => {
       expect(error).to.not.exist;
       done(error);
     });

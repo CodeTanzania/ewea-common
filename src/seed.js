@@ -1108,6 +1108,31 @@ export const seedUnits = (done) => {
 };
 
 /**
+ * @function seedPriorities
+ * @name seedPriorities
+ * @description Seed priorities
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.15.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedPriorities(error => { ... });
+ */
+export const seedPriorities = (done) => {
+  debug('Start Seeding Priorities Data');
+  const namespace = 'Priority';
+  return seedPredefine({ namespace }, (error) => {
+    debug('Finish Seeding Priorities Data');
+    return done(error);
+  });
+};
+
+/**
  * @function seedAdministrativeLevels
  * @name seedAdministrativeLevels
  * @description Seed administrative levels
@@ -1931,6 +1956,7 @@ export const seed = (done) => {
     syncIndexes,
     seedPermissions,
     seedUnits,
+    seedPriorities,
     seedAdministrativeLevels,
     seedFeatureTypes,
     seedEventIndicators,
