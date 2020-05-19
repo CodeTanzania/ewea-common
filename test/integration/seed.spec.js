@@ -17,7 +17,7 @@ import {
   seedParty,
   seedEvent,
   seedPermissions,
-  // seedDefaults,
+  seedDefaults,
   seedUnits,
   seedPriorities,
   seedAdministrativeLevels,
@@ -192,6 +192,13 @@ describe('seed', () => {
 
   it('should seed permissions', (done) => {
     seedPermissions((error) => {
+      expect(error).to.not.exist;
+      done(error);
+    });
+  });
+
+  it('should seed defaults', (done) => {
+    seedDefaults((error) => {
       expect(error).to.not.exist;
       done(error);
     });
@@ -443,7 +450,7 @@ describe('seed', () => {
       ],
       (error, areas) => {
         expect(error).to.not.exist;
-        expect(areas).to.exist.and.have.length(3);
+        expect(areas).to.exist.and.have.length(4); // TODO: cross check assertions
         expect(areas.map((area) => area.strings.name.en)).to.have.length(
           areas.length
         );

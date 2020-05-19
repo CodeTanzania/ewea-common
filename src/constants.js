@@ -1,4 +1,5 @@
 import {
+  MODEL_NAME_PREDEFINE,
   PREDEFINE_UNIT_NAME,
   PREDEFINE_ADMINISTRATIVELEVEL_NAME,
   PREDEFINE_FEATURETYPE_NAME,
@@ -33,9 +34,11 @@ import {
   EVENT_RELATIONS,
   PREDEFINE_DEFAULTS,
 } from '@codetanzania/ewea-internals';
+import { createHmac } from 'crypto';
 import { mapValues, omit } from 'lodash';
 import { sortedUniq, mergeObjects } from '@lykmapipo/common';
 import { getNumber, getString } from '@lykmapipo/env';
+import { MongooseTypes } from '@lykmapipo/mongoose-common';
 import {
   localizedValuesFor,
   localizedAbbreviationsFor,
@@ -195,6 +198,23 @@ export const DEFAULT_PATHS = mergeObjects(
   EVENT_RELATIONS
 );
 
+export const objectIdFor = (model, namespace) => {
+  // ensure secret & message
+  const secret = model || namespace;
+  const message = namespace || model;
+
+  // generate 24-byte hex hash
+  const hash = createHmac('md5', secret)
+    .update(message)
+    .digest('hex')
+    .slice(0, 24);
+
+  // create objectid from hash
+  const objectId = MongooseTypes.ObjectId.createFromHexString(hash);
+
+  return objectId;
+};
+
 export const DEFAULT_SEEDS_IGNORE = [
   PREDEFINE_NAMESPACE_FEATURETYPE,
   PREDEFINE_NAMESPACE_EVENTINDICATOR,
@@ -212,7 +232,7 @@ export const DEFAULT_SEEDS = mapValues(
   omit(PREDEFINE_DEFAULTS, ...DEFAULT_SEEDS_IGNORE),
   (defaultValue, namespace) => {
     return {
-      // _id: null, TODO: genarate default object ids
+      _id: objectIdFor(MODEL_NAME_PREDEFINE, namespace),
       namespace,
       strings: {
         name: localizedValuesFor({ en: defaultValue }),

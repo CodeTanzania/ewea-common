@@ -1,3 +1,8 @@
+import {
+  MODEL_NAME_PARTY,
+  MODEL_NAME_PREDEFINE,
+  PREDEFINE_NAMESPACE_UNIT,
+} from '@codetanzania/ewea-internals';
 import { expect } from '@lykmapipo/test-helpers';
 import {
   DEFAULT_PREDEFINE_NAME,
@@ -25,6 +30,7 @@ import {
   DEFAULT_ADMINISTRATIVEAREA_NAME,
   DEFAULT_EVENT_NUMBER,
   DEFAULT_NAMES,
+  objectIdFor,
   DEFAULT_SEEDS_IGNORE,
   DEFAULT_SEEDS,
 } from '../../src';
@@ -67,6 +73,26 @@ describe('constants', () => {
     expect(DEFAULT_ADMINISTRATIVEAREA_NAME).to.be.equal('Unknown');
     expect(DEFAULT_EVENT_NUMBER).to.be.undefined;
     expect(DEFAULT_NAMES).to.be.exist.and.be.an('array');
+  });
+
+  it('should generate defult objectid for models', () => {
+    const oid1 = objectIdFor(MODEL_NAME_PARTY);
+    const oid2 = objectIdFor(MODEL_NAME_PARTY);
+    expect(oid1).to.exist;
+    expect(oid2).to.exist;
+    expect(oid1).to.be.eql(oid2);
+
+    const oid3 = objectIdFor(MODEL_NAME_PREDEFINE);
+    const oid4 = objectIdFor(MODEL_NAME_PREDEFINE);
+    expect(oid3).to.exist;
+    expect(oid4).to.exist;
+    expect(oid3).to.be.eql(oid4);
+
+    const oid5 = objectIdFor(MODEL_NAME_PREDEFINE, PREDEFINE_NAMESPACE_UNIT);
+    const oid6 = objectIdFor(MODEL_NAME_PREDEFINE, PREDEFINE_NAMESPACE_UNIT);
+    expect(oid5).to.exist;
+    expect(oid6).to.exist;
+    expect(oid5).to.be.eql(oid6);
   });
 
   it('should ignore namespace from default seed', () => {
