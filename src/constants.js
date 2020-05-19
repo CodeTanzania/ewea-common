@@ -198,7 +198,7 @@ export const DEFAULT_PATHS = mergeObjects(
   EVENT_RELATIONS
 );
 
-export const objectIdFor = (model, namespace) => {
+export const objectIdFor = (model, namespace /* , uniqueValue */) => {
   // ensure secret & message
   const secret = model || namespace;
   const message = namespace || model;
