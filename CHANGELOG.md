@@ -1,3 +1,20 @@
+#### 0.15.0 (2020-05-19)
+
+##### Chores
+
+* **deps:**
+  *  force latest version & audit fix ([b70f7c07](https://github.com/codetanzania/ewea-common/commit/b70f7c07a5b0f0cff4f9f23a147794a25e7b9a4b))
+  *  force latest version & audit fix ([f34bd23a](https://github.com/codetanzania/ewea-common/commit/f34bd23a4d14f6faaa2f70a6ed69cc428405db91))
+  *  force latest version & audit fix ([bd82eeaf](https://github.com/codetanzania/ewea-common/commit/bd82eeafca04bb3cee1ac775445a2c865a52446c))
+  *  force latest version & audit fix ([a9f7139f](https://github.com/codetanzania/ewea-common/commit/a9f7139f8c4546afa27e26535343989c4d82882e))
+
+##### New Features
+
+* **seed:**
+  *  add default predefines ([43850621](https://github.com/codetanzania/ewea-common/commit/438506216f00e5641609c51ebee5561e61f9b108))
+  *  add priorities ([14cd75a0](https://github.com/codetanzania/ewea-common/commit/14cd75a08e14acaa225713cc90bc358f3b08a37e))
+* **constants:**  derive default seeds ([3cee2595](https://github.com/codetanzania/ewea-common/commit/3cee2595c9b22c1e3aa5d73613899ef917d956c1))
+
 #### 0.14.0 (2020-05-10)
 
 ##### Chores

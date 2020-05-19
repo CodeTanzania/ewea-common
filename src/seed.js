@@ -15,6 +15,7 @@ import {
   endsWith,
   first,
   forEach,
+  includes,
   isArray,
   isEmpty,
   isFunction,
@@ -27,6 +28,7 @@ import {
   toNumber,
   trim,
   omit,
+  values,
 } from 'lodash';
 import { waterfall } from 'async';
 import {
@@ -42,6 +44,8 @@ import { readCsv, readJson, parseCoordinateString } from '@lykmapipo/geo-tools';
 import { model } from '@lykmapipo/mongoose-common';
 import { listPermissions, transformToPredefine } from '@lykmapipo/predefine';
 import { Permission } from '@lykmapipo/permission';
+
+import { DEFAULT_SEEDS } from './constants';
 
 import { syncIndexes } from './database';
 
@@ -836,6 +840,7 @@ export const seedFromSeeds = (optns, done) => {
   const {
     modelName = undefined,
     throws = false,
+    data = undefined,
     filter,
     transform,
   } = mergeObjects(optns);
@@ -845,7 +850,7 @@ export const seedFromSeeds = (optns, done) => {
   const canSeed = Model && isFunction(Model.seed);
   if (canSeed) {
     // filter, transform & seed
-    return Model.seed({ filter, transform }, (error, results) => {
+    return Model.seed({ data, filter, transform }, (error, results) => {
       // reply with errors
       if (throws) {
         return done(error, results);
@@ -1064,6 +1069,7 @@ export const seedVehicleDispatch = (optns, done) => {
  */
 export const seedPermissions = (done) => {
   debug('Start Seeding Permissions Data');
+  // TODO: ensure collision free ids
 
   // prepare permissions seed stages
   const seedResourcePermissions = (next) => {
@@ -1078,6 +1084,41 @@ export const seedPermissions = (done) => {
   // do seed permissions
   return waterfall(stages, (error) => {
     debug('Finish Seeding Permissions Data');
+    return done(error);
+  });
+};
+
+/**
+ * @function seedDefaults
+ * @name seedDefaults
+ * @description Seed default predefines
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.15.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedDefaults(error => { ... });
+ */
+export const seedDefaults = (done) => {
+  debug('Start Seeding Default Predefines Data');
+
+  // prepare options
+  const modelName = MODEL_NAME_PREDEFINE;
+  const data = values(DEFAULT_SEEDS);
+  const namespaces = keys(DEFAULT_SEEDS);
+  const filter = ({ namespace = undefined }) => {
+    return includes(namespaces, namespace);
+  };
+  const optns = { modelName, data, filter };
+
+  // do seeding
+  return seedFromSeeds(optns, (error) => {
+    debug('Finish Seeding Default Predefines Data');
     return done(error);
   });
 };
@@ -1103,6 +1144,31 @@ export const seedUnits = (done) => {
   const namespace = 'Unit';
   return seedPredefine({ namespace }, (error) => {
     debug('Finish Seeding Units Data');
+    return done(error);
+  });
+};
+
+/**
+ * @function seedPriorities
+ * @name seedPriorities
+ * @description Seed priorities
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.15.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedPriorities(error => { ... });
+ */
+export const seedPriorities = (done) => {
+  debug('Start Seeding Priorities Data');
+  const namespace = 'Priority';
+  return seedPredefine({ namespace }, (error) => {
+    debug('Finish Seeding Priorities Data');
     return done(error);
   });
 };
@@ -1930,7 +1996,9 @@ export const seed = (done) => {
   const tasks = [
     syncIndexes,
     seedPermissions,
+    seedDefaults,
     seedUnits,
+    seedPriorities,
     seedAdministrativeLevels,
     seedFeatureTypes,
     seedEventIndicators,
