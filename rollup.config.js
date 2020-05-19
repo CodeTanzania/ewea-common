@@ -6,6 +6,7 @@ export default [
     input: 'src/index.js',
     external: [
       'path',
+      'crypto',
       ...keys(pkg.dependencies),
       ...keys(pkg.peerDependencies),
     ],
