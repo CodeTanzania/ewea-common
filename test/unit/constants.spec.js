@@ -2,6 +2,7 @@ import {
   MODEL_NAME_PARTY,
   MODEL_NAME_PREDEFINE,
   PREDEFINE_NAMESPACE_UNIT,
+  PREDEFINE_UNIT_NAME,
 } from '@codetanzania/ewea-internals';
 import { expect } from '@lykmapipo/test-helpers';
 import {
@@ -93,6 +94,20 @@ describe('constants', () => {
     expect(oid5).to.exist;
     expect(oid6).to.exist;
     expect(oid5).to.be.eql(oid6);
+
+    const oid7 = objectIdFor(
+      MODEL_NAME_PREDEFINE,
+      PREDEFINE_NAMESPACE_UNIT,
+      PREDEFINE_UNIT_NAME
+    );
+    const oid8 = objectIdFor(
+      MODEL_NAME_PREDEFINE,
+      PREDEFINE_NAMESPACE_UNIT,
+      PREDEFINE_UNIT_NAME
+    );
+    expect(oid7).to.exist;
+    expect(oid8).to.exist;
+    expect(oid7).to.be.eql(oid8);
   });
 
   it('should ignore namespace from default seed', () => {

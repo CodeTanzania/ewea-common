@@ -198,14 +198,15 @@ export const DEFAULT_PATHS = mergeObjects(
   EVENT_RELATIONS
 );
 
-export const objectIdFor = (model, namespace /* , uniqueValue */) => {
+export const objectIdFor = (model, namespace, uniqueValue) => {
   // ensure secret & message
   const secret = model || namespace;
   const message = namespace || model;
+  const data = uniqueValue ? message + uniqueValue : message;
 
   // generate 24-byte hex hash
   const hash = createHmac('md5', secret)
-    .update(message)
+    .update(data)
     .digest('hex')
     .slice(0, 24);
 
