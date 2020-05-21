@@ -24,6 +24,7 @@ import {
   PREDEFINE_NAMESPACE_FEATURETYPE,
   PREDEFINE_NAMESPACE_EVENTINDICATOR,
   PREDEFINE_NAMESPACE_EVENTTOPIC,
+  PREDEFINE_NAMESPACE_VEHICLESTATUS,
   PREDEFINE_NAMESPACE_VEHICLE,
   PREDEFINE_NAMESPACE_EVENTFUNCTION,
   PREDEFINE_NAMESPACE_EVENTACTION,
@@ -242,6 +243,36 @@ export const DEFAULT_SEEDS = mapValues(
       },
       numbers: { weight: DEFAULT_PREDEFINE_WEIGHT },
       booleans: { default: true, system: true },
+    };
+  }
+);
+
+// TODO: move to internal or common?
+export const COMMON_VEHICLESTATUSES = {
+  Waiting: { weight: 1, abbreviation: 'WTN' },
+  Enroute: { weight: 2, abbreviation: 'ERT' },
+  Cancelled: { weight: DEFAULT_PREDEFINE_WEIGHT, abbreviation: 'CNL' },
+  'At Pickup': { weight: 4, abbreviation: 'APU' },
+  'From Pickup': { weight: 5, abbreviation: 'FPU' },
+  'At Dropoff': { weight: 6, abbreviation: 'ADO' },
+  'From Dropoff': { weight: 7, abbreviation: 'FDO' },
+  Completed: { weight: 8, abbreviation: 'CPT' },
+  Idle: { weight: DEFAULT_PREDEFINE_WEIGHT, abbreviation: 'IDL' },
+};
+
+export const COMMON_VEHICLESTATUS_SEEDS = mapValues(
+  COMMON_VEHICLESTATUSES,
+  ({ weight, abbreviation }, statusName) => {
+    const namespace = PREDEFINE_NAMESPACE_VEHICLESTATUS;
+    return {
+      _id: objectIdFor(MODEL_NAME_PREDEFINE, namespace, statusName),
+      namespace,
+      strings: {
+        name: localizedValuesFor({ en: statusName }),
+        abbreviation: localizedValuesFor({ en: abbreviation }),
+      },
+      numbers: { weight: weight || DEFAULT_PREDEFINE_WEIGHT },
+      booleans: { system: true },
     };
   }
 );

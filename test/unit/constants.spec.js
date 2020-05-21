@@ -1,3 +1,4 @@
+import { keys } from 'lodash';
 import {
   MODEL_NAME_PARTY,
   MODEL_NAME_PREDEFINE,
@@ -34,6 +35,8 @@ import {
   objectIdFor,
   DEFAULT_SEEDS_IGNORE,
   DEFAULT_SEEDS,
+  COMMON_VEHICLESTATUSES,
+  COMMON_VEHICLESTATUS_SEEDS,
 } from '../../src';
 
 describe('constants', () => {
@@ -128,5 +131,16 @@ describe('constants', () => {
   it('should provide default namespace seeds', () => {
     expect(DEFAULT_SEEDS).to.exist;
     expect(DEFAULT_SEEDS).to.not.include.keys(...DEFAULT_SEEDS_IGNORE);
+  });
+
+  it('should provide common vehicle statuses', () => {
+    expect(COMMON_VEHICLESTATUSES).to.exist.and.be.an('object');
+  });
+
+  it('should provide common vehicle status seeds', () => {
+    expect(COMMON_VEHICLESTATUS_SEEDS).to.exist.and.be.an('object');
+    expect(COMMON_VEHICLESTATUS_SEEDS).to.include.keys(
+      ...keys(COMMON_VEHICLESTATUSES)
+    );
   });
 });
