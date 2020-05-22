@@ -248,31 +248,90 @@ export const DEFAULT_SEEDS = mapValues(
 );
 
 // TODO: move to internal or common?
+// TODO: use constants
 export const COMMON_VEHICLESTATUSES = {
-  Waiting: { weight: 1, abbreviation: 'WTN' },
-  Enroute: { weight: 2, abbreviation: 'ERT' },
-  Cancelled: { weight: DEFAULT_PREDEFINE_WEIGHT, abbreviation: 'CNL' },
-  'At Pickup': { weight: 4, abbreviation: 'APU' },
-  'From Pickup': { weight: 5, abbreviation: 'FPU' },
-  'At Dropoff': { weight: 6, abbreviation: 'ADO' },
-  'From Dropoff': { weight: 7, abbreviation: 'FDO' },
-  Completed: { weight: 8, abbreviation: 'CPT' },
-  Idle: { weight: DEFAULT_PREDEFINE_WEIGHT, abbreviation: 'IDL' },
+  Waiting: { weight: 1, name: 'Waiting', abbreviation: 'WTN' },
+  Enroute: { weight: 2, name: 'Enroute', abbreviation: 'ERT' },
+  Canceled: {
+    weight: DEFAULT_PREDEFINE_WEIGHT,
+    name: 'Canceled',
+    abbreviation: 'CNL',
+  },
+  AtPickup: { weight: 4, name: 'At Pickup', abbreviation: 'APU' },
+  FromPickup: { weight: 5, name: 'From Pickup', abbreviation: 'FPU' },
+  AtDropoff: { weight: 6, name: 'At Dropoff', abbreviation: 'ADO' },
+  FromDropoff: { weight: 7, name: 'From Dropoff', abbreviation: 'FDO' },
+  Completed: { weight: 8, name: 'Completed', abbreviation: 'CPT' },
+  Idle: { weight: DEFAULT_PREDEFINE_WEIGHT, name: 'Idle', abbreviation: 'IDL' },
 };
 
 export const COMMON_VEHICLESTATUS_SEEDS = mapValues(
   COMMON_VEHICLESTATUSES,
-  ({ weight, abbreviation }, statusName) => {
+  ({ weight, name, abbreviation }) => {
     const namespace = PREDEFINE_NAMESPACE_VEHICLESTATUS;
     return {
-      _id: objectIdFor(MODEL_NAME_PREDEFINE, namespace, statusName),
+      _id: objectIdFor(MODEL_NAME_PREDEFINE, namespace, name),
       namespace,
       strings: {
-        name: localizedValuesFor({ en: statusName }),
-        abbreviation: localizedValuesFor({ en: abbreviation }),
+        name: localizedValuesFor({ en: name }),
+        abbreviation: localizedValuesFor({ en: abbreviation || name }),
       },
       numbers: { weight: weight || DEFAULT_PREDEFINE_WEIGHT },
       booleans: { system: true },
     };
   }
 );
+
+// TODO: move to dispatch
+export const dispatchStatusFor = (optns) => {
+  // ensure options
+  const options = mergeObjects(optns);
+
+  // defaults
+  let dispatch = COMMON_VEHICLESTATUS_SEEDS.Waiting;
+  let vehicle = COMMON_VEHICLESTATUS_SEEDS.Idle;
+
+  // dispatched
+  if (options.dispatchedAt) {
+    dispatch = COMMON_VEHICLESTATUS_SEEDS.Enroute;
+    vehicle = COMMON_VEHICLESTATUS_SEEDS.Enroute;
+  }
+
+  // canceled
+  if (options.canceledAt) {
+    dispatch = COMMON_VEHICLESTATUS_SEEDS.Canceled;
+    vehicle = COMMON_VEHICLESTATUS_SEEDS.Idle;
+  }
+
+  // arrived at pickup
+  if (options.pickup && options.pickup.arrivedAt) {
+    dispatch = COMMON_VEHICLESTATUS_SEEDS.AtPickup;
+    vehicle = COMMON_VEHICLESTATUS_SEEDS.Enroute;
+  }
+
+  // dispatched from pickup
+  if (options.pickup && options.pickup.dispatchedAt) {
+    dispatch = COMMON_VEHICLESTATUS_SEEDS.FromPickup;
+    vehicle = COMMON_VEHICLESTATUS_SEEDS.Enroute;
+  }
+
+  // arrived at dropoff
+  if (options.dropoff && options.dropoff.arrivedAt) {
+    dispatch = COMMON_VEHICLESTATUS_SEEDS.AtDropoff;
+    vehicle = COMMON_VEHICLESTATUS_SEEDS.Enroute;
+  }
+
+  // dispatched from dropoff
+  if (options.dropoff && options.dropoff.dispatchedAt) {
+    dispatch = COMMON_VEHICLESTATUS_SEEDS.FromDropoff;
+    vehicle = COMMON_VEHICLESTATUS_SEEDS.Enroute;
+  }
+
+  // resolved/completed
+  if (options.resolvedAt || options.completedAt) {
+    dispatch = COMMON_VEHICLESTATUS_SEEDS.Completed;
+    vehicle = COMMON_VEHICLESTATUS_SEEDS.Idle;
+  }
+
+  return { dispatch, vehicle };
+};

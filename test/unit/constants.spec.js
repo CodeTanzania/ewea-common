@@ -5,6 +5,7 @@ import {
   PREDEFINE_NAMESPACE_UNIT,
   PREDEFINE_UNIT_NAME,
 } from '@codetanzania/ewea-internals';
+import { areSameObjectId } from '@lykmapipo/mongoose-common';
 import { expect } from '@lykmapipo/test-helpers';
 import {
   DEFAULT_PREDEFINE_NAME,
@@ -37,6 +38,7 @@ import {
   DEFAULT_SEEDS,
   COMMON_VEHICLESTATUSES,
   COMMON_VEHICLESTATUS_SEEDS,
+  dispatchStatusFor,
 } from '../../src';
 
 describe('constants', () => {
@@ -142,5 +144,75 @@ describe('constants', () => {
     expect(COMMON_VEHICLESTATUS_SEEDS).to.include.keys(
       ...keys(COMMON_VEHICLESTATUSES)
     );
+  });
+
+  it('should be able to derive dispatch status', () => {
+    let statuses = dispatchStatusFor();
+    expect(
+      areSameObjectId(statuses.dispatch, COMMON_VEHICLESTATUS_SEEDS.Waiting)
+    ).to.be.true;
+    expect(areSameObjectId(statuses.vehicle, COMMON_VEHICLESTATUS_SEEDS.Idle))
+      .to.be.true;
+
+    statuses = dispatchStatusFor({ createdAt: new Date() });
+    expect(
+      areSameObjectId(statuses.dispatch, COMMON_VEHICLESTATUS_SEEDS.Waiting)
+    ).to.be.true;
+    expect(areSameObjectId(statuses.vehicle, COMMON_VEHICLESTATUS_SEEDS.Idle))
+      .to.be.true;
+
+    statuses = dispatchStatusFor({ dispatchedAt: new Date() });
+    expect(
+      areSameObjectId(statuses.dispatch, COMMON_VEHICLESTATUS_SEEDS.Enroute)
+    ).to.be.true;
+    expect(
+      areSameObjectId(statuses.vehicle, COMMON_VEHICLESTATUS_SEEDS.Enroute)
+    ).to.be.true;
+
+    statuses = dispatchStatusFor({ canceledAt: new Date() });
+    expect(
+      areSameObjectId(statuses.dispatch, COMMON_VEHICLESTATUS_SEEDS.Canceled)
+    ).to.be.true;
+    expect(areSameObjectId(statuses.vehicle, COMMON_VEHICLESTATUS_SEEDS.Idle))
+      .to.be.true;
+
+    statuses = dispatchStatusFor({ pickup: { arrivedAt: new Date() } });
+    expect(
+      areSameObjectId(statuses.dispatch, COMMON_VEHICLESTATUS_SEEDS.AtPickup)
+    ).to.be.true;
+    expect(
+      areSameObjectId(statuses.vehicle, COMMON_VEHICLESTATUS_SEEDS.Enroute)
+    ).to.be.true;
+
+    statuses = dispatchStatusFor({ pickup: { dispatchedAt: new Date() } });
+    expect(
+      areSameObjectId(statuses.dispatch, COMMON_VEHICLESTATUS_SEEDS.FromPickup)
+    ).to.be.true;
+    expect(
+      areSameObjectId(statuses.vehicle, COMMON_VEHICLESTATUS_SEEDS.Enroute)
+    ).to.be.true;
+
+    statuses = dispatchStatusFor({ dropoff: { arrivedAt: new Date() } });
+    expect(
+      areSameObjectId(statuses.dispatch, COMMON_VEHICLESTATUS_SEEDS.AtDropoff)
+    ).to.be.true;
+    expect(
+      areSameObjectId(statuses.vehicle, COMMON_VEHICLESTATUS_SEEDS.Enroute)
+    ).to.be.true;
+
+    statuses = dispatchStatusFor({ dropoff: { dispatchedAt: new Date() } });
+    expect(
+      areSameObjectId(statuses.dispatch, COMMON_VEHICLESTATUS_SEEDS.FromDropoff)
+    ).to.be.true;
+    expect(
+      areSameObjectId(statuses.vehicle, COMMON_VEHICLESTATUS_SEEDS.Enroute)
+    ).to.be.true;
+
+    statuses = dispatchStatusFor({ resolvedAt: new Date() });
+    expect(
+      areSameObjectId(statuses.dispatch, COMMON_VEHICLESTATUS_SEEDS.Completed)
+    ).to.be.true;
+    expect(areSameObjectId(statuses.vehicle, COMMON_VEHICLESTATUS_SEEDS.Idle))
+      .to.be.true;
   });
 });
