@@ -1,6 +1,6 @@
 {
   "name": "@codetanzania/ewea-common",
-  "version": "0.15.0",
+  "version": "0.16.0",
   "description": "Common utilities for EWEA",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -100,7 +100,7 @@
     "generate-changelog": "^1.8.0",
     "handlebars": "^4.7.6",
     "husky": "^4.2.5",
-    "lint-staged": "^10.2.4",
+    "lint-staged": "^10.2.6",
     "lodash.template": "^4.5.0",
     "mocha": "^7.1.2",
     "mongoose": ">=5.9.15",
@@ -108,7 +108,7 @@
     "nyc": "^15.0.1",
     "prettier": "^2.0.5",
     "rimraf": "^3.0.2",
-    "rollup": "^2.10.5",
+    "rollup": "^2.10.7",
     "shelljs": "^0.8.4"
   },
   "peerDependencies": {
