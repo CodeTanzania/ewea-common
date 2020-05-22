@@ -1,3 +1,33 @@
+#### 0.16.0 (2020-05-22)
+
+##### Chores
+
+* **deps:**
+  *  force latest version & audit fix ([5ade60cd](https://github.com/codetanzania/ewea-common/commit/5ade60cd5cb0d6a6c826ae657bfb89f8ff871397))
+  *  force latest version & audit fix ([9302017e](https://github.com/codetanzania/ewea-common/commit/9302017e9a85c075383824db9150b635058a8fe0))
+
+##### New Features
+
+* **constants:**
+  *  derive dispatch status from timestamps ([847890f1](https://github.com/codetanzania/ewea-common/commit/847890f105f2db0c63c43cb6f031e71f845b2d78))
+  *  prepare common status seeds ([9993ed6d](https://github.com/codetanzania/ewea-common/commit/9993ed6ddb5eb8320adc48df3bf5c5b62a3ca154))
+  *  derive constact object id of a unique value ([0a2daf14](https://github.com/codetanzania/ewea-common/commit/0a2daf144fde6d1d19b40e622713116655f22abc))
+* **seed:**  add common statuses ([6048feb5](https://github.com/codetanzania/ewea-common/commit/6048feb5f4d94c81ad74e60914c74740c6aacfd8))
+
+#### 0.16.0 (2020-05-22)
+
+##### Chores
+
+* **deps:**  force latest version & audit fix ([9302017e](https://github.com/codetanzania/ewea-common/commit/9302017e9a85c075383824db9150b635058a8fe0))
+
+##### New Features
+
+* **constants:**
+  *  derive dispatch status from timestamps ([847890f1](https://github.com/codetanzania/ewea-common/commit/847890f105f2db0c63c43cb6f031e71f845b2d78))
+  *  prepare common status seeds ([9993ed6d](https://github.com/codetanzania/ewea-common/commit/9993ed6ddb5eb8320adc48df3bf5c5b62a3ca154))
+  *  derive constact object id of a unique value ([0a2daf14](https://github.com/codetanzania/ewea-common/commit/0a2daf144fde6d1d19b40e622713116655f22abc))
+* **seed:**  add common statuses ([6048feb5](https://github.com/codetanzania/ewea-common/commit/6048feb5f4d94c81ad74e60914c74740c6aacfd8))
+
 #### 0.15.0 (2020-05-19)
 
 ##### Chores

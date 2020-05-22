@@ -45,7 +45,7 @@ import { model } from '@lykmapipo/mongoose-common';
 import { listPermissions, transformToPredefine } from '@lykmapipo/predefine';
 import { Permission } from '@lykmapipo/permission';
 
-import { DEFAULT_SEEDS } from './constants';
+import { DEFAULT_SEEDS, COMMON_VEHICLESTATUS_SEEDS } from './constants';
 
 import { syncIndexes } from './database';
 
@@ -1124,6 +1124,41 @@ export const seedDefaults = (done) => {
 };
 
 /**
+ * @function seedCommons
+ * @name seedCommons
+ * @description Seed common predefines
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.16.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedCommons(error => { ... });
+ */
+export const seedCommons = (done) => {
+  debug('Start Seeding Common Predefines Data');
+
+  // prepare options
+  const modelName = MODEL_NAME_PREDEFINE;
+  const data = [...values(COMMON_VEHICLESTATUS_SEEDS)];
+  const namespaces = sortedUniq(map(data, 'namespace'));
+  const filter = ({ namespace = undefined }) => {
+    return includes(namespaces, namespace);
+  };
+  const optns = { modelName, data, filter };
+
+  // do seeding
+  return seedFromSeeds(optns, (error) => {
+    debug('Finish Seeding Common Predefines Data');
+    return done(error);
+  });
+};
+
+/**
  * @function seedUnits
  * @name seedUnits
  * @description Seed unit of measure
@@ -1992,11 +2027,13 @@ export const seedVehicleDispatches = (done) => {
  * seed(error => { ... });
  */
 export const seed = (done) => {
+  // TODO: allow seed specifics
   // prepare seed tasks
   const tasks = [
     syncIndexes,
-    seedPermissions,
+    seedPermissions, // TODO: ensure resource list + dashboard permissions
     seedDefaults,
+    seedCommons,
     seedUnits,
     seedPriorities,
     seedAdministrativeLevels,

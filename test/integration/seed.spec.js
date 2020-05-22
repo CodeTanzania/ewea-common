@@ -18,6 +18,7 @@ import {
   seedEvent,
   seedPermissions,
   seedDefaults,
+  seedCommons,
   seedUnits,
   seedPriorities,
   seedAdministrativeLevels,
@@ -199,6 +200,13 @@ describe('seed', () => {
 
   it('should seed defaults', (done) => {
     seedDefaults((error) => {
+      expect(error).to.not.exist;
+      done(error);
+    });
+  });
+
+  it('should seed commons', (done) => {
+    seedCommons((error) => {
       expect(error).to.not.exist;
       done(error);
     });
