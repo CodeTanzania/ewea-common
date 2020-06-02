@@ -1561,6 +1561,31 @@ export const seedPartyGenders = (done) => {
 };
 
 /**
+ * @function seedPartyOccupations
+ * @name seedPartyOccupations
+ * @description Seed party occupations
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.17.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedPartyOccupations(error => { ... });
+ */
+export const seedPartyOccupations = (done) => {
+  debug('Start Seeding Party Occupations Data');
+  const namespace = 'PartyOccupation';
+  return seedPredefine({ namespace }, (error) => {
+    debug('Finish Seeding Party Occupations Data');
+    return done(error);
+  });
+};
+
+/**
  * @function seedVehicleTypes
  * @name seedVehicleTypes
  * @description Seed vehicle types
@@ -2050,6 +2075,7 @@ export const seed = (done) => {
     seedPartyGroups,
     seedPartyRoles,
     seedPartyGenders,
+    seedPartyOccupations,
     seedVehicleTypes,
     seedVehicleModels,
     seedVehicleMakes,

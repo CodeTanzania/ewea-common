@@ -1,3 +1,16 @@
+#### 0.17.0 (2020-06-02)
+
+##### Chores
+
+* **deps:**
+  *  force latest version & audit fix ([36d32f12](https://github.com/codetanzania/ewea-common/commit/36d32f12d5a80ab1ab5935586e4e9dab55137d9f))
+  *  force latest version & audit fix ([a3372977](https://github.com/codetanzania/ewea-common/commit/a33729779b17e9856540a732cef0816a556dd414))
+  *  force latest version & audit fix ([35971511](https://github.com/codetanzania/ewea-common/commit/35971511d2d3b3f8b2948a7829a05956eafc570f))
+
+##### New Features
+
+* **seed:**  add party occupation ([e1352f5d](https://github.com/codetanzania/ewea-common/commit/e1352f5d360c1352953ec682b5a9fbd25ba3477d))
+
 #### 0.16.0 (2020-05-22)
 
 ##### Chores
