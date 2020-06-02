@@ -35,6 +35,7 @@ import {
   seedPartyGroups,
   seedPartyRoles,
   seedPartyGenders,
+  seedPartyOccupations,
   seedVehicleTypes,
   seedVehicleModels,
   seedVehicleMakes,
@@ -55,6 +56,7 @@ import {
   seedEvents,
   // seedEventChangeLogs,
   seedVehicleDispatches,
+  // seedCases,
   seed,
 } from '../../src';
 
@@ -319,6 +321,13 @@ describe('seed', () => {
 
   it('should seed party roles', (done) => {
     seedPartyGenders((error) => {
+      expect(error).to.not.exist;
+      done(error);
+    });
+  });
+
+  it('should seed party occupations', (done) => {
+    seedPartyOccupations((error) => {
       expect(error).to.not.exist;
       done(error);
     });
