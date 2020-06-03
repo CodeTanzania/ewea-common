@@ -1,3 +1,17 @@
+#### 0.18.0 (2020-06-03)
+
+##### Chores
+
+* **deps:**  force latest version & audit fix ([5b2bb961](https://github.com/codetanzania/ewea-common/commit/5b2bb9616aaa7279851c14816c6ebd767f5c68b3))
+
+##### New Features
+
+* **seed:**  add case ([270e072b](https://github.com/codetanzania/ewea-common/commit/270e072b602b12e89f24fae808e303bec05878da))
+
+##### Bug Fixes
+
+* **seeds:**  ensure vehicle dispatch seeding ([f3fb2e17](https://github.com/codetanzania/ewea-common/commit/f3fb2e17f629fecf8c37a6f5adf4779f220c8cec))
+
 #### 0.17.1 (2020-06-02)
 
 #### 0.17.0 (2020-06-02)

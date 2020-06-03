@@ -56,12 +56,13 @@ import {
   seedEvents,
   // seedEventChangeLogs,
   seedVehicleDispatches,
-  // seedCases,
+  seedCases,
   seed,
 } from '../../src';
 
 import '@codetanzania/ewea-event';
 import '@codetanzania/ewea-dispatch';
+import '@codetanzania/ewea-case';
 
 describe('seed', () => {
   const { BASE_PATH, DATA_PATH, SEED_PATH } = process.env;
@@ -454,6 +455,13 @@ describe('seed', () => {
 
   it('should seed vehicle dispatches', (done) => {
     seedVehicleDispatches((error) => {
+      expect(error).to.not.exist;
+      done(error);
+    });
+  });
+
+  it('should seed cases', (done) => {
+    seedCases((error) => {
       expect(error).to.not.exist;
       done(error);
     });
