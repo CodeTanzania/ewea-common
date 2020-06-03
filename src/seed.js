@@ -3,12 +3,14 @@ import {
   MODEL_NAME_PARTY,
   MODEL_NAME_EVENT,
   MODEL_NAME_VEHICLEDISPATCH,
+  MODEL_NAME_CASE,
   PREDEFINE_NAMESPACE_ADMINISTRATIVELEVEL,
   PREDEFINE_NAMESPACE_ADMINISTRATIVEAREA,
   PARTY_RELATIONS,
   PREDEFINE_RELATIONS,
   EVENT_RELATIONS,
   VEHICLE_DISPATCH_RELATIONS,
+  CASE_RELATIONS,
 } from '@codetanzania/ewea-internals';
 import { join as joinPath, resolve as resolvePath } from 'path';
 import {
@@ -609,6 +611,54 @@ export const transformToVehicleDispatchSeed = (seed) => {
 };
 
 /**
+ * @function transformToCaseSeed
+ * @name transformToCaseSeed
+ * @description Transform and normalize given seed to case seed
+ * @param {object} seed valid seed
+ * @returns {object} valid case seed
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.18.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * transformToCaseSeed({ Name: 'John Doe' });
+ * => { name: 'John Doe' }
+ */
+export const transformToCaseSeed = (seed) => {
+  // TODO: support alias on relation doted path
+
+  // copy seed
+  let data = mergeObjects(seed);
+
+  // transform relations
+  const populate = {};
+  forEach(CASE_RELATIONS, (value, key) => {
+    const hasRelation = key && data[key];
+    if (hasRelation) {
+      const options = mergeObjects(value);
+      const path = `${options.path || key}`;
+      const modelName = options.ref || MODEL_NAME_PREDEFINE;
+      const namespaces = compact([].concat(options.namespace));
+      const array = options.array || false;
+      const vals = sortedUniq(split(data[key], ','));
+      const match =
+        modelName === MODEL_NAME_PREDEFINE
+          ? { 'strings.name.en': { $in: vals }, namespace: { $in: namespaces } }
+          : { name: { $in: vals } };
+      populate[path] = { model: modelName, match, array };
+    }
+  });
+  data.populate = populate;
+
+  // return
+  data = omit(data, ...[...keys(CASE_RELATIONS), 'relations', 'namespace']);
+  return data;
+};
+
+/**
  * @function readCsvFile
  * @name readCsvFile
  * @description Read csv seed and apply seed transforms
@@ -1042,6 +1092,51 @@ export const seedVehicleDispatch = (optns, done) => {
   };
 
   // prepare vehicle dispatch seed stages
+  const fromSeeds = (next) => seedFromSeeds(options, (error) => next(error));
+  const fromJson = (next) => seedFromJson(options, (error) => next(error));
+  const fromCsv = (next) => seedFromCsv(options, (error) => next(error));
+  const stages = [fromCsv, fromJson, fromSeeds];
+
+  // do seed vehicle dispatch
+  return waterfall(stages, done);
+};
+
+/**
+ * @function seedCase
+ * @name seedCase
+ * @description Seed given cases
+ * @param {object} optns valid seed options
+ * @param {boolean} [optns.throws=false] whether to ignore error
+ * @param {Function[]} optns.transformers valid case transformers
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.18.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedCase(optns, error => { ... });
+ */
+export const seedCase = (optns, done) => {
+  // normalize options
+  const {
+    modelName = MODEL_NAME_CASE,
+    throws = false,
+    transformers = [],
+  } = mergeObjects(optns);
+
+  // prepare options
+  const options = {
+    modelName,
+    properties: {},
+    throws,
+    transformers: [transformToCaseSeed, ...transformers],
+  };
+
+  // prepare case seed stages
   const fromSeeds = (next) => seedFromSeeds(options, (error) => next(error));
   const fromJson = (next) => seedFromJson(options, (error) => next(error));
   const fromCsv = (next) => seedFromCsv(options, (error) => next(error));
@@ -2037,6 +2132,30 @@ export const seedVehicleDispatches = (done) => {
 };
 
 /**
+ * @function seedCases
+ * @name seedCases
+ * @description seed cases
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.18.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedCases(error => { ... });
+ */
+export const seedCases = (done) => {
+  debug('Start Seeding Cases Data');
+  return seedCase({}, (error) => {
+    debug('Finish Seeding Cases Data');
+    return done(error);
+  });
+};
+
+/**
  * @function seed
  * @name seed
  * @description Seed data
@@ -2096,6 +2215,8 @@ export const seed = (done) => {
     seedEvents,
     // seedEventChangeLogs,
     seedVehicleDispatches,
+    seedCases,
+    // seedCaseChangeLogs,
   ];
 
   // run seed tasks
