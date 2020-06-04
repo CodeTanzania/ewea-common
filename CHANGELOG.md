@@ -1,3 +1,13 @@
+#### 0.19.0 (2020-06-04)
+
+##### Chores
+
+* **deps:**  force latest version & audit fix ([3c64df7c](https://github.com/codetanzania/ewea-common/commit/3c64df7c9d7b4913e78fb1857a146889dd187bf1))
+
+##### New Features
+
+* **seed:**  add party nationality ([08010db2](https://github.com/codetanzania/ewea-common/commit/08010db2b7ad02aa9e57e1c63396758fd36f0319))
+
 #### 0.18.0 (2020-06-03)
 
 ##### Chores
