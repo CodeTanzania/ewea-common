@@ -36,6 +36,7 @@ import {
   seedPartyRoles,
   seedPartyGenders,
   seedPartyOccupations,
+  seedPartyNationalities,
   seedVehicleTypes,
   seedVehicleModels,
   seedVehicleMakes,
@@ -64,7 +65,7 @@ import '@codetanzania/ewea-event';
 import '@codetanzania/ewea-dispatch';
 import '@codetanzania/ewea-case';
 
-describe('seed', () => {
+describe.only('seed', () => {
   const { BASE_PATH, DATA_PATH, SEED_PATH } = process.env;
 
   before(() => {
@@ -329,6 +330,13 @@ describe('seed', () => {
 
   it('should seed party occupations', (done) => {
     seedPartyOccupations((error) => {
+      expect(error).to.not.exist;
+      done(error);
+    });
+  });
+
+  it('should seed party nationalities', (done) => {
+    seedPartyNationalities((error) => {
       expect(error).to.not.exist;
       done(error);
     });

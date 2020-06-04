@@ -1978,6 +1978,31 @@ const seedPartyOccupations = (done) => {
 };
 
 /**
+ * @function seedPartyNationalities
+ * @name seedPartyNationalities
+ * @description Seed party nationalities
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.19.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedPartyNationalities(error => { ... });
+ */
+const seedPartyNationalities = (done) => {
+  debug('Start Seeding Party Nationalities Data');
+  const namespace = 'PartyNationality';
+  return seedPredefine({ namespace }, (error) => {
+    debug('Finish Seeding Party Nationalities Data');
+    return done(error);
+  });
+};
+
+/**
  * @function seedVehicleTypes
  * @name seedVehicleTypes
  * @description Seed vehicle types
@@ -2492,6 +2517,7 @@ const seed = (done) => {
     seedPartyRoles,
     seedPartyGenders,
     seedPartyOccupations,
+    seedPartyNationalities,
     seedVehicleTypes,
     seedVehicleModels,
     seedVehicleMakes,
@@ -3054,4 +3080,4 @@ const findParty = (...optns) => {
 
 // start:query shortcuts
 
-export { COMMON_VEHICLESTATUSES, COMMON_VEHICLESTATUS_SEEDS, DEFAULT_ADMINISTRATIVEAREA_NAME, DEFAULT_ADMINISTRATIVELEVEL_NAME, DEFAULT_EVENTACTION_NAME, DEFAULT_EVENTCERTAINTY_NAME, DEFAULT_EVENTFUNCTION_NAME, DEFAULT_EVENTGROUP_NAME, DEFAULT_EVENTINDICATOR_NAME, DEFAULT_EVENTLEVEL_NAME, DEFAULT_EVENTQUESTION_NAME, DEFAULT_EVENTRESPONSE_NAME, DEFAULT_EVENTSEVERITY_NAME, DEFAULT_EVENTSTATUS_NAME, DEFAULT_EVENTTOPIC_NAME, DEFAULT_EVENTTYPE_NAME, DEFAULT_EVENTURGENCY_NAME, DEFAULT_EVENT_NUMBER, DEFAULT_FEATURETYPE_NAME, DEFAULT_NAMES, DEFAULT_PARTYGROUP_NAME, DEFAULT_PARTYROLE_NAME, DEFAULT_PATHS, DEFAULT_PREDEFINE_COLOR, DEFAULT_PREDEFINE_NAME, DEFAULT_PREDEFINE_RELATION, DEFAULT_PREDEFINE_WEIGHT, DEFAULT_SEEDS, DEFAULT_SEEDS_IGNORE, DEFAULT_UNIT_NAME, applyTransformsOn, connect, csvPathFor, dataPathFor, dispatchStatusFor, findAdministrativeArea, findAdministrativeAreaChildren, findAdministrativeAreaParents, findAdministrativeAreas, findAdministrativeLevel, findAdministrativeLevelChildren, findAdministrativeLevelParents, findAdministrativeLevels, findChangelogDefaults, findDefaultPredefines, findEventDefaults, findParties, findParty, findPartyDefaults, findPartyGroup, findPartyGroups, findPartyRole, findPartyRoles, findPermission, findPermissions, geoJsonPathFor, jsonPathFor, objectIdFor, pathFor, preloadChangelogRelated, preloadEventRelated, preloadPartyRelated, preloadRelated, processCsvSeed, readCsvFile, seed, seedAdministrativeAreas, seedAdministrativeLevels, seedAgencies, seedCase, seedCases, seedCommons, seedDefaults, seedEvent, seedEventActionCatalogues, seedEventActions, seedEventCertainties, seedEventFunctions, seedEventGroups, seedEventIndicators, seedEventLevels, seedEventQuestions, seedEventResponses, seedEventSeverities, seedEventStatuses, seedEventTopics, seedEventTypes, seedEventUrgencies, seedEvents, seedFeatureTypes, seedFeatures, seedFocals, seedFromCsv, seedFromJson, seedFromSeeds, seedNotificationTemplates, seedParty, seedPartyGenders, seedPartyGroups, seedPartyOccupations, seedPartyOwnerships, seedPartyRoles, seedPathFor, seedPermissions, seedPredefine, seedPriorities, seedUnits, seedVehicleDispatch, seedVehicleDispatches, seedVehicleMakes, seedVehicleModels, seedVehicleStatuses, seedVehicleTypes, seedVehicles, shapeFilePathFor, syncIndexes, transformGeoFields, transformOtherFields, transformSeedKeys, transformToCaseSeed, transformToEventSeed, transformToPartySeed, transformToPredefineSeed, transformToVehicleDispatchSeed };
+export { COMMON_VEHICLESTATUSES, COMMON_VEHICLESTATUS_SEEDS, DEFAULT_ADMINISTRATIVEAREA_NAME, DEFAULT_ADMINISTRATIVELEVEL_NAME, DEFAULT_EVENTACTION_NAME, DEFAULT_EVENTCERTAINTY_NAME, DEFAULT_EVENTFUNCTION_NAME, DEFAULT_EVENTGROUP_NAME, DEFAULT_EVENTINDICATOR_NAME, DEFAULT_EVENTLEVEL_NAME, DEFAULT_EVENTQUESTION_NAME, DEFAULT_EVENTRESPONSE_NAME, DEFAULT_EVENTSEVERITY_NAME, DEFAULT_EVENTSTATUS_NAME, DEFAULT_EVENTTOPIC_NAME, DEFAULT_EVENTTYPE_NAME, DEFAULT_EVENTURGENCY_NAME, DEFAULT_EVENT_NUMBER, DEFAULT_FEATURETYPE_NAME, DEFAULT_NAMES, DEFAULT_PARTYGROUP_NAME, DEFAULT_PARTYROLE_NAME, DEFAULT_PATHS, DEFAULT_PREDEFINE_COLOR, DEFAULT_PREDEFINE_NAME, DEFAULT_PREDEFINE_RELATION, DEFAULT_PREDEFINE_WEIGHT, DEFAULT_SEEDS, DEFAULT_SEEDS_IGNORE, DEFAULT_UNIT_NAME, applyTransformsOn, connect, csvPathFor, dataPathFor, dispatchStatusFor, findAdministrativeArea, findAdministrativeAreaChildren, findAdministrativeAreaParents, findAdministrativeAreas, findAdministrativeLevel, findAdministrativeLevelChildren, findAdministrativeLevelParents, findAdministrativeLevels, findChangelogDefaults, findDefaultPredefines, findEventDefaults, findParties, findParty, findPartyDefaults, findPartyGroup, findPartyGroups, findPartyRole, findPartyRoles, findPermission, findPermissions, geoJsonPathFor, jsonPathFor, objectIdFor, pathFor, preloadChangelogRelated, preloadEventRelated, preloadPartyRelated, preloadRelated, processCsvSeed, readCsvFile, seed, seedAdministrativeAreas, seedAdministrativeLevels, seedAgencies, seedCase, seedCases, seedCommons, seedDefaults, seedEvent, seedEventActionCatalogues, seedEventActions, seedEventCertainties, seedEventFunctions, seedEventGroups, seedEventIndicators, seedEventLevels, seedEventQuestions, seedEventResponses, seedEventSeverities, seedEventStatuses, seedEventTopics, seedEventTypes, seedEventUrgencies, seedEvents, seedFeatureTypes, seedFeatures, seedFocals, seedFromCsv, seedFromJson, seedFromSeeds, seedNotificationTemplates, seedParty, seedPartyGenders, seedPartyGroups, seedPartyNationalities, seedPartyOccupations, seedPartyOwnerships, seedPartyRoles, seedPathFor, seedPermissions, seedPredefine, seedPriorities, seedUnits, seedVehicleDispatch, seedVehicleDispatches, seedVehicleMakes, seedVehicleModels, seedVehicleStatuses, seedVehicleTypes, seedVehicles, shapeFilePathFor, syncIndexes, transformGeoFields, transformOtherFields, transformSeedKeys, transformToCaseSeed, transformToEventSeed, transformToPartySeed, transformToPredefineSeed, transformToVehicleDispatchSeed };
