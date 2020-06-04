@@ -1681,6 +1681,31 @@ export const seedPartyOccupations = (done) => {
 };
 
 /**
+ * @function seedPartyNationalities
+ * @name seedPartyNationalities
+ * @description Seed party nationalities
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.19.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedPartyNationalities(error => { ... });
+ */
+export const seedPartyNationalities = (done) => {
+  debug('Start Seeding Party Nationalities Data');
+  const namespace = 'PartyNationality';
+  return seedPredefine({ namespace }, (error) => {
+    debug('Finish Seeding Party Nationalities Data');
+    return done(error);
+  });
+};
+
+/**
  * @function seedVehicleTypes
  * @name seedVehicleTypes
  * @description Seed vehicle types
@@ -2195,6 +2220,7 @@ export const seed = (done) => {
     seedPartyRoles,
     seedPartyGenders,
     seedPartyOccupations,
+    seedPartyNationalities,
     seedVehicleTypes,
     seedVehicleModels,
     seedVehicleMakes,
