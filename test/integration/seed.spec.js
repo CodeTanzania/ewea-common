@@ -65,7 +65,7 @@ import '@codetanzania/ewea-event';
 import '@codetanzania/ewea-dispatch';
 import '@codetanzania/ewea-case';
 
-describe.only('seed', () => {
+describe('seed', () => {
   const { BASE_PATH, DATA_PATH, SEED_PATH } = process.env;
 
   before(() => {

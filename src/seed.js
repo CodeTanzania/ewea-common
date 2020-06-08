@@ -47,7 +47,12 @@ import { model } from '@lykmapipo/mongoose-common';
 import { listPermissions, transformToPredefine } from '@lykmapipo/predefine';
 import { Permission } from '@lykmapipo/permission';
 
-import { DEFAULT_SEEDS, COMMON_VEHICLESTATUS_SEEDS } from './constants';
+import {
+  DEFAULT_SEEDS,
+  COMMON_VEHICLESTATUS_SEEDS,
+  COMMON_CASESEVERITY_SEEDS,
+  COMMON_CASESTAGE_SEEDS,
+} from './constants';
 
 import { syncIndexes } from './database';
 
@@ -1239,7 +1244,11 @@ export const seedCommons = (done) => {
 
   // prepare options
   const modelName = MODEL_NAME_PREDEFINE;
-  const data = [...values(COMMON_VEHICLESTATUS_SEEDS)];
+  const data = [
+    ...values(COMMON_VEHICLESTATUS_SEEDS),
+    ...values(COMMON_CASESEVERITY_SEEDS),
+    ...values(COMMON_CASESTAGE_SEEDS),
+  ];
   const namespaces = sortedUniq(map(data, 'namespace'));
   const filter = ({ namespace = undefined }) => {
     return includes(namespaces, namespace);
