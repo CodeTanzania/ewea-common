@@ -20,6 +20,8 @@ import {
   PREDEFINE_EVENTQUESTION_NAME,
   PREDEFINE_ADMINISTRATIVEAREA_NAME,
   PREDEFINE_NAMESPACE_UNIT,
+  PREDEFINE_NAMESPACE_CASESEVERITY,
+  PREDEFINE_NAMESPACE_CASESTAGE,
   PREDEFINE_NAMESPACE_PARTYROLE,
   PREDEFINE_NAMESPACE_FEATURETYPE,
   PREDEFINE_NAMESPACE_EVENTINDICATOR,
@@ -335,3 +337,54 @@ export const dispatchStatusFor = (optns) => {
 
   return { dispatch, vehicle };
 };
+
+export const COMMON_CASESEVERITIES = {
+  Recovered: { weight: 1, name: 'Recovered', abbreviation: 'RCV' },
+  Mild: { weight: 2, name: 'Mild', abbreviation: 'MLD' },
+  Moderate: { weight: 3, name: 'Moderate', abbreviation: 'MDR' },
+  Severe: { weight: 4, name: 'Severe', abbreviation: 'SVR' },
+  Critical: { weight: 5, name: 'Critical', abbreviation: 'CTC' },
+  Died: { weight: 6, name: 'Died', abbreviation: 'DD' },
+};
+
+export const COMMON_CASESEVERITY_SEEDS = mapValues(
+  COMMON_CASESEVERITIES,
+  ({ weight, name, abbreviation }) => {
+    const namespace = PREDEFINE_NAMESPACE_CASESEVERITY;
+    return {
+      _id: objectIdFor(MODEL_NAME_PREDEFINE, namespace, name),
+      namespace,
+      strings: {
+        name: localizedValuesFor({ en: name }),
+        abbreviation: localizedValuesFor({ en: abbreviation || name }),
+      },
+      numbers: { weight: weight || DEFAULT_PREDEFINE_WEIGHT },
+      booleans: { system: true },
+    };
+  }
+);
+
+export const COMMON_CASESTAGES = {
+  Screening: { weight: 1, name: 'Screening', abbreviation: 'SCR' },
+  Suspect: { weight: 2, name: 'Suspect', abbreviation: 'SPT' },
+  Probable: { weight: 3, name: 'Probable', abbreviation: 'PBB' },
+  Confirmed: { weight: 4, name: 'Confirmed', abbreviation: 'CFD' },
+  Followup: { weight: 5, name: 'Followup', abbreviation: 'FLU' },
+};
+
+export const COMMON_CASESTAGE_SEEDS = mapValues(
+  COMMON_CASESTAGES,
+  ({ weight, name, abbreviation }) => {
+    const namespace = PREDEFINE_NAMESPACE_CASESTAGE;
+    return {
+      _id: objectIdFor(MODEL_NAME_PREDEFINE, namespace, name),
+      namespace,
+      strings: {
+        name: localizedValuesFor({ en: name }),
+        abbreviation: localizedValuesFor({ en: abbreviation || name }),
+      },
+      numbers: { weight: weight || DEFAULT_PREDEFINE_WEIGHT },
+      booleans: { system: true },
+    };
+  }
+);

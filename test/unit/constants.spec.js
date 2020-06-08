@@ -38,6 +38,10 @@ import {
   DEFAULT_SEEDS,
   COMMON_VEHICLESTATUSES,
   COMMON_VEHICLESTATUS_SEEDS,
+  COMMON_CASESEVERITIES,
+  COMMON_CASESEVERITY_SEEDS,
+  COMMON_CASESTAGES,
+  COMMON_CASESTAGE_SEEDS,
   dispatchStatusFor,
 } from '../../src';
 
@@ -214,5 +218,25 @@ describe('constants', () => {
     ).to.be.true;
     expect(areSameObjectId(statuses.vehicle, COMMON_VEHICLESTATUS_SEEDS.Idle))
       .to.be.true;
+  });
+
+  it('should provide case severities', () => {
+    expect(COMMON_CASESEVERITIES).to.exist.and.be.an('object');
+  });
+
+  it('should provide common case severity seeds', () => {
+    expect(COMMON_CASESEVERITY_SEEDS).to.exist.and.be.an('object');
+    expect(COMMON_CASESEVERITY_SEEDS).to.include.keys(
+      ...keys(COMMON_CASESEVERITIES)
+    );
+  });
+
+  it('should provide case stages', () => {
+    expect(COMMON_CASESTAGES).to.exist.and.be.an('object');
+  });
+
+  it('should provide common case stage seeds', () => {
+    expect(COMMON_CASESTAGE_SEEDS).to.exist.and.be.an('object');
+    expect(COMMON_CASESTAGE_SEEDS).to.include.keys(...keys(COMMON_CASESTAGES));
   });
 });

@@ -1,3 +1,16 @@
+#### 0.20.0 (2020-06-08)
+
+##### Chores
+
+* **deps:**  force latest version & audit fix ([32cc154e](https://github.com/codetanzania/ewea-common/commit/32cc154e901c1f109b3c459ffe0a744f28650faa))
+
+##### New Features
+
+* **seed:**
+  *  add extra case stages seed ([eb28c908](https://github.com/codetanzania/ewea-common/commit/eb28c90804f398bd9cd76c8b59b04bc8a1e6dab5))
+  *  add case severity & stages ([754a79aa](https://github.com/codetanzania/ewea-common/commit/754a79aaca13c4b1069893b6262af4157295d38b))
+* **constants:**  add common case stages & severities ([1f5ef6e7](https://github.com/codetanzania/ewea-common/commit/1f5ef6e7f2181a5192b023148bec1190953d5d14))
+
 #### 0.19.0 (2020-06-04)
 
 ##### Chores
