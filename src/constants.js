@@ -365,9 +365,11 @@ export const COMMON_CASESEVERITY_SEEDS = mapValues(
 );
 
 export const COMMON_CASESTAGES = {
+  Screening: { weight: 1, name: 'Screening', abbreviation: 'SCR' },
   Suspect: { weight: 2, name: 'Suspect', abbreviation: 'SPT' },
   Probable: { weight: 3, name: 'Probable', abbreviation: 'PBB' },
   Confirmed: { weight: 4, name: 'Confirmed', abbreviation: 'CFD' },
+  Followup: { weight: 5, name: 'Followup', abbreviation: 'FLU' },
 };
 
 export const COMMON_CASESTAGE_SEEDS = mapValues(
