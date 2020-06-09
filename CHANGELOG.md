@@ -1,3 +1,13 @@
+#### 0.21.0 (2020-06-09)
+
+##### Chores
+
+* **deps:**  force latest version & audit fix ([04cb1b04](https://github.com/codetanzania/ewea-common/commit/04cb1b045c6cbc155503768bc7a5b21d783c569c))
+
+##### New Features
+
+* **helpers:**  compute case severity from score ([ced15ec3](https://github.com/codetanzania/ewea-common/commit/ced15ec3fb0f5476d1dc34d268d41abf9ace4f66))
+
 #### 0.20.0 (2020-06-08)
 
 ##### Chores

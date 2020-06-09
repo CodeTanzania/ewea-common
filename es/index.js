@@ -1,4 +1,4 @@
-import { PREDEFINE_UNIT_NAME, PREDEFINE_ADMINISTRATIVELEVEL_NAME, PREDEFINE_FEATURETYPE_NAME, PREDEFINE_EVENTINDICATOR_NAME, PREDEFINE_EVENTTOPIC_NAME, PREDEFINE_EVENTLEVEL_NAME, PREDEFINE_EVENTSEVERITY_NAME, PREDEFINE_EVENTCERTAINTY_NAME, PREDEFINE_EVENTSTATUS_NAME, PREDEFINE_EVENTURGENCY_NAME, PREDEFINE_EVENTRESPONSE_NAME, PREDEFINE_PARTYGROUP_NAME, PREDEFINE_PARTYROLE_NAME, PREDEFINE_EVENTGROUP_NAME, PREDEFINE_EVENTTYPE_NAME, PREDEFINE_EVENTFUNCTION_NAME, PREDEFINE_EVENTACTION_NAME, PREDEFINE_EVENTQUESTION_NAME, PREDEFINE_ADMINISTRATIVEAREA_NAME, PREDEFINE_NAMESPACE_UNIT, PREDEFINE_NAMESPACE_PARTYROLE, PREDEFINE_NAMESPACE_NOTIFICATIONTEMPLATE, EVENT_RELATIONS, PREDEFINE_NAMESPACE_FEATURETYPE, PREDEFINE_NAMESPACE_EVENTINDICATOR, PREDEFINE_NAMESPACE_EVENTTOPIC, PREDEFINE_NAMESPACE_VEHICLE, PREDEFINE_NAMESPACE_EVENTFUNCTION, PREDEFINE_NAMESPACE_EVENTACTION, PREDEFINE_NAMESPACE_EVENTQUESTION, PREDEFINE_NAMESPACE_FEATURE, PREDEFINE_NAMESPACE_EVENTACTIONCATALOGUE, PREDEFINE_DEFAULTS, MODEL_NAME_PREDEFINE, PREDEFINE_NAMESPACE_VEHICLESTATUS, PREDEFINE_NAMESPACE_CASESEVERITY, PREDEFINE_NAMESPACE_CASESTAGE, PREDEFINE_RELATIONS, PREDEFINE_NAMESPACE_ADMINISTRATIVEAREA, PREDEFINE_NAMESPACE_ADMINISTRATIVELEVEL, PARTY_RELATIONS, VEHICLE_DISPATCH_RELATIONS, CASE_RELATIONS, MODEL_NAME_PARTY, MODEL_NAME_EVENT, MODEL_NAME_VEHICLEDISPATCH, MODEL_NAME_CASE } from '@codetanzania/ewea-internals';
+import { PREDEFINE_UNIT_NAME, PREDEFINE_ADMINISTRATIVELEVEL_NAME, PREDEFINE_FEATURETYPE_NAME, PREDEFINE_EVENTINDICATOR_NAME, PREDEFINE_EVENTTOPIC_NAME, PREDEFINE_EVENTLEVEL_NAME, PREDEFINE_EVENTSEVERITY_NAME, PREDEFINE_EVENTCERTAINTY_NAME, PREDEFINE_EVENTSTATUS_NAME, PREDEFINE_EVENTURGENCY_NAME, PREDEFINE_EVENTRESPONSE_NAME, PREDEFINE_PARTYGROUP_NAME, PREDEFINE_PARTYROLE_NAME, PREDEFINE_EVENTGROUP_NAME, PREDEFINE_EVENTTYPE_NAME, PREDEFINE_EVENTFUNCTION_NAME, PREDEFINE_EVENTACTION_NAME, PREDEFINE_EVENTQUESTION_NAME, PREDEFINE_ADMINISTRATIVEAREA_NAME, PREDEFINE_NAMESPACE_UNIT, PREDEFINE_NAMESPACE_PARTYROLE, PREDEFINE_NAMESPACE_NOTIFICATIONTEMPLATE, EVENT_RELATIONS, PREDEFINE_NAMESPACE_FEATURETYPE, PREDEFINE_NAMESPACE_EVENTINDICATOR, PREDEFINE_NAMESPACE_EVENTTOPIC, PREDEFINE_NAMESPACE_VEHICLE, PREDEFINE_NAMESPACE_EVENTFUNCTION, PREDEFINE_NAMESPACE_EVENTACTION, PREDEFINE_NAMESPACE_EVENTQUESTION, PREDEFINE_NAMESPACE_FEATURE, PREDEFINE_NAMESPACE_EVENTACTIONCATALOGUE, PREDEFINE_DEFAULTS, PREDEFINE_NAMESPACE_CASESEVERITY, MODEL_NAME_PREDEFINE, PREDEFINE_NAMESPACE_VEHICLESTATUS, PREDEFINE_NAMESPACE_CASESTAGE, PREDEFINE_RELATIONS, PREDEFINE_NAMESPACE_ADMINISTRATIVEAREA, PREDEFINE_NAMESPACE_ADMINISTRATIVELEVEL, PARTY_RELATIONS, VEHICLE_DISPATCH_RELATIONS, CASE_RELATIONS, MODEL_NAME_PARTY, MODEL_NAME_EVENT, MODEL_NAME_VEHICLEDISPATCH, MODEL_NAME_CASE } from '@codetanzania/ewea-internals';
 export * from '@codetanzania/ewea-internals';
 export * from '@lykmapipo/constants';
 import { createHmac } from 'crypto';
@@ -307,13 +307,39 @@ const dispatchStatusFor = (optns) => {
   return { dispatch, vehicle };
 };
 
+const COMMON_CASESTAGES = {
+  Screening: { weight: 1, name: 'Screening', abbreviation: 'SCRN' },
+  Suspect: { weight: 2, name: 'Suspect', abbreviation: 'SUSP' },
+  Probable: { weight: 3, name: 'Probable', abbreviation: 'PROB' },
+  Confirmed: { weight: 4, name: 'Confirmed', abbreviation: 'CNFD' },
+  Recovered: { weight: 5, name: 'Recovered', abbreviation: 'REC' },
+  Followup: { weight: 6, name: 'Followup', abbreviation: 'FOL' },
+  Died: { weight: 7, name: 'Died', abbreviation: 'DD' },
+};
+
+const COMMON_CASESTAGE_SEEDS = mapValues(
+  COMMON_CASESTAGES,
+  ({ weight, name, abbreviation }) => {
+    const namespace = PREDEFINE_NAMESPACE_CASESTAGE;
+    return {
+      _id: objectIdFor(MODEL_NAME_PREDEFINE, namespace, name),
+      namespace,
+      strings: {
+        name: localizedValuesFor({ en: name }),
+        abbreviation: localizedValuesFor({ en: abbreviation || name }),
+      },
+      numbers: { weight: weight || DEFAULT_PREDEFINE_WEIGHT },
+      booleans: { system: true },
+    };
+  }
+);
+
 const COMMON_CASESEVERITIES = {
-  Recovered: { weight: 1, name: 'Recovered', abbreviation: 'RCV' },
-  Mild: { weight: 2, name: 'Mild', abbreviation: 'MLD' },
-  Moderate: { weight: 3, name: 'Moderate', abbreviation: 'MDR' },
-  Severe: { weight: 4, name: 'Severe', abbreviation: 'SVR' },
-  Critical: { weight: 5, name: 'Critical', abbreviation: 'CTC' },
-  Died: { weight: 6, name: 'Died', abbreviation: 'DD' },
+  Asymptomatic: { weight: 0, name: 'Asymptomatic', abbreviation: 'ASY' },
+  Mild: { weight: 2, name: 'Mild', abbreviation: 'MIL' },
+  Moderate: { weight: 3, name: 'Moderate', abbreviation: 'MOD' },
+  Severe: { weight: 4, name: 'Severe', abbreviation: 'SEV' },
+  Critical: { weight: 5, name: 'Critical', abbreviation: 'CRT' },
 };
 
 const COMMON_CASESEVERITY_SEEDS = mapValues(
@@ -333,30 +359,39 @@ const COMMON_CASESEVERITY_SEEDS = mapValues(
   }
 );
 
-const COMMON_CASESTAGES = {
-  Screening: { weight: 1, name: 'Screening', abbreviation: 'SCR' },
-  Suspect: { weight: 2, name: 'Suspect', abbreviation: 'SPT' },
-  Probable: { weight: 3, name: 'Probable', abbreviation: 'PBB' },
-  Confirmed: { weight: 4, name: 'Confirmed', abbreviation: 'CFD' },
-  Followup: { weight: 5, name: 'Followup', abbreviation: 'FLU' },
-};
+// TODO to case
+const caseSeverityFor = (optns) => {
+  // ensure options
+  const { score } = mergeObjects(optns);
 
-const COMMON_CASESTAGE_SEEDS = mapValues(
-  COMMON_CASESTAGES,
-  ({ weight, name, abbreviation }) => {
-    const namespace = PREDEFINE_NAMESPACE_CASESTAGE;
-    return {
-      _id: objectIdFor(MODEL_NAME_PREDEFINE, namespace, name),
-      namespace,
-      strings: {
-        name: localizedValuesFor({ en: name }),
-        abbreviation: localizedValuesFor({ en: abbreviation || name }),
-      },
-      numbers: { weight: weight || DEFAULT_PREDEFINE_WEIGHT },
-      booleans: { system: true },
-    };
+  // special
+  if (score === 0) {
+    return COMMON_CASESEVERITIES.Asymptomatic;
   }
-);
+
+  // mild
+  if (score > 0 && score <= 2) {
+    return COMMON_CASESEVERITIES.Mild;
+  }
+
+  // moderate
+  if (score > 2 && score <= 3) {
+    return COMMON_CASESEVERITIES.Moderate;
+  }
+
+  // severe
+  if (score > 3 && score <= 4) {
+    return COMMON_CASESEVERITIES.Severe;
+  }
+
+  // critical
+  if (score > 4) {
+    return COMMON_CASESEVERITIES.Critical;
+  }
+
+  // return default
+  return DEFAULT_SEEDS[PREDEFINE_NAMESPACE_CASESEVERITY];
+};
 
 /**
  * @function connect
@@ -3135,4 +3170,4 @@ const findParty = (...optns) => {
 
 // start:query shortcuts
 
-export { COMMON_CASESEVERITIES, COMMON_CASESEVERITY_SEEDS, COMMON_CASESTAGES, COMMON_CASESTAGE_SEEDS, COMMON_VEHICLESTATUSES, COMMON_VEHICLESTATUS_SEEDS, DEFAULT_ADMINISTRATIVEAREA_NAME, DEFAULT_ADMINISTRATIVELEVEL_NAME, DEFAULT_EVENTACTION_NAME, DEFAULT_EVENTCERTAINTY_NAME, DEFAULT_EVENTFUNCTION_NAME, DEFAULT_EVENTGROUP_NAME, DEFAULT_EVENTINDICATOR_NAME, DEFAULT_EVENTLEVEL_NAME, DEFAULT_EVENTQUESTION_NAME, DEFAULT_EVENTRESPONSE_NAME, DEFAULT_EVENTSEVERITY_NAME, DEFAULT_EVENTSTATUS_NAME, DEFAULT_EVENTTOPIC_NAME, DEFAULT_EVENTTYPE_NAME, DEFAULT_EVENTURGENCY_NAME, DEFAULT_EVENT_NUMBER, DEFAULT_FEATURETYPE_NAME, DEFAULT_NAMES, DEFAULT_PARTYGROUP_NAME, DEFAULT_PARTYROLE_NAME, DEFAULT_PATHS, DEFAULT_PREDEFINE_COLOR, DEFAULT_PREDEFINE_NAME, DEFAULT_PREDEFINE_RELATION, DEFAULT_PREDEFINE_WEIGHT, DEFAULT_SEEDS, DEFAULT_SEEDS_IGNORE, DEFAULT_UNIT_NAME, applyTransformsOn, connect, csvPathFor, dataPathFor, dispatchStatusFor, findAdministrativeArea, findAdministrativeAreaChildren, findAdministrativeAreaParents, findAdministrativeAreas, findAdministrativeLevel, findAdministrativeLevelChildren, findAdministrativeLevelParents, findAdministrativeLevels, findChangelogDefaults, findDefaultPredefines, findEventDefaults, findParties, findParty, findPartyDefaults, findPartyGroup, findPartyGroups, findPartyRole, findPartyRoles, findPermission, findPermissions, geoJsonPathFor, jsonPathFor, objectIdFor, pathFor, preloadChangelogRelated, preloadEventRelated, preloadPartyRelated, preloadRelated, processCsvSeed, readCsvFile, seed, seedAdministrativeAreas, seedAdministrativeLevels, seedAgencies, seedCase, seedCases, seedCommons, seedDefaults, seedEvent, seedEventActionCatalogues, seedEventActions, seedEventCertainties, seedEventFunctions, seedEventGroups, seedEventIndicators, seedEventLevels, seedEventQuestions, seedEventResponses, seedEventSeverities, seedEventStatuses, seedEventTopics, seedEventTypes, seedEventUrgencies, seedEvents, seedFeatureTypes, seedFeatures, seedFocals, seedFromCsv, seedFromJson, seedFromSeeds, seedNotificationTemplates, seedParty, seedPartyGenders, seedPartyGroups, seedPartyNationalities, seedPartyOccupations, seedPartyOwnerships, seedPartyRoles, seedPathFor, seedPermissions, seedPredefine, seedPriorities, seedUnits, seedVehicleDispatch, seedVehicleDispatches, seedVehicleMakes, seedVehicleModels, seedVehicleStatuses, seedVehicleTypes, seedVehicles, shapeFilePathFor, syncIndexes, transformGeoFields, transformOtherFields, transformSeedKeys, transformToCaseSeed, transformToEventSeed, transformToPartySeed, transformToPredefineSeed, transformToVehicleDispatchSeed };
+export { COMMON_CASESEVERITIES, COMMON_CASESEVERITY_SEEDS, COMMON_CASESTAGES, COMMON_CASESTAGE_SEEDS, COMMON_VEHICLESTATUSES, COMMON_VEHICLESTATUS_SEEDS, DEFAULT_ADMINISTRATIVEAREA_NAME, DEFAULT_ADMINISTRATIVELEVEL_NAME, DEFAULT_EVENTACTION_NAME, DEFAULT_EVENTCERTAINTY_NAME, DEFAULT_EVENTFUNCTION_NAME, DEFAULT_EVENTGROUP_NAME, DEFAULT_EVENTINDICATOR_NAME, DEFAULT_EVENTLEVEL_NAME, DEFAULT_EVENTQUESTION_NAME, DEFAULT_EVENTRESPONSE_NAME, DEFAULT_EVENTSEVERITY_NAME, DEFAULT_EVENTSTATUS_NAME, DEFAULT_EVENTTOPIC_NAME, DEFAULT_EVENTTYPE_NAME, DEFAULT_EVENTURGENCY_NAME, DEFAULT_EVENT_NUMBER, DEFAULT_FEATURETYPE_NAME, DEFAULT_NAMES, DEFAULT_PARTYGROUP_NAME, DEFAULT_PARTYROLE_NAME, DEFAULT_PATHS, DEFAULT_PREDEFINE_COLOR, DEFAULT_PREDEFINE_NAME, DEFAULT_PREDEFINE_RELATION, DEFAULT_PREDEFINE_WEIGHT, DEFAULT_SEEDS, DEFAULT_SEEDS_IGNORE, DEFAULT_UNIT_NAME, applyTransformsOn, caseSeverityFor, connect, csvPathFor, dataPathFor, dispatchStatusFor, findAdministrativeArea, findAdministrativeAreaChildren, findAdministrativeAreaParents, findAdministrativeAreas, findAdministrativeLevel, findAdministrativeLevelChildren, findAdministrativeLevelParents, findAdministrativeLevels, findChangelogDefaults, findDefaultPredefines, findEventDefaults, findParties, findParty, findPartyDefaults, findPartyGroup, findPartyGroups, findPartyRole, findPartyRoles, findPermission, findPermissions, geoJsonPathFor, jsonPathFor, objectIdFor, pathFor, preloadChangelogRelated, preloadEventRelated, preloadPartyRelated, preloadRelated, processCsvSeed, readCsvFile, seed, seedAdministrativeAreas, seedAdministrativeLevels, seedAgencies, seedCase, seedCases, seedCommons, seedDefaults, seedEvent, seedEventActionCatalogues, seedEventActions, seedEventCertainties, seedEventFunctions, seedEventGroups, seedEventIndicators, seedEventLevels, seedEventQuestions, seedEventResponses, seedEventSeverities, seedEventStatuses, seedEventTopics, seedEventTypes, seedEventUrgencies, seedEvents, seedFeatureTypes, seedFeatures, seedFocals, seedFromCsv, seedFromJson, seedFromSeeds, seedNotificationTemplates, seedParty, seedPartyGenders, seedPartyGroups, seedPartyNationalities, seedPartyOccupations, seedPartyOwnerships, seedPartyRoles, seedPathFor, seedPermissions, seedPredefine, seedPriorities, seedUnits, seedVehicleDispatch, seedVehicleDispatches, seedVehicleMakes, seedVehicleModels, seedVehicleStatuses, seedVehicleTypes, seedVehicles, shapeFilePathFor, syncIndexes, transformGeoFields, transformOtherFields, transformSeedKeys, transformToCaseSeed, transformToEventSeed, transformToPartySeed, transformToPredefineSeed, transformToVehicleDispatchSeed };
