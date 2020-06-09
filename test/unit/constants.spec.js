@@ -3,6 +3,7 @@ import {
   MODEL_NAME_PARTY,
   MODEL_NAME_PREDEFINE,
   PREDEFINE_NAMESPACE_UNIT,
+  PREDEFINE_NAMESPACE_CASESEVERITY,
   PREDEFINE_UNIT_NAME,
 } from '@codetanzania/ewea-internals';
 import { areSameObjectId } from '@lykmapipo/mongoose-common';
@@ -38,11 +39,12 @@ import {
   DEFAULT_SEEDS,
   COMMON_VEHICLESTATUSES,
   COMMON_VEHICLESTATUS_SEEDS,
-  COMMON_CASESEVERITIES,
-  COMMON_CASESEVERITY_SEEDS,
   COMMON_CASESTAGES,
   COMMON_CASESTAGE_SEEDS,
+  COMMON_CASESEVERITIES,
+  COMMON_CASESEVERITY_SEEDS,
   dispatchStatusFor,
+  caseSeverityFor,
 } from '../../src';
 
 describe('constants', () => {
@@ -220,6 +222,15 @@ describe('constants', () => {
       .to.be.true;
   });
 
+  it('should provide case stages', () => {
+    expect(COMMON_CASESTAGES).to.exist.and.be.an('object');
+  });
+
+  it('should provide common case stage seeds', () => {
+    expect(COMMON_CASESTAGE_SEEDS).to.exist.and.be.an('object');
+    expect(COMMON_CASESTAGE_SEEDS).to.include.keys(...keys(COMMON_CASESTAGES));
+  });
+
   it('should provide case severities', () => {
     expect(COMMON_CASESEVERITIES).to.exist.and.be.an('object');
   });
@@ -231,12 +242,39 @@ describe('constants', () => {
     );
   });
 
-  it('should provide case stages', () => {
-    expect(COMMON_CASESTAGES).to.exist.and.be.an('object');
-  });
+  it('should be able to derive case severity', () => {
+    let severity = caseSeverityFor();
 
-  it('should provide common case stage seeds', () => {
-    expect(COMMON_CASESTAGE_SEEDS).to.exist.and.be.an('object');
-    expect(COMMON_CASESTAGE_SEEDS).to.include.keys(...keys(COMMON_CASESTAGES));
+    expect(
+      areSameObjectId(severity, DEFAULT_SEEDS[PREDEFINE_NAMESPACE_CASESEVERITY])
+    ).to.be.true;
+
+    severity = caseSeverityFor({ score: 1 });
+    expect(areSameObjectId(severity, COMMON_CASESEVERITIES.Mild)).to.be.true;
+
+    severity = caseSeverityFor({ score: 2 });
+    expect(areSameObjectId(severity, COMMON_CASESEVERITIES.Mild)).to.be.true;
+
+    severity = caseSeverityFor({ score: 2.5 });
+    expect(areSameObjectId(severity, COMMON_CASESEVERITIES.Moderate)).to.be
+      .true;
+
+    severity = caseSeverityFor({ score: 3 });
+    expect(areSameObjectId(severity, COMMON_CASESEVERITIES.Moderate)).to.be
+      .true;
+
+    severity = caseSeverityFor({ score: 3.5 });
+    expect(areSameObjectId(severity, COMMON_CASESEVERITIES.Severe)).to.be.true;
+
+    severity = caseSeverityFor({ score: 4 });
+    expect(areSameObjectId(severity, COMMON_CASESEVERITIES.Severe)).to.be.true;
+
+    severity = caseSeverityFor({ score: 4.5 });
+    expect(areSameObjectId(severity, COMMON_CASESEVERITIES.Critical)).to.be
+      .true;
+
+    severity = caseSeverityFor({ score: 5 });
+    expect(areSameObjectId(severity, COMMON_CASESEVERITIES.Critical)).to.be
+      .true;
   });
 });

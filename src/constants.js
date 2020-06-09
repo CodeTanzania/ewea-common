@@ -338,13 +338,39 @@ export const dispatchStatusFor = (optns) => {
   return { dispatch, vehicle };
 };
 
+export const COMMON_CASESTAGES = {
+  Screening: { weight: 1, name: 'Screening', abbreviation: 'SCRN' },
+  Suspect: { weight: 2, name: 'Suspect', abbreviation: 'SUSP' },
+  Probable: { weight: 3, name: 'Probable', abbreviation: 'PROB' },
+  Confirmed: { weight: 4, name: 'Confirmed', abbreviation: 'CNFD' },
+  Recovered: { weight: 5, name: 'Recovered', abbreviation: 'REC' },
+  Followup: { weight: 6, name: 'Followup', abbreviation: 'FOL' },
+  Died: { weight: 7, name: 'Died', abbreviation: 'DD' },
+};
+
+export const COMMON_CASESTAGE_SEEDS = mapValues(
+  COMMON_CASESTAGES,
+  ({ weight, name, abbreviation }) => {
+    const namespace = PREDEFINE_NAMESPACE_CASESTAGE;
+    return {
+      _id: objectIdFor(MODEL_NAME_PREDEFINE, namespace, name),
+      namespace,
+      strings: {
+        name: localizedValuesFor({ en: name }),
+        abbreviation: localizedValuesFor({ en: abbreviation || name }),
+      },
+      numbers: { weight: weight || DEFAULT_PREDEFINE_WEIGHT },
+      booleans: { system: true },
+    };
+  }
+);
+
 export const COMMON_CASESEVERITIES = {
-  Recovered: { weight: 1, name: 'Recovered', abbreviation: 'RCV' },
-  Mild: { weight: 2, name: 'Mild', abbreviation: 'MLD' },
-  Moderate: { weight: 3, name: 'Moderate', abbreviation: 'MDR' },
-  Severe: { weight: 4, name: 'Severe', abbreviation: 'SVR' },
-  Critical: { weight: 5, name: 'Critical', abbreviation: 'CTC' },
-  Died: { weight: 6, name: 'Died', abbreviation: 'DD' },
+  Asymptomatic: { weight: 0, name: 'Asymptomatic', abbreviation: 'ASY' },
+  Mild: { weight: 2, name: 'Mild', abbreviation: 'MIL' },
+  Moderate: { weight: 3, name: 'Moderate', abbreviation: 'MOD' },
+  Severe: { weight: 4, name: 'Severe', abbreviation: 'SEV' },
+  Critical: { weight: 5, name: 'Critical', abbreviation: 'CRT' },
 };
 
 export const COMMON_CASESEVERITY_SEEDS = mapValues(
@@ -364,27 +390,36 @@ export const COMMON_CASESEVERITY_SEEDS = mapValues(
   }
 );
 
-export const COMMON_CASESTAGES = {
-  Screening: { weight: 1, name: 'Screening', abbreviation: 'SCR' },
-  Suspect: { weight: 2, name: 'Suspect', abbreviation: 'SPT' },
-  Probable: { weight: 3, name: 'Probable', abbreviation: 'PBB' },
-  Confirmed: { weight: 4, name: 'Confirmed', abbreviation: 'CFD' },
-  Followup: { weight: 5, name: 'Followup', abbreviation: 'FLU' },
-};
+// TODO to case
+export const caseSeverityFor = (optns) => {
+  // ensure options
+  const { score } = mergeObjects(optns);
 
-export const COMMON_CASESTAGE_SEEDS = mapValues(
-  COMMON_CASESTAGES,
-  ({ weight, name, abbreviation }) => {
-    const namespace = PREDEFINE_NAMESPACE_CASESTAGE;
-    return {
-      _id: objectIdFor(MODEL_NAME_PREDEFINE, namespace, name),
-      namespace,
-      strings: {
-        name: localizedValuesFor({ en: name }),
-        abbreviation: localizedValuesFor({ en: abbreviation || name }),
-      },
-      numbers: { weight: weight || DEFAULT_PREDEFINE_WEIGHT },
-      booleans: { system: true },
-    };
+  // special
+  if (score === 0) {
+    return COMMON_CASESEVERITIES.Asymptomatic;
   }
-);
+
+  // mild
+  if (score > 0 && score <= 2) {
+    return COMMON_CASESEVERITIES.Mild;
+  }
+
+  // moderate
+  if (score > 2 && score <= 3) {
+    return COMMON_CASESEVERITIES.Moderate;
+  }
+
+  // severe
+  if (score > 3 && score <= 4) {
+    return COMMON_CASESEVERITIES.Severe;
+  }
+
+  // critical
+  if (score > 4) {
+    return COMMON_CASESEVERITIES.Critical;
+  }
+
+  // return default
+  return DEFAULT_SEEDS[PREDEFINE_NAMESPACE_CASESEVERITY];
+};
