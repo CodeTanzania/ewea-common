@@ -250,31 +250,35 @@ describe('constants', () => {
     ).to.be.true;
 
     severity = caseSeverityFor({ score: 1 });
-    expect(areSameObjectId(severity, COMMON_CASESEVERITIES.Mild)).to.be.true;
+    expect(areSameObjectId(severity, COMMON_CASESEVERITY_SEEDS.Mild)).to.be
+      .true;
 
     severity = caseSeverityFor({ score: 2 });
-    expect(areSameObjectId(severity, COMMON_CASESEVERITIES.Mild)).to.be.true;
+    expect(areSameObjectId(severity, COMMON_CASESEVERITY_SEEDS.Mild)).to.be
+      .true;
 
     severity = caseSeverityFor({ score: 2.5 });
-    expect(areSameObjectId(severity, COMMON_CASESEVERITIES.Moderate)).to.be
+    expect(areSameObjectId(severity, COMMON_CASESEVERITY_SEEDS.Moderate)).to.be
       .true;
 
     severity = caseSeverityFor({ score: 3 });
-    expect(areSameObjectId(severity, COMMON_CASESEVERITIES.Moderate)).to.be
+    expect(areSameObjectId(severity, COMMON_CASESEVERITY_SEEDS.Moderate)).to.be
       .true;
 
     severity = caseSeverityFor({ score: 3.5 });
-    expect(areSameObjectId(severity, COMMON_CASESEVERITIES.Severe)).to.be.true;
+    expect(areSameObjectId(severity, COMMON_CASESEVERITY_SEEDS.Severe)).to.be
+      .true;
 
     severity = caseSeverityFor({ score: 4 });
-    expect(areSameObjectId(severity, COMMON_CASESEVERITIES.Severe)).to.be.true;
+    expect(areSameObjectId(severity, COMMON_CASESEVERITY_SEEDS.Severe)).to.be
+      .true;
 
     severity = caseSeverityFor({ score: 4.5 });
-    expect(areSameObjectId(severity, COMMON_CASESEVERITIES.Critical)).to.be
+    expect(areSameObjectId(severity, COMMON_CASESEVERITY_SEEDS.Critical)).to.be
       .true;
 
     severity = caseSeverityFor({ score: 5 });
-    expect(areSameObjectId(severity, COMMON_CASESEVERITIES.Critical)).to.be
+    expect(areSameObjectId(severity, COMMON_CASESEVERITY_SEEDS.Critical)).to.be
       .true;
   });
 });
