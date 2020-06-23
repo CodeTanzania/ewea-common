@@ -722,11 +722,12 @@ export const readCsvFile = (path, transformers, done) => {
  * @function processCsvSeed
  * @name processCsvSeed
  * @description process each csv row (data)
- * @param {object} [options] valid options
- * @param {string} [options.Model=undefined] valid model name
- * @param {object} [options.properties={}] valid extra properties to merge on each seed
- * @param {string} [options.namespace=undefined] valid predefine namespace
- * @param {boolean} [options.throws=false] whether to throw error
+ * @param {object} [optns] valid options
+ * @param {string} [optns.Model=undefined] valid model name
+ * @param {object} [optns.properties={}] valid extra properties to merge on each seed
+ * @param {string} [optns.namespace=undefined] valid predefine namespace
+ * @param {string} [optns.domain=undefined] valid predefine domain
+ * @param {boolean} [optns.throws=false] whether to throw error
  * @param {Function} done callback to invoke on success or error
  * @returns {Function} call back function
  * @author lally elias <lallyelias87@gmail.com>
@@ -741,7 +742,13 @@ export const readCsvFile = (path, transformers, done) => {
  * processCsvSeed((options, done) => (error, {finished, feature, next}) => { ... });
  */
 export const processCsvSeed = (
-  { Model = undefined, properties = {}, namespace = undefined, throws = false },
+  {
+    Model = undefined,
+    properties = {},
+    namespace = undefined,
+    domain = undefined,
+    throws = false,
+  },
   done
 ) => (error, { finished, feature, next }) => {
   // handle file read errors
@@ -755,7 +762,7 @@ export const processCsvSeed = (
   // process datas
   if (feature && next) {
     // seed data & next chunk from csv read stream
-    const data = mergeObjects(properties, { namespace }, feature);
+    const data = mergeObjects(properties, { namespace, domain }, feature);
     return Model.seed(data, next);
   }
   // request next chunk from csv read stream
@@ -769,6 +776,7 @@ export const processCsvSeed = (
  * @param {object} optns valid seed options
  * @param {string} [optns.modelName] valid model name
  * @param {string} [optns.namespace] valid predefine namespace
+ * @param {string} [optns.domain=undefined] valid predefine domain
  * @param {boolean} [optns.throws=false] whether to throw error
  * @param {string} [optns.filePath=undefined] valid full file path for csv seed
  * @param {object} [optns.properties={}] extra properties to merge on each seed
@@ -793,6 +801,7 @@ export const seedFromCsv = (optns, done) => {
     properties = {},
     modelName = undefined,
     namespace = undefined,
+    domain = undefined,
     throws = true,
     transformers = [],
   } = mergeObjects(optns);
@@ -816,7 +825,7 @@ export const seedFromCsv = (optns, done) => {
     return readCsvFile(
       csvFilePath,
       appliedTransformers,
-      processCsvSeed({ Model, properties, namespace, throws }, done)
+      processCsvSeed({ Model, properties, namespace, domain, throws }, done)
     );
   }
 
@@ -831,6 +840,7 @@ export const seedFromCsv = (optns, done) => {
  * @param {object} optns valid seed options
  * @param {string} [optns.modelName] valid model name
  * @param {string} [optns.namespace] valid predefine namespace
+ * @param {string} [optns.domain=undefined] valid predefine domain
  * @param {boolean} [optns.throws=false] whether to throw error
  * @param {string} [optns.filePath=undefined] valid full file path for json seed
  * @param {object} [optns.properties={}] extra properties to merge on each seed
@@ -855,6 +865,7 @@ export const seedFromJson = (optns, done) => {
     properties = {},
     modelName = undefined,
     namespace = undefined,
+    domain = undefined,
     throws = false,
     transformers = [],
   } = mergeObjects(optns);
@@ -881,7 +892,7 @@ export const seedFromJson = (optns, done) => {
     return readJson({ path, throws }, (error, data) => {
       if (!isEmpty(data)) {
         const transform = (seed) => {
-          const merged = mergeObjects(properties, { namespace }, seed);
+          const merged = mergeObjects(properties, { namespace, domain }, seed);
           return applyTransformsOn(merged, ...appliedTransformers);
         };
         return Model.seed({ data, transform }, done);
@@ -924,7 +935,7 @@ export const seedFromSeeds = (optns, done) => {
     throws = false,
     data = undefined,
     filter,
-    transform, // TODO: transformer
+    transform, // TODO: transformers
   } = mergeObjects(optns);
 
   // do: seed data to model if seeds exists
@@ -951,6 +962,7 @@ export const seedFromSeeds = (optns, done) => {
  * @description Seed given predefine namespace
  * @param {object} optns valid seed options
  * @param {string} optns.namespace valid predefine namespace
+ * @param {string} [optns.domain=undefined] valid predefine domain
  * @param {boolean} [optns.throws=false] whether to ignore error
  * @param {Function[]} optns.transformers valid predefine transformers
  * @param {Function} done callback to invoke on success or error
@@ -970,6 +982,7 @@ export const seedPredefine = (optns, done) => {
   const {
     modelName = MODEL_NAME_PREDEFINE,
     namespace = undefined,
+    domain = undefined,
     throws = false,
     transformers = [],
   } = mergeObjects(optns);
@@ -978,7 +991,14 @@ export const seedPredefine = (optns, done) => {
   const filter = (seed) => seed.namespace === namespace;
 
   // prepare options
-  const options = { modelName, namespace, throws, transformers, filter };
+  const options = {
+    modelName,
+    namespace,
+    domain,
+    throws,
+    transformers,
+    filter,
+  };
 
   // prepare predefine seed stages
   const fromSeeds = (next) => seedFromSeeds(options, (error) => next(error));
