@@ -65,7 +65,7 @@ import '@codetanzania/ewea-event';
 import '@codetanzania/ewea-dispatch';
 import '@codetanzania/ewea-case';
 
-describe('seed', () => {
+describe.only('seed', () => {
   const { BASE_PATH, DATA_PATH, SEED_PATH } = process.env;
 
   before(() => {
@@ -173,7 +173,7 @@ describe('seed', () => {
     });
   });
 
-  it('should seed predefines', (done) => {
+  it('should seed predefine', (done) => {
     const optns = {};
     seedPredefine(optns, (error) => {
       expect(error).to.not.exist;
@@ -181,7 +181,7 @@ describe('seed', () => {
     });
   });
 
-  it('should seed parties', (done) => {
+  it('should seed party', (done) => {
     seedParty({}, (error) => {
       expect(error).to.not.exist;
       done(error);
@@ -195,7 +195,7 @@ describe('seed', () => {
     });
   });
 
-  it('should seed permissions', (done) => {
+  it.only('should seed permissions', (done) => {
     seedPermissions((error) => {
       expect(error).to.not.exist;
       done(error);

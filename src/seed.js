@@ -1,4 +1,5 @@
 import {
+  MODEL_NAME_PERMISSION,
   MODEL_NAME_PREDEFINE,
   MODEL_NAME_PARTY,
   MODEL_NAME_EVENT,
@@ -1229,15 +1230,25 @@ export const seedCase = (optns, done) => {
  */
 export const seedPermissions = (done) => {
   debug('Start Seeding Permissions Data');
-  // TODO: ensure collision free ids
+
+  // generate object id
+  const transform = (seed) => {
+    const merged = mergeObjects(
+      { _id: objectIdFor(MODEL_NAME_PERMISSION, seed.wildcard) },
+      seed
+    );
+    return merged;
+  };
 
   // prepare permissions seed stages
   const seedResourcePermissions = (next) => {
-    return Permission.seed((error) => next(error));
+    const options = { transform };
+    return Permission.seed(options, (error) => next(error));
   };
   const seedPredefineNamespacePermissions = (next) => {
-    const namespacePermissions = listPermissions();
-    return Permission.seed(namespacePermissions, (error) => next(error));
+    const data = listPermissions();
+    const options = { data, transform };
+    return Permission.seed(options, (error) => next(error));
   };
   const stages = [seedResourcePermissions, seedPredefineNamespacePermissions];
 
