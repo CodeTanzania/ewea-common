@@ -589,6 +589,11 @@ export const transformToVehicleDispatchSeed = (seed) => {
   // copy seed
   let data = mergeObjects(seed);
 
+  // generate seed object id
+  if (!get(data, '_id') && data.number) {
+    set(data, '_id', objectIdFor(MODEL_NAME_VEHICLEDISPATCH, data.number));
+  }
+
   // transform relations
   const populate = {};
   forEach(VEHICLE_DISPATCH_RELATIONS, (value, key) => {
