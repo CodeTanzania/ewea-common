@@ -5,6 +5,7 @@ import {
   MODEL_NAME_EVENT,
   MODEL_NAME_VEHICLEDISPATCH,
   MODEL_NAME_CASE,
+  PREDEFINE_NAMESPACE_UNIT,
   PREDEFINE_NAMESPACE_ADMINISTRATIVELEVEL,
   PREDEFINE_NAMESPACE_ADMINISTRATIVEAREA,
   PARTY_RELATIONS,
@@ -783,6 +784,7 @@ export const processCsvSeed = (
  * @param {boolean} [optns.throws=false] whether to throw error
  * @param {string} [optns.filePath=undefined] valid full file path for csv seed
  * @param {object} [optns.properties={}] extra properties to merge on each seed
+ * @param {Function} [optns.transform] valid seed transform
  * @param {Function[]} [optns.transformers] valid predefine transformers
  * @param {Function} done callback to invoke on success or error
  * @returns {Error|undefined} error if fails else undefined
@@ -806,6 +808,7 @@ export const seedFromCsv = (optns, done) => {
     namespace = undefined,
     domain = undefined,
     throws = true,
+    transform = (seed) => seed,
     transformers = [],
   } = mergeObjects(optns);
 
@@ -817,12 +820,12 @@ export const seedFromCsv = (optns, done) => {
       modelName === MODEL_NAME_PREDEFINE && !isEmpty(namespace);
     const csvFilePath = filePath || csvPathFor(namespace || modelName);
     const appliedTransformers = isPredefine
-      ? map([transformToPredefineSeed, ...transformers], (fn) => {
+      ? map([transformToPredefineSeed, ...transformers, transform], (fn) => {
           return (seed) => {
             return fn({ namespace, domain, ...seed });
           };
         })
-      : [...transformers];
+      : [...transformers, transform];
 
     // seed from csv
     return readCsvFile(
@@ -847,6 +850,7 @@ export const seedFromCsv = (optns, done) => {
  * @param {boolean} [optns.throws=false] whether to throw error
  * @param {string} [optns.filePath=undefined] valid full file path for json seed
  * @param {object} [optns.properties={}] extra properties to merge on each seed
+ * @param {Function} [optns.transform] valid seed transform
  * @param {Function[]} [optns.transformers] valid predefine transformers
  * @param {Function} done callback to invoke on success or error
  * @returns {Error|undefined} error if fails else undefined
@@ -870,6 +874,7 @@ export const seedFromJson = (optns, done) => {
     namespace = undefined,
     domain = undefined,
     throws = false,
+    transform = (seed) => seed,
     transformers = [],
   } = mergeObjects(optns);
 
@@ -881,12 +886,12 @@ export const seedFromJson = (optns, done) => {
       modelName === MODEL_NAME_PREDEFINE && !isEmpty(namespace);
     const jsonFilePath = filePath || jsonPathFor(namespace || modelName);
     const appliedTransformers = isPredefine
-      ? map([transformToPredefineSeed, ...transformers], (fn) => {
+      ? map([transformToPredefineSeed, ...transformers, transform], (fn) => {
           return (seed) => {
             return fn({ namespace, domain, ...seed });
           };
         })
-      : [...transformers];
+      : [...transformers, transform];
 
     // prepare json seed stages
     const path = endsWith(jsonFilePath, '.json')
@@ -894,11 +899,11 @@ export const seedFromJson = (optns, done) => {
       : `${jsonFilePath}.json`;
     return readJson({ path, throws }, (error, data) => {
       if (!isEmpty(data)) {
-        const transform = (seed) => {
+        const doTransform = (seed) => {
           const merged = mergeObjects(properties, { namespace, domain }, seed);
           return applyTransformsOn(merged, ...appliedTransformers);
         };
-        return Model.seed({ data, transform }, done);
+        return Model.seed({ data, transform: doTransform }, done);
       }
       return done(error, data);
     });
@@ -938,7 +943,7 @@ export const seedFromSeeds = (optns, done) => {
     throws = false,
     data = undefined,
     filter,
-    transform, // TODO: apply transformers
+    transform = (seed) => seed,
     transformers = [],
   } = mergeObjects(optns);
 
@@ -978,7 +983,8 @@ export const seedFromSeeds = (optns, done) => {
  * @param {string} optns.namespace valid predefine namespace
  * @param {string} [optns.domain=undefined] valid predefine domain
  * @param {boolean} [optns.throws=false] whether to ignore error
- * @param {Function[]} optns.transformers valid predefine transformers
+ * @param {Function} [optns.transform] valid seed transform
+ * @param {Function[]} [optns.transformers] valid predefine transformers
  * @param {Function} done callback to invoke on success or error
  * @returns {Error|undefined} error if fails else undefined
  * @author lally elias <lallyelias87@gmail.com>
@@ -998,6 +1004,7 @@ export const seedPredefine = (optns, done) => {
     namespace = undefined,
     domain = undefined,
     throws = false,
+    transform = (seed) => seed,
     transformers = [],
   } = mergeObjects(optns);
 
@@ -1010,6 +1017,7 @@ export const seedPredefine = (optns, done) => {
     namespace,
     domain,
     throws,
+    transform,
     transformers,
     filter,
   };
@@ -1031,7 +1039,8 @@ export const seedPredefine = (optns, done) => {
  * @param {object} optns valid seed options
  * @param {string} optns.type valid party type
  * @param {boolean} [optns.throws=false] whether to ignore error
- * @param {Function[]} optns.transformers valid party transformers
+ * @param {Function} [optns.transform] valid seed transform
+ * @param {Function[]} [optns.transformers] valid party transformers
  * @param {Function} done callback to invoke on success or error
  * @returns {Error|undefined} error if fails else undefined
  * @author lally elias <lallyelias87@gmail.com>
@@ -1050,6 +1059,7 @@ export const seedParty = (optns, done) => {
     modelName = MODEL_NAME_PARTY,
     type = 'Focal',
     throws = false,
+    transform = (seed) => seed,
     transformers = [],
   } = mergeObjects(optns);
 
@@ -1063,6 +1073,7 @@ export const seedParty = (optns, done) => {
     properties: { type },
     type,
     throws,
+    transform,
     transformers: [transformToPartySeed, ...transformers],
     filter,
   };
@@ -1083,7 +1094,8 @@ export const seedParty = (optns, done) => {
  * @description Seed given events
  * @param {object} optns valid seed options
  * @param {boolean} [optns.throws=false] whether to ignore error
- * @param {Function[]} optns.transformers valid event transformers
+ * @param {Function} [optns.transform] valid seed transform
+ * @param {Function[]} [optns.transformers] valid event transformers
  * @param {Function} done callback to invoke on success or error
  * @returns {Error|undefined} error if fails else undefined
  * @author lally elias <lallyelias87@gmail.com>
@@ -1101,6 +1113,7 @@ export const seedEvent = (optns, done) => {
   const {
     modelName = MODEL_NAME_EVENT,
     throws = false,
+    transform = (seed) => seed,
     transformers = [],
   } = mergeObjects(optns);
 
@@ -1109,6 +1122,7 @@ export const seedEvent = (optns, done) => {
     modelName,
     properties: {},
     throws,
+    transform,
     transformers: [transformToEventSeed, ...transformers],
   };
 
@@ -1128,7 +1142,8 @@ export const seedEvent = (optns, done) => {
  * @description Seed given vehicle dispatches
  * @param {object} optns valid seed options
  * @param {boolean} [optns.throws=false] whether to ignore error
- * @param {Function[]} optns.transformers valid event transformers
+ * @param {Function} [optns.transform] valid seed transform
+ * @param {Function[]} [optns.transformers] valid event transformers
  * @param {Function} done callback to invoke on success or error
  * @returns {Error|undefined} error if fails else undefined
  * @author lally elias <lallyelias87@gmail.com>
@@ -1146,6 +1161,7 @@ export const seedVehicleDispatch = (optns, done) => {
   const {
     modelName = MODEL_NAME_VEHICLEDISPATCH,
     throws = false,
+    transform = (seed) => seed,
     transformers = [],
   } = mergeObjects(optns);
 
@@ -1154,6 +1170,7 @@ export const seedVehicleDispatch = (optns, done) => {
     modelName,
     properties: {},
     throws,
+    transform,
     transformers: [transformToVehicleDispatchSeed, ...transformers],
   };
 
@@ -1173,7 +1190,8 @@ export const seedVehicleDispatch = (optns, done) => {
  * @description Seed given cases
  * @param {object} optns valid seed options
  * @param {boolean} [optns.throws=false] whether to ignore error
- * @param {Function[]} optns.transformers valid case transformers
+ * @param {Function} [optns.transform] valid seed transform
+ * @param {Function[]} [optns.transformers] valid case transformers
  * @param {Function} done callback to invoke on success or error
  * @returns {Error|undefined} error if fails else undefined
  * @author lally elias <lallyelias87@gmail.com>
@@ -1191,6 +1209,7 @@ export const seedCase = (optns, done) => {
   const {
     modelName = MODEL_NAME_CASE,
     throws = false,
+    transform = (seed) => seed,
     transformers = [],
   } = mergeObjects(optns);
 
@@ -1199,6 +1218,7 @@ export const seedCase = (optns, done) => {
     modelName,
     properties: {},
     throws,
+    transform,
     transformers: [transformToCaseSeed, ...transformers],
   };
 
@@ -1242,7 +1262,8 @@ export const seedPermissions = (done) => {
 
   // prepare permissions seed stages
   const seedResourcePermissions = (next) => {
-    const options = { transform };
+    const data = Permission.prepareResourcesPermissions();
+    const options = { data, transform };
     return Permission.seed(options, (error) => next(error));
   };
   const seedPredefineNamespacePermissions = (next) => {
@@ -1351,8 +1372,24 @@ export const seedCommons = (done) => {
  */
 export const seedUnits = (done) => {
   debug('Start Seeding Units Data');
-  const namespace = 'Unit';
-  return seedPredefine({ namespace }, (error) => {
+
+  const modelName = MODEL_NAME_PREDEFINE;
+  const namespace = PREDEFINE_NAMESPACE_UNIT;
+
+  // generate object id
+  const transform = (seed) => {
+    const name = get(seed, 'strings.name.en');
+    if (!isEmpty(name)) {
+      const merged = mergeObjects(
+        { _id: objectIdFor(modelName, namespace, name) },
+        seed
+      );
+      return merged;
+    }
+    return seed;
+  };
+
+  return seedPredefine({ namespace, transform }, (error) => {
     debug('Finish Seeding Units Data');
     return done(error);
   });

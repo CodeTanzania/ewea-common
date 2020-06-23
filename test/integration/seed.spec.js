@@ -8,6 +8,11 @@ import {
   // enableDebug
 } from '@lykmapipo/mongoose-test-helpers';
 import { Predefine } from '@codetanzania/emis-stakeholder';
+
+import '@codetanzania/ewea-event';
+import '@codetanzania/ewea-dispatch';
+import '@codetanzania/ewea-case';
+
 import {
   readCsvFile,
   seedFromCsv,
@@ -60,10 +65,6 @@ import {
   seedCases,
   seed,
 } from '../../src';
-
-import '@codetanzania/ewea-event';
-import '@codetanzania/ewea-dispatch';
-import '@codetanzania/ewea-case';
 
 describe.only('seed', () => {
   const { BASE_PATH, DATA_PATH, SEED_PATH } = process.env;
