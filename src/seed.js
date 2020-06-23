@@ -43,6 +43,7 @@ import {
   sortedUniq,
 } from '@lykmapipo/common';
 import { getString } from '@lykmapipo/env';
+import { toE164 } from '@lykmapipo/phone';
 import { debug, warn } from '@lykmapipo/logger';
 import { readCsv, readJson, parseCoordinateString } from '@lykmapipo/geo-tools';
 import { model, objectIdFor } from '@lykmapipo/mongoose-common';
@@ -485,6 +486,15 @@ export const transformToPredefineSeed = (seed) => {
 export const transformToPartySeed = (seed) => {
   // copy seed
   let data = mergeObjects(seed);
+
+  // generate seed object id
+  if (!get(data, '_id') && data.mobile && data.email) {
+    set(
+      data,
+      '_id',
+      objectIdFor(MODEL_NAME_PARTY, toE164(data.mobile), toLower(data.email))
+    );
+  }
 
   // ensure default password
   if (isEmpty(data.password)) {
