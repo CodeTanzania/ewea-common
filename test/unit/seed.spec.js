@@ -141,7 +141,7 @@ describe('seed from seeds', () => {
   });
 });
 
-describe.only('common', () => {
+describe('common', () => {
   const { BASE_PATH, DATA_PATH, SEED_PATH } = process.env;
 
   before(() => {

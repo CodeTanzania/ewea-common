@@ -385,7 +385,9 @@ export const applyTransformsOn = (seed, ...transformers) => {
 
     // apply transform sequentially
     forEach(transforms, (applyTransformOn) => {
-      transformed = applyTransformOn(transformed);
+      transformed = isFunction(applyTransformOn)
+        ? applyTransformOn(transformed)
+        : mergeObjects(transformed);
     });
 
     // return transformed
@@ -936,14 +938,25 @@ export const seedFromSeeds = (optns, done) => {
     data = undefined,
     filter,
     transform, // TODO: apply transformers
+    transformers = [],
   } = mergeObjects(optns);
+
+  // merge transform & transformers
+  const doTransform = (seed) => {
+    const merged = mergeObjects(seed);
+    const appliedTransformers = compact(
+      [].concat(transformers).concat(transform)
+    );
+    return applyTransformsOn(merged, ...appliedTransformers);
+  };
 
   // do: seed data to model if seeds exists
   const Model = model(modelName);
   const canSeed = Model && isFunction(Model.seed);
   if (canSeed) {
     // filter, transform & seed
-    return Model.seed({ data, filter, transform }, (error, results) => {
+    const options = { data, filter, transform: doTransform };
+    return Model.seed(options, (error, results) => {
       // reply with errors
       if (throws) {
         return done(error, results);
