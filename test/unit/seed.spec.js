@@ -22,6 +22,7 @@ import {
   transformGeoFields,
   applyTransformsOn,
   transformToPredefineSeed,
+  transformToCaseSeed,
   seedFromCsv,
   seedFromJson,
   seedFromSeeds,
@@ -137,7 +138,7 @@ describe('seed from seeds', () => {
   });
 });
 
-describe('common', () => {
+describe.only('common', () => {
   const { BASE_PATH, DATA_PATH, SEED_PATH } = process.env;
 
   before(() => {
@@ -355,6 +356,17 @@ describe('common', () => {
         },
       },
     });
+  });
+
+  it('should transform to case seed', () => {
+    const data = {
+      number: '2020-O5-0001-TZ',
+    };
+    const s1 = transformToCaseSeed(data);
+    const s2 = transformToCaseSeed(data);
+    expect(s1).to.exist;
+    expect(s2).to.exist;
+    expect(s1._id).to.be.eql(s2._id);
   });
 
   it('should apply transforms', () => {

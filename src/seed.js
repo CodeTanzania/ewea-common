@@ -17,6 +17,7 @@ import {
   endsWith,
   first,
   forEach,
+  get,
   includes,
   isArray,
   isEmpty,
@@ -25,11 +26,12 @@ import {
   keys,
   map,
   mapKeys,
+  omit,
+  set,
   split,
   toLower,
   toNumber,
   trim,
-  omit,
   values,
 } from 'lodash';
 import { waterfall } from 'async';
@@ -43,7 +45,7 @@ import {
 import { getString } from '@lykmapipo/env';
 import { debug, warn } from '@lykmapipo/logger';
 import { readCsv, readJson, parseCoordinateString } from '@lykmapipo/geo-tools';
-import { model } from '@lykmapipo/mongoose-common';
+import { model, objectIdFor } from '@lykmapipo/mongoose-common';
 import { listPermissions, transformToPredefine } from '@lykmapipo/predefine';
 import { Permission } from '@lykmapipo/permission';
 
@@ -638,6 +640,11 @@ export const transformToCaseSeed = (seed) => {
   // copy seed
   let data = mergeObjects(seed);
 
+  // generate seed object id
+  if (!get(data, '_id') && data.number) {
+    set(data, '_id', objectIdFor(MODEL_NAME_CASE, data.number));
+  }
+
   // transform relations
   const populate = {};
   forEach(CASE_RELATIONS, (value, key) => {
@@ -897,7 +904,7 @@ export const seedFromSeeds = (optns, done) => {
     throws = false,
     data = undefined,
     filter,
-    transform,
+    transform, // TODO: transformer
   } = mergeObjects(optns);
 
   // do: seed data to model if seeds exists

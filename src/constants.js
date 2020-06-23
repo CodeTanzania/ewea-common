@@ -37,15 +37,16 @@ import {
   EVENT_RELATIONS,
   PREDEFINE_DEFAULTS,
 } from '@codetanzania/ewea-internals';
-import { createHmac } from 'crypto';
 import { mapValues, omit } from 'lodash';
 import { sortedUniq, mergeObjects } from '@lykmapipo/common';
 import { getNumber, getString } from '@lykmapipo/env';
-import { MongooseTypes } from '@lykmapipo/mongoose-common';
+import { objectIdFor } from '@lykmapipo/mongoose-common';
 import {
   localizedValuesFor,
   localizedAbbreviationsFor,
 } from 'mongoose-locale-schema';
+
+export { objectIdFor };
 
 export const DEFAULT_PREDEFINE_NAME = getString(
   'DEFAULT_PREDEFINE_NAME',
@@ -200,24 +201,6 @@ export const DEFAULT_PATHS = mergeObjects(
   },
   EVENT_RELATIONS
 );
-
-export const objectIdFor = (model, namespace, uniqueValue) => {
-  // ensure secret & message
-  const secret = model || namespace;
-  const message = namespace || model;
-  const data = uniqueValue ? message + uniqueValue : message;
-
-  // generate 24-byte hex hash
-  const hash = createHmac('md5', secret)
-    .update(data)
-    .digest('hex')
-    .slice(0, 24);
-
-  // create objectid from hash
-  const objectId = MongooseTypes.ObjectId.createFromHexString(hash);
-
-  return objectId;
-};
 
 export const DEFAULT_SEEDS_IGNORE = [
   PREDEFINE_NAMESPACE_FEATURETYPE,
