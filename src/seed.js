@@ -1261,6 +1261,7 @@ export const seedPermissions = (done) => {
   };
 
   // prepare permissions seed stages
+  // TODO: dashboard permission seeds
   const seedResourcePermissions = (next) => {
     const data = Permission.prepareResourcesPermissions();
     const options = { data, transform };
