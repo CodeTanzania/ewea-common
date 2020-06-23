@@ -22,6 +22,7 @@ import {
   transformGeoFields,
   applyTransformsOn,
   transformToPredefineSeed,
+  transformToEventSeed,
   transformToVehicleDispatchSeed,
   transformToCaseSeed,
   seedFromCsv,
@@ -357,6 +358,17 @@ describe.only('common', () => {
         },
       },
     });
+  });
+
+  it('should transform to event seed', () => {
+    const data = {
+      number: '2020-000022-TZ',
+    };
+    const s1 = transformToEventSeed(data);
+    const s2 = transformToEventSeed(data);
+    expect(s1).to.exist;
+    expect(s2).to.exist;
+    expect(s1._id).to.be.eql(s2._id);
   });
 
   it('should transform to vehicle dispatch seed', () => {

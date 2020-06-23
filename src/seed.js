@@ -543,6 +543,11 @@ export const transformToEventSeed = (seed) => {
   // copy seed
   let data = mergeObjects(seed);
 
+  // generate seed object id
+  if (!get(data, '_id') && data.number) {
+    set(data, '_id', objectIdFor(MODEL_NAME_EVENT, data.number));
+  }
+
   // transform relations
   const populate = {};
   forEach(EVENT_RELATIONS, (value, key) => {
