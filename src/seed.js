@@ -816,7 +816,7 @@ export const seedFromCsv = (optns, done) => {
     const appliedTransformers = isPredefine
       ? map([transformToPredefineSeed, ...transformers], (fn) => {
           return (seed) => {
-            return fn({ namespace, ...seed });
+            return fn({ namespace, domain, ...seed });
           };
         })
       : [...transformers];
@@ -880,7 +880,7 @@ export const seedFromJson = (optns, done) => {
     const appliedTransformers = isPredefine
       ? map([transformToPredefineSeed, ...transformers], (fn) => {
           return (seed) => {
-            return fn({ namespace, ...seed });
+            return fn({ namespace, domain, ...seed });
           };
         })
       : [...transformers];
@@ -935,7 +935,7 @@ export const seedFromSeeds = (optns, done) => {
     throws = false,
     data = undefined,
     filter,
-    transform, // TODO: transformers
+    transform, // TODO: apply transformers
   } = mergeObjects(optns);
 
   // do: seed data to model if seeds exists
