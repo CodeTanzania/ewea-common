@@ -6,8 +6,37 @@ import {
   MODEL_NAME_VEHICLEDISPATCH,
   MODEL_NAME_CASE,
   PREDEFINE_NAMESPACE_UNIT,
+  PREDEFINE_NAMESPACE_PRIORITY,
   PREDEFINE_NAMESPACE_ADMINISTRATIVELEVEL,
+  PREDEFINE_NAMESPACE_FEATURETYPE,
+  PREDEFINE_NAMESPACE_EVENTINDICATOR,
+  PREDEFINE_NAMESPACE_EVENTTOPIC,
+  PREDEFINE_NAMESPACE_EVENTLEVEL,
+  PREDEFINE_NAMESPACE_EVENTSEVERITY,
+  PREDEFINE_NAMESPACE_EVENTCERTAINTY,
+  PREDEFINE_NAMESPACE_EVENTSTATUS,
+  PREDEFINE_NAMESPACE_EVENTURGENCY,
+  PREDEFINE_NAMESPACE_EVENTRESPONSE,
+  PREDEFINE_NAMESPACE_PARTYOWNERSHIP,
+  PREDEFINE_NAMESPACE_PARTYGROUP,
+  PREDEFINE_NAMESPACE_PARTYROLE,
+  PREDEFINE_NAMESPACE_PARTYGENDER,
+  PREDEFINE_NAMESPACE_PARTYOCCUPATION,
+  PREDEFINE_NAMESPACE_PARTYNATIONALITY,
+  PREDEFINE_NAMESPACE_VEHICLETYPE,
+  PREDEFINE_NAMESPACE_VEHICLEMODEL,
+  PREDEFINE_NAMESPACE_VEHICLEMAKE,
+  PREDEFINE_NAMESPACE_VEHICLESTATUS,
+  PREDEFINE_NAMESPACE_EVENTGROUP,
+  PREDEFINE_NAMESPACE_EVENTTYPE,
+  PREDEFINE_NAMESPACE_EVENTFUNCTION,
+  PREDEFINE_NAMESPACE_EVENTACTION,
+  PREDEFINE_NAMESPACE_EVENTQUESTION,
+  PREDEFINE_NAMESPACE_FEATURE,
+  PREDEFINE_NAMESPACE_VEHICLE,
+  PREDEFINE_NAMESPACE_EVENTACTIONCATALOGUE,
   PREDEFINE_NAMESPACE_ADMINISTRATIVEAREA,
+  PREDEFINE_NAMESPACE_NOTIFICATIONTEMPLATE,
   PARTY_RELATIONS,
   PREDEFINE_RELATIONS,
   EVENT_RELATIONS,
@@ -998,6 +1027,7 @@ export const seedFromSeeds = (optns, done) => {
  * seedPredefine(optns, error => { ... });
  */
 export const seedPredefine = (optns, done) => {
+  // TODO: default transform(namespace, domain, parent, name code)
   // normalize options
   const {
     modelName = MODEL_NAME_PREDEFINE,
@@ -1414,8 +1444,26 @@ export const seedUnits = (done) => {
  */
 export const seedPriorities = (done) => {
   debug('Start Seeding Priorities Data');
-  const namespace = 'Priority';
-  return seedPredefine({ namespace }, (error) => {
+
+  const modelName = MODEL_NAME_PREDEFINE;
+  const namespace = PREDEFINE_NAMESPACE_PRIORITY;
+
+  // TODO: priority domains(case, dispatch etc)
+
+  // generate object id
+  const transform = (seed) => {
+    const name = get(seed, 'strings.name.en');
+    if (!isEmpty(name)) {
+      const merged = mergeObjects(
+        { _id: objectIdFor(modelName, namespace, name) },
+        seed
+      );
+      return merged;
+    }
+    return seed;
+  };
+
+  return seedPredefine({ namespace, transform }, (error) => {
     debug('Finish Seeding Priorities Data');
     return done(error);
   });
@@ -1439,8 +1487,27 @@ export const seedPriorities = (done) => {
  */
 export const seedAdministrativeLevels = (done) => {
   debug('Start Seeding Administrative Levels Data');
-  const namespace = 'AdministrativeLevel';
-  return seedPredefine({ namespace }, (error) => {
+
+  const modelName = MODEL_NAME_PREDEFINE;
+  const namespace = PREDEFINE_NAMESPACE_ADMINISTRATIVELEVEL;
+
+  // TODO: use domain with weight(level) and
+  // drop administrative level namespace?
+
+  // generate object id
+  const transform = (seed) => {
+    const name = get(seed, 'strings.name.en');
+    if (!isEmpty(name)) {
+      const merged = mergeObjects(
+        { _id: objectIdFor(modelName, namespace, name) },
+        seed
+      );
+      return merged;
+    }
+    return seed;
+  };
+
+  return seedPredefine({ namespace, transform }, (error) => {
     debug('Finish Seeding Administrative Levels Data');
     return done(error);
   });
@@ -1464,8 +1531,27 @@ export const seedAdministrativeLevels = (done) => {
  */
 export const seedFeatureTypes = (done) => {
   debug('Start Seeding Feature Types Data');
-  const namespace = 'FeatureType';
-  return seedPredefine({ namespace }, (error) => {
+
+  const modelName = MODEL_NAME_PREDEFINE;
+  const namespace = PREDEFINE_NAMESPACE_FEATURETYPE;
+
+  // TODO: use domain with weight(level) and
+  // drop feature type namespace?
+
+  // generate object id
+  const transform = (seed) => {
+    const name = get(seed, 'strings.name.en');
+    if (!isEmpty(name)) {
+      const merged = mergeObjects(
+        { _id: objectIdFor(modelName, namespace, name) },
+        seed
+      );
+      return merged;
+    }
+    return seed;
+  };
+
+  return seedPredefine({ namespace, transform }, (error) => {
     debug('Finish Seeding Feature Types Data');
     return done(error);
   });
@@ -1489,8 +1575,24 @@ export const seedFeatureTypes = (done) => {
  */
 export const seedEventIndicators = (done) => {
   debug('Start Seeding Event Indicators Data');
-  const namespace = 'EventIndicator';
-  return seedPredefine({ namespace }, (error) => {
+
+  const modelName = MODEL_NAME_PREDEFINE;
+  const namespace = PREDEFINE_NAMESPACE_EVENTINDICATOR;
+
+  // generate object id
+  const transform = (seed) => {
+    const name = get(seed, 'strings.name.en');
+    if (!isEmpty(name)) {
+      const merged = mergeObjects(
+        { _id: objectIdFor(modelName, namespace, name) },
+        seed
+      );
+      return merged;
+    }
+    return seed;
+  };
+
+  return seedPredefine({ namespace, transform }, (error) => {
     debug('Finish Seeding Event Indicators Data');
     return done(error);
   });
@@ -1515,8 +1617,24 @@ export const seedEventIndicators = (done) => {
  */
 export const seedEventTopics = (done) => {
   debug('Start Seeding Event Topics Data');
-  const namespace = 'EventTopic';
-  return seedPredefine({ namespace }, (error) => {
+
+  const modelName = MODEL_NAME_PREDEFINE;
+  const namespace = PREDEFINE_NAMESPACE_EVENTTOPIC;
+
+  // generate object id
+  const transform = (seed) => {
+    const name = get(seed, 'strings.name.en');
+    if (!isEmpty(name)) {
+      const merged = mergeObjects(
+        { _id: objectIdFor(modelName, namespace, name) },
+        seed
+      );
+      return merged;
+    }
+    return seed;
+  };
+
+  return seedPredefine({ namespace, transform }, (error) => {
     debug('Finish Seeding Event Topics Data');
     return done(error);
   });
@@ -1541,8 +1659,24 @@ export const seedEventTopics = (done) => {
  */
 export const seedEventLevels = (done) => {
   debug('Start Seeding Event Levels Data');
-  const namespace = 'EventLevel';
-  return seedPredefine({ namespace }, (error) => {
+
+  const modelName = MODEL_NAME_PREDEFINE;
+  const namespace = PREDEFINE_NAMESPACE_EVENTLEVEL;
+
+  // generate object id
+  const transform = (seed) => {
+    const name = get(seed, 'strings.name.en');
+    if (!isEmpty(name)) {
+      const merged = mergeObjects(
+        { _id: objectIdFor(modelName, namespace, name) },
+        seed
+      );
+      return merged;
+    }
+    return seed;
+  };
+
+  return seedPredefine({ namespace, transform }, (error) => {
     debug('Finish Seeding Event Levels Data');
     return done(error);
   });
@@ -1566,8 +1700,24 @@ export const seedEventLevels = (done) => {
  */
 export const seedEventSeverities = (done) => {
   debug('Start Seeding Event Severities Data');
-  const namespace = 'EventSeverity';
-  return seedPredefine({ namespace }, (error) => {
+
+  const modelName = MODEL_NAME_PREDEFINE;
+  const namespace = PREDEFINE_NAMESPACE_EVENTSEVERITY;
+
+  // generate object id
+  const transform = (seed) => {
+    const name = get(seed, 'strings.name.en');
+    if (!isEmpty(name)) {
+      const merged = mergeObjects(
+        { _id: objectIdFor(modelName, namespace, name) },
+        seed
+      );
+      return merged;
+    }
+    return seed;
+  };
+
+  return seedPredefine({ namespace, transform }, (error) => {
     debug('Finish Seeding Event Severities Data');
     return done(error);
   });
@@ -1591,8 +1741,24 @@ export const seedEventSeverities = (done) => {
  */
 export const seedEventCertainties = (done) => {
   debug('Start Seeding Event Certainties Data');
-  const namespace = 'EventCertainty';
-  return seedPredefine({ namespace }, (error) => {
+
+  const modelName = MODEL_NAME_PREDEFINE;
+  const namespace = PREDEFINE_NAMESPACE_EVENTCERTAINTY;
+
+  // generate object id
+  const transform = (seed) => {
+    const name = get(seed, 'strings.name.en');
+    if (!isEmpty(name)) {
+      const merged = mergeObjects(
+        { _id: objectIdFor(modelName, namespace, name) },
+        seed
+      );
+      return merged;
+    }
+    return seed;
+  };
+
+  return seedPredefine({ namespace, transform }, (error) => {
     debug('Finish Seeding Event Certainties Data');
     return done(error);
   });
@@ -1616,8 +1782,24 @@ export const seedEventCertainties = (done) => {
  */
 export const seedEventStatuses = (done) => {
   debug('Start Seeding Event Statuses Data');
-  const namespace = 'EventStatus';
-  return seedPredefine({ namespace }, (error) => {
+
+  const modelName = MODEL_NAME_PREDEFINE;
+  const namespace = PREDEFINE_NAMESPACE_EVENTSTATUS;
+
+  // generate object id
+  const transform = (seed) => {
+    const name = get(seed, 'strings.name.en');
+    if (!isEmpty(name)) {
+      const merged = mergeObjects(
+        { _id: objectIdFor(modelName, namespace, name) },
+        seed
+      );
+      return merged;
+    }
+    return seed;
+  };
+
+  return seedPredefine({ namespace, transform }, (error) => {
     debug('Finish Seeding Event Statuses Data');
     return done(error);
   });
@@ -1641,8 +1823,24 @@ export const seedEventStatuses = (done) => {
  */
 export const seedEventUrgencies = (done) => {
   debug('Start Seeding Event Urgencies Data');
-  const namespace = 'EventUrgency';
-  return seedPredefine({ namespace }, (error) => {
+
+  const modelName = MODEL_NAME_PREDEFINE;
+  const namespace = PREDEFINE_NAMESPACE_EVENTURGENCY;
+
+  // generate object id
+  const transform = (seed) => {
+    const name = get(seed, 'strings.name.en');
+    if (!isEmpty(name)) {
+      const merged = mergeObjects(
+        { _id: objectIdFor(modelName, namespace, name) },
+        seed
+      );
+      return merged;
+    }
+    return seed;
+  };
+
+  return seedPredefine({ namespace, transform }, (error) => {
     debug('Finish Seeding Event Urgencies Data');
     return done(error);
   });
@@ -1666,8 +1864,24 @@ export const seedEventUrgencies = (done) => {
  */
 export const seedEventResponses = (done) => {
   debug('Start Seeding Event Responses Data');
-  const namespace = 'EventResponse';
-  return seedPredefine({ namespace }, (error) => {
+
+  const modelName = MODEL_NAME_PREDEFINE;
+  const namespace = PREDEFINE_NAMESPACE_EVENTRESPONSE;
+
+  // generate object id
+  const transform = (seed) => {
+    const name = get(seed, 'strings.name.en');
+    if (!isEmpty(name)) {
+      const merged = mergeObjects(
+        { _id: objectIdFor(modelName, namespace, name) },
+        seed
+      );
+      return merged;
+    }
+    return seed;
+  };
+
+  return seedPredefine({ namespace, transform }, (error) => {
     debug('Finish Seeding Event Responses Data');
     return done(error);
   });
@@ -1691,8 +1905,24 @@ export const seedEventResponses = (done) => {
  */
 export const seedPartyOwnerships = (done) => {
   debug('Start Seeding Party Ownerships Data');
-  const namespace = 'PartyOwnership';
-  return seedPredefine({ namespace }, (error) => {
+
+  const modelName = MODEL_NAME_PREDEFINE;
+  const namespace = PREDEFINE_NAMESPACE_PARTYOWNERSHIP;
+
+  // generate object id
+  const transform = (seed) => {
+    const name = get(seed, 'strings.name.en');
+    if (!isEmpty(name)) {
+      const merged = mergeObjects(
+        { _id: objectIdFor(modelName, namespace, name) },
+        seed
+      );
+      return merged;
+    }
+    return seed;
+  };
+
+  return seedPredefine({ namespace, transform }, (error) => {
     debug('Finish Seeding Party Ownerships Data');
     return done(error);
   });
@@ -1716,8 +1946,24 @@ export const seedPartyOwnerships = (done) => {
  */
 export const seedPartyGroups = (done) => {
   debug('Start Seeding Party Groups Data');
-  const namespace = 'PartyGroup';
-  return seedPredefine({ namespace }, (error) => {
+
+  const modelName = MODEL_NAME_PREDEFINE;
+  const namespace = PREDEFINE_NAMESPACE_PARTYGROUP;
+
+  // generate object id
+  const transform = (seed) => {
+    const name = get(seed, 'strings.name.en');
+    if (!isEmpty(name)) {
+      const merged = mergeObjects(
+        { _id: objectIdFor(modelName, namespace, name) },
+        seed
+      );
+      return merged;
+    }
+    return seed;
+  };
+
+  return seedPredefine({ namespace, transform }, (error) => {
     debug('Finish Seeding Party Groups Data');
     return done(error);
   });
@@ -1741,8 +1987,24 @@ export const seedPartyGroups = (done) => {
  */
 export const seedPartyRoles = (done) => {
   debug('Start Seeding Party Roles Data');
-  const namespace = 'PartyRole';
-  return seedPredefine({ namespace }, (error) => {
+
+  const modelName = MODEL_NAME_PREDEFINE;
+  const namespace = PREDEFINE_NAMESPACE_PARTYROLE;
+
+  // generate object id
+  const transform = (seed) => {
+    const name = get(seed, 'strings.name.en');
+    if (!isEmpty(name)) {
+      const merged = mergeObjects(
+        { _id: objectIdFor(modelName, namespace, name) },
+        seed
+      );
+      return merged;
+    }
+    return seed;
+  };
+
+  return seedPredefine({ namespace, transform }, (error) => {
     debug('Finish Seeding Party Roles Data');
     return done(error);
   });
@@ -1766,8 +2028,24 @@ export const seedPartyRoles = (done) => {
  */
 export const seedPartyGenders = (done) => {
   debug('Start Seeding Party Genders Data');
-  const namespace = 'PartyGender';
-  return seedPredefine({ namespace }, (error) => {
+
+  const modelName = MODEL_NAME_PREDEFINE;
+  const namespace = PREDEFINE_NAMESPACE_PARTYGENDER;
+
+  // generate object id
+  const transform = (seed) => {
+    const name = get(seed, 'strings.name.en');
+    if (!isEmpty(name)) {
+      const merged = mergeObjects(
+        { _id: objectIdFor(modelName, namespace, name) },
+        seed
+      );
+      return merged;
+    }
+    return seed;
+  };
+
+  return seedPredefine({ namespace, transform }, (error) => {
     debug('Finish Seeding Party Genders Data');
     return done(error);
   });
@@ -1791,8 +2069,24 @@ export const seedPartyGenders = (done) => {
  */
 export const seedPartyOccupations = (done) => {
   debug('Start Seeding Party Occupations Data');
-  const namespace = 'PartyOccupation';
-  return seedPredefine({ namespace }, (error) => {
+
+  const modelName = MODEL_NAME_PREDEFINE;
+  const namespace = PREDEFINE_NAMESPACE_PARTYOCCUPATION;
+
+  // generate object id
+  const transform = (seed) => {
+    const name = get(seed, 'strings.name.en');
+    if (!isEmpty(name)) {
+      const merged = mergeObjects(
+        { _id: objectIdFor(modelName, namespace, name) },
+        seed
+      );
+      return merged;
+    }
+    return seed;
+  };
+
+  return seedPredefine({ namespace, transform }, (error) => {
     debug('Finish Seeding Party Occupations Data');
     return done(error);
   });
@@ -1816,8 +2110,24 @@ export const seedPartyOccupations = (done) => {
  */
 export const seedPartyNationalities = (done) => {
   debug('Start Seeding Party Nationalities Data');
-  const namespace = 'PartyNationality';
-  return seedPredefine({ namespace }, (error) => {
+
+  const modelName = MODEL_NAME_PREDEFINE;
+  const namespace = PREDEFINE_NAMESPACE_PARTYNATIONALITY;
+
+  // generate object id
+  const transform = (seed) => {
+    const name = get(seed, 'strings.name.en');
+    if (!isEmpty(name)) {
+      const merged = mergeObjects(
+        { _id: objectIdFor(modelName, namespace, name) },
+        seed
+      );
+      return merged;
+    }
+    return seed;
+  };
+
+  return seedPredefine({ namespace, transform }, (error) => {
     debug('Finish Seeding Party Nationalities Data');
     return done(error);
   });
@@ -1841,8 +2151,24 @@ export const seedPartyNationalities = (done) => {
  */
 export const seedVehicleTypes = (done) => {
   debug('Start Seeding Vehicle Types Data');
-  const namespace = 'VehicleType';
-  return seedPredefine({ namespace }, (error) => {
+
+  const modelName = MODEL_NAME_PREDEFINE;
+  const namespace = PREDEFINE_NAMESPACE_VEHICLETYPE;
+
+  // generate object id
+  const transform = (seed) => {
+    const name = get(seed, 'strings.name.en');
+    if (!isEmpty(name)) {
+      const merged = mergeObjects(
+        { _id: objectIdFor(modelName, namespace, name) },
+        seed
+      );
+      return merged;
+    }
+    return seed;
+  };
+
+  return seedPredefine({ namespace, transform }, (error) => {
     debug('Finish Seeding Vehicle Types Data');
     return done(error);
   });
@@ -1866,8 +2192,24 @@ export const seedVehicleTypes = (done) => {
  */
 export const seedVehicleModels = (done) => {
   debug('Start Seeding Vehicle Models Data');
-  const namespace = 'VehicleModel';
-  return seedPredefine({ namespace }, (error) => {
+
+  const modelName = MODEL_NAME_PREDEFINE;
+  const namespace = PREDEFINE_NAMESPACE_VEHICLEMODEL;
+
+  // generate object id
+  const transform = (seed) => {
+    const name = get(seed, 'strings.name.en');
+    if (!isEmpty(name)) {
+      const merged = mergeObjects(
+        { _id: objectIdFor(modelName, namespace, name) },
+        seed
+      );
+      return merged;
+    }
+    return seed;
+  };
+
+  return seedPredefine({ namespace, transform }, (error) => {
     debug('Finish Seeding Vehicle Models Data');
     return done(error);
   });
@@ -1891,8 +2233,24 @@ export const seedVehicleModels = (done) => {
  */
 export const seedVehicleMakes = (done) => {
   debug('Start Seeding Vehicle Makes Data');
-  const namespace = 'VehicleMake';
-  return seedPredefine({ namespace }, (error) => {
+
+  const modelName = MODEL_NAME_PREDEFINE;
+  const namespace = PREDEFINE_NAMESPACE_VEHICLEMAKE;
+
+  // generate object id
+  const transform = (seed) => {
+    const name = get(seed, 'strings.name.en');
+    if (!isEmpty(name)) {
+      const merged = mergeObjects(
+        { _id: objectIdFor(modelName, namespace, name) },
+        seed
+      );
+      return merged;
+    }
+    return seed;
+  };
+
+  return seedPredefine({ namespace, transform }, (error) => {
     debug('Finish Seeding Vehicle Makes Data');
     return done(error);
   });
@@ -1916,8 +2274,24 @@ export const seedVehicleMakes = (done) => {
  */
 export const seedVehicleStatuses = (done) => {
   debug('Start Seeding Vehicle Statuses Data');
-  const namespace = 'VehicleStatus';
-  return seedPredefine({ namespace }, (error) => {
+
+  const modelName = MODEL_NAME_PREDEFINE;
+  const namespace = PREDEFINE_NAMESPACE_VEHICLESTATUS;
+
+  // generate object id
+  const transform = (seed) => {
+    const name = get(seed, 'strings.name.en');
+    if (!isEmpty(name)) {
+      const merged = mergeObjects(
+        { _id: objectIdFor(modelName, namespace, name) },
+        seed
+      );
+      return merged;
+    }
+    return seed;
+  };
+
+  return seedPredefine({ namespace, transform }, (error) => {
     debug('Finish Seeding Vehicle Statuses Data');
     return done(error);
   });
@@ -1941,8 +2315,24 @@ export const seedVehicleStatuses = (done) => {
  */
 export const seedEventGroups = (done) => {
   debug('Start Seeding Event Groups Data');
-  const namespace = 'EventGroup';
-  return seedPredefine({ namespace }, (error) => {
+
+  const modelName = MODEL_NAME_PREDEFINE;
+  const namespace = PREDEFINE_NAMESPACE_EVENTGROUP;
+
+  // generate object id
+  const transform = (seed) => {
+    const name = get(seed, 'strings.name.en');
+    if (!isEmpty(name)) {
+      const merged = mergeObjects(
+        { _id: objectIdFor(modelName, namespace, name) },
+        seed
+      );
+      return merged;
+    }
+    return seed;
+  };
+
+  return seedPredefine({ namespace, transform }, (error) => {
     debug('Finish Seeding Event Groups Data');
     return done(error);
   });
@@ -1966,8 +2356,25 @@ export const seedEventGroups = (done) => {
  */
 export const seedEventTypes = (done) => {
   debug('Start Seeding Event Types Data');
-  const namespace = 'EventType';
-  return seedPredefine({ namespace }, (error) => {
+
+  const modelName = MODEL_NAME_PREDEFINE;
+  const namespace = PREDEFINE_NAMESPACE_EVENTTYPE;
+
+  // generate object id
+  const transform = (seed) => {
+    // TODO: support group if available
+    const name = get(seed, 'strings.name.en');
+    if (!isEmpty(name)) {
+      const merged = mergeObjects(
+        { _id: objectIdFor(modelName, namespace, name) },
+        seed
+      );
+      return merged;
+    }
+    return seed;
+  };
+
+  return seedPredefine({ namespace, transform }, (error) => {
     debug('Finish Seeding Event Types Data');
     return done(error);
   });
@@ -1991,8 +2398,24 @@ export const seedEventTypes = (done) => {
  */
 export const seedEventFunctions = (done) => {
   debug('Start Seeding Event Functions Data');
-  const namespace = 'EventFunction';
-  return seedPredefine({ namespace }, (error) => {
+
+  const modelName = MODEL_NAME_PREDEFINE;
+  const namespace = PREDEFINE_NAMESPACE_EVENTFUNCTION;
+
+  // generate object id
+  const transform = (seed) => {
+    const name = get(seed, 'strings.name.en');
+    if (!isEmpty(name)) {
+      const merged = mergeObjects(
+        { _id: objectIdFor(modelName, namespace, name) },
+        seed
+      );
+      return merged;
+    }
+    return seed;
+  };
+
+  return seedPredefine({ namespace, transform }, (error) => {
     debug('Finish Seeding Event Functions Data');
     return done(error);
   });
@@ -2016,8 +2439,24 @@ export const seedEventFunctions = (done) => {
  */
 export const seedEventActions = (done) => {
   debug('Start Seeding Event Actions Data');
-  const namespace = 'EventAction';
-  return seedPredefine({ namespace }, (error) => {
+
+  const modelName = MODEL_NAME_PREDEFINE;
+  const namespace = PREDEFINE_NAMESPACE_EVENTACTION;
+
+  // generate object id
+  const transform = (seed) => {
+    const name = get(seed, 'strings.name.en');
+    if (!isEmpty(name)) {
+      const merged = mergeObjects(
+        { _id: objectIdFor(modelName, namespace, name) },
+        seed
+      );
+      return merged;
+    }
+    return seed;
+  };
+
+  return seedPredefine({ namespace, transform }, (error) => {
     debug('Finish Seeding Event Actions Data');
     return done(error);
   });
@@ -2041,8 +2480,24 @@ export const seedEventActions = (done) => {
  */
 export const seedEventQuestions = (done) => {
   debug('Start Seeding Event Questions Data');
-  const namespace = 'EventQuestion';
-  return seedPredefine({ namespace }, (error) => {
+
+  const modelName = MODEL_NAME_PREDEFINE;
+  const namespace = PREDEFINE_NAMESPACE_EVENTQUESTION;
+
+  // generate object id
+  const transform = (seed) => {
+    const name = get(seed, 'strings.code');
+    if (!isEmpty(name)) {
+      const merged = mergeObjects(
+        { _id: objectIdFor(modelName, namespace, name) },
+        seed
+      );
+      return merged;
+    }
+    return seed;
+  };
+
+  return seedPredefine({ namespace, transform }, (error) => {
     debug('Finish Seeding Event Questions Data');
     return done(error);
   });
@@ -2065,9 +2520,27 @@ export const seedEventQuestions = (done) => {
  * seedAdministrativeAreas(error => { ... });
  */
 export const seedAdministrativeAreas = (done) => {
+  // TODO: seed per hierarchy
+  // TODO: domain === hierarchy
   debug('Start Seeding Administrative Areas Data');
-  const namespace = 'AdministrativeArea';
-  return seedPredefine({ namespace }, (error) => {
+
+  // const modelName = MODEL_NAME_PREDEFINE;
+  const namespace = PREDEFINE_NAMESPACE_ADMINISTRATIVEAREA;
+
+  // generate object id
+  const transform = (seed) => {
+    // const name = get(seed, 'strings.name.en');
+    // if (!isEmpty(name)) {
+    //   const merged = mergeObjects(
+    //     { _id: objectIdFor(modelName, namespace, name) },
+    //     seed
+    //   );
+    //   return merged;
+    // }
+    return seed;
+  };
+
+  return seedPredefine({ namespace, transform }, (error) => {
     debug('Finish Seeding Administrative Areas Data');
     return done(error);
   });
@@ -2142,9 +2615,26 @@ export const seedFocals = (done) => {
  */
 export const seedFeatures = (done) => {
   // TODO: seed per feature type i.e hospitals, buildings etc
+  // TODO: support seed per domain
   debug('Start Seeding Features Data');
-  const namespace = 'Feature';
-  return seedPredefine({ namespace }, (error) => {
+
+  // const modelName = MODEL_NAME_PREDEFINE;
+  const namespace = PREDEFINE_NAMESPACE_FEATURE;
+
+  // generate object id
+  const transform = (seed) => {
+    // const name = get(seed, 'strings.name.en');
+    // if (!isEmpty(name)) {
+    //   const merged = mergeObjects(
+    //     { _id: objectIdFor(modelName, namespace, name) },
+    //     seed
+    //   );
+    //   return merged;
+    // }
+    return seed;
+  };
+
+  return seedPredefine({ namespace, transform }, (error) => {
     debug('Finish Seeding Features Data');
     return done(error);
   });
@@ -2169,8 +2659,25 @@ export const seedFeatures = (done) => {
 export const seedVehicles = (done) => {
   // TODO: seed per vehicle type i.e ambulances, fires etc
   debug('Start Seeding Vehicles Data');
-  const namespace = 'Vehicle';
-  return seedPredefine({ namespace }, (error) => {
+
+  const modelName = MODEL_NAME_PREDEFINE;
+  const namespace = PREDEFINE_NAMESPACE_VEHICLE;
+
+  // generate object id
+  // TODO: use strings.code
+  const transform = (seed) => {
+    const name = get(seed, 'strings.name.en');
+    if (!isEmpty(name)) {
+      const merged = mergeObjects(
+        { _id: objectIdFor(modelName, namespace, name) },
+        seed
+      );
+      return merged;
+    }
+    return seed;
+  };
+
+  return seedPredefine({ namespace, transform }, (error) => {
     debug('Finish Seeding Vehicles Data');
     return done(error);
   });
@@ -2194,8 +2701,24 @@ export const seedVehicles = (done) => {
  */
 export const seedEventActionCatalogues = (done) => {
   debug('Start Seeding Event Action Catalogues Data');
-  const namespace = 'EventActionCatalogue';
-  return seedPredefine({ namespace }, (error) => {
+
+  const modelName = MODEL_NAME_PREDEFINE;
+  const namespace = PREDEFINE_NAMESPACE_EVENTACTIONCATALOGUE;
+
+  // generate object id
+  const transform = (seed) => {
+    const name = get(seed, 'strings.name.en');
+    if (!isEmpty(name)) {
+      const merged = mergeObjects(
+        { _id: objectIdFor(modelName, namespace, name) },
+        seed
+      );
+      return merged;
+    }
+    return seed;
+  };
+
+  return seedPredefine({ namespace, transform }, (error) => {
     debug('Finish Seeding Event Action Catalogues Data');
     return done(error);
   });
@@ -2219,8 +2742,24 @@ export const seedEventActionCatalogues = (done) => {
  */
 export const seedNotificationTemplates = (done) => {
   debug('Start Seeding Notification Templates Data');
-  const namespace = 'NotificationTemplate';
-  return seedPredefine({ namespace }, (error) => {
+
+  const modelName = MODEL_NAME_PREDEFINE;
+  const namespace = PREDEFINE_NAMESPACE_NOTIFICATIONTEMPLATE;
+
+  // generate object id
+  const transform = (seed) => {
+    const name = get(seed, 'strings.name.en');
+    if (!isEmpty(name)) {
+      const merged = mergeObjects(
+        { _id: objectIdFor(modelName, namespace, name) },
+        seed
+      );
+      return merged;
+    }
+    return seed;
+  };
+
+  return seedPredefine({ namespace, transform }, (error) => {
     debug('Finish Seeding Notification Templates Data');
     return done(error);
   });

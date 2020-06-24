@@ -219,7 +219,7 @@ export const DEFAULT_SEEDS = mapValues(
   omit(PREDEFINE_DEFAULTS, ...DEFAULT_SEEDS_IGNORE),
   (defaultValue, namespace) => {
     return {
-      _id: objectIdFor(MODEL_NAME_PREDEFINE, namespace),
+      _id: objectIdFor(MODEL_NAME_PREDEFINE, namespace, defaultValue),
       namespace,
       strings: {
         name: localizedValuesFor({ en: defaultValue }),

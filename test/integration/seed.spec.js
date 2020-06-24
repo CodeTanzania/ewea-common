@@ -2,7 +2,10 @@ import {
   MODEL_NAME_PREDEFINE,
   PREDEFINE_NAMESPACE_EVENTSEVERITY,
 } from '@codetanzania/ewea-internals';
+import { isEmpty, get } from 'lodash';
 import { waterfall } from 'async';
+import { mergeObjects } from '@lykmapipo/common';
+import { objectIdFor } from '@lykmapipo/mongoose-common';
 import {
   expect,
   // enableDebug
@@ -66,7 +69,7 @@ import {
   seed,
 } from '../../src';
 
-describe.only('seed', () => {
+describe('seed', () => {
   const { BASE_PATH, DATA_PATH, SEED_PATH } = process.env;
 
   before(() => {
@@ -97,7 +100,18 @@ describe.only('seed', () => {
   it('should seed from csv if file exists', (done) => {
     const modelName = MODEL_NAME_PREDEFINE;
     const namespace = PREDEFINE_NAMESPACE_EVENTSEVERITY;
-    const optns = { modelName, namespace };
+    const transform = (seedData) => {
+      const name = get(seedData, 'strings.name.en');
+      if (!isEmpty(name)) {
+        const merged = mergeObjects(
+          { _id: objectIdFor(modelName, namespace, name) },
+          seedData
+        );
+        return merged;
+      }
+      return seedData;
+    };
+    const optns = { modelName, namespace, transform };
 
     seedFromCsv(optns, (error) => {
       expect(error).to.not.exist;
@@ -108,7 +122,18 @@ describe.only('seed', () => {
   it('should seed from json if file exists', (done) => {
     const modelName = MODEL_NAME_PREDEFINE;
     const namespace = PREDEFINE_NAMESPACE_EVENTSEVERITY;
-    const optns = { modelName, namespace };
+    const transform = (seedData) => {
+      const name = get(seedData, 'strings.name.en');
+      if (!isEmpty(name)) {
+        const merged = mergeObjects(
+          { _id: objectIdFor(modelName, namespace, name) },
+          seedData
+        );
+        return merged;
+      }
+      return seedData;
+    };
+    const optns = { modelName, namespace, transform };
 
     seedFromJson(optns, (error, results) => {
       expect(error).to.not.exist;
@@ -129,21 +154,22 @@ describe.only('seed', () => {
     });
   });
 
-  it('should seed from seeds file if exists', (done) => {
-    const modelName = MODEL_NAME_PREDEFINE;
-    const optns = { modelName };
-
-    seedFromSeeds(optns, (error, results) => {
-      expect(error).to.not.exist;
-      expect(results).to.exist;
-      done(error);
-    });
-  });
-
   it('should filter seed from seeds file if exists', (done) => {
     const modelName = MODEL_NAME_PREDEFINE;
-    const filter = (val) => val.namespace === PREDEFINE_NAMESPACE_EVENTSEVERITY;
-    const optns = { modelName, filter };
+    const namespace = PREDEFINE_NAMESPACE_EVENTSEVERITY;
+    const filter = (val) => val.namespace === namespace;
+    const transform = (seedData) => {
+      const name = get(seedData, 'strings.name.en');
+      if (!isEmpty(name)) {
+        const merged = mergeObjects(
+          { _id: objectIdFor(modelName, namespace, name) },
+          seedData
+        );
+        return merged;
+      }
+      return seedData;
+    };
+    const optns = { modelName, namespace, filter, transform };
 
     seedFromSeeds(optns, (error, results) => {
       expect(error).to.not.exist;
@@ -196,7 +222,7 @@ describe.only('seed', () => {
     });
   });
 
-  it.only('should seed permissions', (done) => {
+  it('should seed permissions', (done) => {
     seedPermissions((error) => {
       expect(error).to.not.exist;
       done(error);
