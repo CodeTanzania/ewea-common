@@ -3,6 +3,7 @@ import {
   connect as connectToDatabase,
   syncIndexes as ensureIndexes,
 } from '@lykmapipo/mongoose-common';
+import { isTest } from '@lykmapipo/env';
 import { createModels } from '@lykmapipo/file';
 
 /**
@@ -23,7 +24,9 @@ import { createModels } from '@lykmapipo/file';
  */
 export const connect = (done) => {
   return connectToDatabase((error) => {
-    createModels();
+    if (!error && !isTest()) {
+      createModels();
+    }
     return done(error);
   });
 };

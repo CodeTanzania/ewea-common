@@ -126,7 +126,7 @@
     "@lykmapipo/file": ">=0.1.27",
     "@lykmapipo/geo-tools": ">=0.7.6",
     "@lykmapipo/logger": ">=0.5.17",
-    "@lykmapipo/mongoose-common": ">=0.36.0",
+    "@lykmapipo/mongoose-common": ">=0.37.1",
     "@lykmapipo/mongoose-exportable": ">=0.3.31",
     "@lykmapipo/mongoose-sequenceable": ">=0.2.17",
     "@lykmapipo/permission": ">=0.8.30",
