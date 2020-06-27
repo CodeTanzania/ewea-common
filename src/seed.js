@@ -33,6 +33,7 @@ import {
   PREDEFINE_NAMESPACE_EVENTACTION,
   PREDEFINE_NAMESPACE_EVENTQUESTION,
   PREDEFINE_NAMESPACE_FEATURE,
+  PREDEFINE_NAMESPACE_HEALTHFACILITY,
   PREDEFINE_NAMESPACE_VEHICLE,
   PREDEFINE_NAMESPACE_EVENTACTIONCATALOGUE,
   PREDEFINE_NAMESPACE_ADMINISTRATIVEAREA,
@@ -67,11 +68,13 @@ import {
 } from 'lodash';
 import { waterfall } from 'async';
 import {
+  areNotEmpty,
   compact,
   join,
   pluralize,
   mergeObjects,
   sortedUniq,
+  classify,
 } from '@lykmapipo/common';
 import { getString } from '@lykmapipo/env';
 import { toE164 } from '@lykmapipo/phone';
@@ -335,7 +338,10 @@ export const transformGeoFields = (seed) => {
   if (transformed.longitude && transformed.latitude) {
     transformed.point = {
       type: 'Point',
-      coordinates: [transformed.longitude, transformed.latitude],
+      coordinates: [
+        Number(transformed.longitude),
+        Number(transformed.latitude),
+      ],
     };
   }
 
@@ -453,6 +459,7 @@ export const transformToPredefineSeed = (seed) => {
 
   // normalize to predefine
   let predefine = transformToPredefine(data);
+  predefine.raw = data;
 
   // transform relations
   // TODO: honor exist populate option
@@ -2641,6 +2648,58 @@ export const seedFeatures = (done) => {
 };
 
 /**
+ * @function seedHealthFacilities
+ * @name seedHealthFacilities
+ * @description Seed health facilities
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.22.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedHealthFacilities(error => { ... });
+ */
+export const seedHealthFacilities = (done) => {
+  // TODO: seed per type i.e hospitals, buildings etc
+  // TODO: seed per domain by concat streams
+  // TODO: seed operating status
+  // TODO: seed common properties
+  debug('Start Seeding Health Facilities Data');
+
+  const modelName = MODEL_NAME_PREDEFINE;
+  const namespace = PREDEFINE_NAMESPACE_HEALTHFACILITY;
+
+  // generate object id
+  const transform = (seed) => {
+    const domain = classify(get(seed, 'raw.type'));
+    const code = get(seed, 'raw.number');
+    const name = get(seed, 'strings.name.en');
+
+    set(seed, 'domain', domain);
+    set(seed, 'strings.code', code);
+
+    const shouldGenerateId = areNotEmpty(domain, code, name);
+    if (shouldGenerateId) {
+      const merged = mergeObjects(
+        { _id: objectIdFor(modelName, namespace, domain, code, name) },
+        seed
+      );
+      return merged;
+    }
+    return seed;
+  };
+
+  return seedPredefine({ namespace, transform }, (error) => {
+    debug('Finish Seeding Health Facilities Data');
+    return done(error);
+  });
+};
+
+/**
  * @function seedVehicles
  * @name seedVehicles
  * @description Seed vehicles
@@ -2892,6 +2951,7 @@ export const seed = (done) => {
     seedAgencies,
     seedFocals,
     seedFeatures,
+    seedHealthFacilities,
     seedVehicles,
     seedEventActionCatalogues,
     seedNotificationTemplates,

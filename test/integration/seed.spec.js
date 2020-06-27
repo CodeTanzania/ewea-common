@@ -59,6 +59,7 @@ import {
   seedAgencies,
   seedFocals,
   seedFeatures,
+  seedHealthFacilities,
   seedVehicles,
   seedEventActionCatalogues,
   seedNotificationTemplates,
@@ -455,6 +456,13 @@ describe('seed', () => {
 
   it('should seed features', (done) => {
     seedFeatures((error) => {
+      expect(error).to.not.exist;
+      done(error);
+    });
+  });
+
+  it('should seed health facilities', (done) => {
+    seedHealthFacilities((error) => {
       expect(error).to.not.exist;
       done(error);
     });

@@ -7,6 +7,7 @@ import {
   PREDEFINE_NAMESPACE_EVENTLEVEL,
   PREDEFINE_NAMESPACE_ADMINISTRATIVEAREA,
 } from '@codetanzania/ewea-internals';
+import { omit } from 'lodash';
 import { expect, fake } from '@lykmapipo/test-helpers';
 import { getStrings, getObject } from '@lykmapipo/env';
 import {
@@ -278,7 +279,7 @@ describe('common', () => {
       area: '',
     };
     const seed = transformToPredefineSeed(data);
-    expect(seed).to.be.eql({
+    expect(omit(seed, 'raw')).to.be.eql({
       strings: {
         name: { en: 'Two', sw: 'Two' },
         description: { en: 'Two', sw: 'Two' },
@@ -320,7 +321,7 @@ describe('common', () => {
       parent: 'Up Town',
     };
     const seed = transformToPredefineSeed(data);
-    expect(seed).to.be.eql({
+    expect(omit(seed, 'raw')).to.be.eql({
       namespace: PREDEFINE_NAMESPACE_ADMINISTRATIVEAREA,
       strings: {
         name: { en: 'Down Town', sw: 'Down Town' },
