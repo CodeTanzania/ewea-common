@@ -2529,6 +2529,8 @@ export const seedEventQuestions = (done) => {
 export const seedAdministrativeAreas = (done) => {
   // TODO: seed per hierarchy
   // TODO: domain === hierarchy
+  // TODO: level === hierarchy
+  // TODO: support parent on object id generation
   debug('Start Seeding Administrative Areas Data');
 
   // const modelName = MODEL_NAME_PREDEFINE;
@@ -2623,6 +2625,7 @@ export const seedFocals = (done) => {
 export const seedFeatures = (done) => {
   // TODO: seed per feature type i.e hospitals, buildings etc
   // TODO: support seed per domain
+  // TODO: support seed per type
   debug('Start Seeding Features Data');
 
   // const modelName = MODEL_NAME_PREDEFINE;
