@@ -55,7 +55,7 @@ import {
   seedEventActions,
   seedEventQuestions,
   seedAdministrativeAreas,
-  // seedAdministrators,
+  seedAdministrators,
   seedAgencies,
   seedFocals,
   seedFeatures,
@@ -67,16 +67,34 @@ import {
   // seedEventChangeLogs,
   seedVehicleDispatches,
   seedCases,
+  // seedCaseChangeLogs,
   seed,
 } from '../../src';
 
 describe('seed', () => {
-  const { BASE_PATH, DATA_PATH, SEED_PATH } = process.env;
+  const {
+    BASE_PATH,
+    DATA_PATH,
+    SEED_PATH,
+    ADMINISTRATOR_NAME,
+    ADMINISTRATOR_ABBREVIATION,
+    ADMINISTRATOR_LOCALE,
+    ADMINISTRATOR_EMAIL,
+    ADMINISTRATOR_MOBILE,
+  } = process.env;
 
   before(() => {
     process.env.BASE_PATH = __dirname;
     process.env.DATA_PATH = `${__dirname}'/../fixtures`;
     process.env.SEED_PATH = `${__dirname}'/../fixtures`;
+  });
+
+  afterEach(() => {
+    process.env.ADMINISTRATOR_NAME = ADMINISTRATOR_NAME;
+    process.env.ADMINISTRATOR_ABBREVIATION = ADMINISTRATOR_ABBREVIATION;
+    process.env.ADMINISTRATOR_LOCALE = ADMINISTRATOR_LOCALE;
+    process.env.ADMINISTRATOR_EMAIL = ADMINISTRATOR_EMAIL;
+    process.env.ADMINISTRATOR_MOBILE = ADMINISTRATOR_MOBILE;
   });
 
   it('should read csv seed file', (done) => {
@@ -440,6 +458,26 @@ describe('seed', () => {
     });
   });
 
+  it('should seed default administrator', (done) => {
+    seedAdministrators((error) => {
+      expect(error).to.not.exist;
+      done(error);
+    });
+  });
+
+  it('should seed provided administrator', (done) => {
+    process.env.ADMINISTRATOR_NAME = 'Lally Elias';
+    process.env.ADMINISTRATOR_ABBREVIATION = 'LE';
+    process.env.ADMINISTRATOR_LOCALE = 'en';
+    process.env.ADMINISTRATOR_EMAIL = 'lally.elias@example.com';
+    process.env.ADMINISTRATOR_MOBILE = '0714005001';
+
+    seedAdministrators((error) => {
+      expect(error).to.not.exist;
+      done(error);
+    });
+  });
+
   it('should seed agencies', (done) => {
     seedAgencies((error) => {
       expect(error).to.not.exist;
@@ -538,5 +576,10 @@ describe('seed', () => {
     process.env.BASE_PATH = BASE_PATH;
     process.env.DATA_PATH = DATA_PATH;
     process.env.SEED_PATH = SEED_PATH;
+    process.env.ADMINISTRATOR_NAME = ADMINISTRATOR_NAME;
+    process.env.ADMINISTRATOR_ABBREVIATION = ADMINISTRATOR_ABBREVIATION;
+    process.env.ADMINISTRATOR_LOCALE = ADMINISTRATOR_LOCALE;
+    process.env.ADMINISTRATOR_EMAIL = ADMINISTRATOR_EMAIL;
+    process.env.ADMINISTRATOR_MOBILE = ADMINISTRATOR_MOBILE;
   });
 });

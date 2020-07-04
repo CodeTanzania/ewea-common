@@ -528,7 +528,9 @@ export const transformToPartySeed = (seed) => {
   let data = mergeObjects(seed);
 
   // generate seed object id
-  if (!get(data, '_id') && data.mobile && data.email) {
+  const shouldGenerateId =
+    !get(data, '_id') && areNotEmpty(data.mobile, data.email);
+  if (shouldGenerateId) {
     set(
       data,
       '_id',
@@ -546,6 +548,8 @@ export const transformToPartySeed = (seed) => {
 
   // ensure confirmed time
   data.confirmedAt = new Date();
+
+  // TODO: clear locked party
 
   // transform relations
   const populate = {};
@@ -2556,6 +2560,70 @@ export const seedAdministrativeAreas = (done) => {
 };
 
 /**
+ * @function seedAdministrators
+ * @name seedAdministrators
+ * @description Seed administrators
+ * @param {Function} done callback to invoke on success or error
+ * @returns {Error|undefined} error if fails else undefined
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.22.0
+ * @version 0.1.0
+ * @static
+ * @public
+ * @example
+ *
+ * seedAdministrators(error => { ... });
+ */
+export const seedAdministrators = (done) => {
+  debug('Start Seeding Administrators Data');
+
+  // prepare administrator seeds
+  const modelName = MODEL_NAME_PARTY;
+  const type = 'Focal';
+  const name = getString('ADMINISTRATOR_NAME', 'Administrator');
+  const abbreviation = getString('ADMINISTRATOR_ABBREVIATION', 'ADMN');
+  const locale = getString(
+    'ADMINISTRATOR_LOCALE',
+    getString('DEFAULT_LOCALE', 'en')
+  );
+  const email = getString('ADMINISTRATOR_EMAIL', 'administrator@example.com');
+  const mobile = getString('ADMINISTRATOR_MOBILE', '0714001001');
+  const password = getString(
+    'ADMINISTRATOR_PASSWORD',
+    getString(
+      'DEFAULT_HASHED_PASSWORD',
+      '$2a$10$rwpL/BhU8xY4fkf8SG7fHugF4PCioTJqy8BLU7BZ8N0YV.8Y1dXem'
+    )
+  );
+  const role = getString('ADMINISTRATOR_ROLE', 'Administrator');
+  const filter = (seed) => seed.type === type;
+
+  // collect administrator seeds data
+  const data = [
+    transformToPartySeed({
+      type,
+      name,
+      abbreviation,
+      locale,
+      email,
+      mobile,
+      password,
+      role,
+    }),
+  ];
+
+  // prepare seed options
+  const optns = { modelName, data, filter };
+
+  // do seeding
+  return seedFromSeeds(optns, (error) => {
+    debug('Finish Seeding Administrators Data');
+    return done(error);
+  });
+};
+
+/**
  * @function seedAgencies
  * @name seedAgencies
  * @description Seed agencies
@@ -2950,7 +3018,7 @@ export const seed = (done) => {
     seedEventActions,
     seedEventQuestions,
     seedAdministrativeAreas,
-    // seedAdministrators,
+    seedAdministrators,
     seedAgencies,
     seedFocals,
     seedFeatures,
