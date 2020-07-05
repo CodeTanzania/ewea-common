@@ -549,7 +549,13 @@ export const transformToPartySeed = (seed) => {
   // ensure confirmed time
   data.confirmedAt = new Date();
 
-  // TODO: clear locked party
+  // clear lock
+  data.failedAttempts = 0;
+  data.lockedAt = null;
+  data.unlockedAt = null;
+  data.unlockToken = null;
+  data.unlockSentAt = null;
+  data.unlockTokenExpiryAt = null;
 
   // transform relations
   const populate = {};
