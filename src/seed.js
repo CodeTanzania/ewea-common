@@ -1296,6 +1296,7 @@ export const seedCase = (optns, done) => {
  * seedPermissions(error => { ... });
  */
 export const seedPermissions = (done) => {
+  // TODO: honour wildcard for _id generation
   debug('Start Seeding Permissions Data');
 
   // generate object id
@@ -1345,6 +1346,7 @@ export const seedPermissions = (done) => {
  * seedDefaults(error => { ... });
  */
 export const seedDefaults = (done) => {
+  // TODO: honour code for _id generation
   debug('Start Seeding Default Predefines Data');
 
   // prepare options
@@ -1380,6 +1382,7 @@ export const seedDefaults = (done) => {
  * seedCommons(error => { ... });
  */
 export const seedCommons = (done) => {
+  // TODO: honour code for _id generation
   debug('Start Seeding Common Predefines Data');
 
   // prepare options
@@ -1419,6 +1422,7 @@ export const seedCommons = (done) => {
  * seedUnits(error => { ... });
  */
 export const seedUnits = (done) => {
+  // TODO: honour code for _id generation
   debug('Start Seeding Units Data');
 
   const modelName = MODEL_NAME_PREDEFINE;
@@ -1460,6 +1464,7 @@ export const seedUnits = (done) => {
  * seedPriorities(error => { ... });
  */
 export const seedPriorities = (done) => {
+  // TODO: honour code for _id generation
   debug('Start Seeding Priorities Data');
 
   const modelName = MODEL_NAME_PREDEFINE;
@@ -1503,6 +1508,7 @@ export const seedPriorities = (done) => {
  * seedAdministrativeLevels(error => { ... });
  */
 export const seedAdministrativeLevels = (done) => {
+  // TODO: honour code for _id generation
   debug('Start Seeding Administrative Levels Data');
 
   const modelName = MODEL_NAME_PREDEFINE;
@@ -1547,6 +1553,7 @@ export const seedAdministrativeLevels = (done) => {
  * seedFeatureTypes(error => { ... });
  */
 export const seedFeatureTypes = (done) => {
+  // TODO: honour code for _id generation
   debug('Start Seeding Feature Types Data');
 
   const modelName = MODEL_NAME_PREDEFINE;
@@ -1591,6 +1598,7 @@ export const seedFeatureTypes = (done) => {
  * seedEventIndicators(error => { ... });
  */
 export const seedEventIndicators = (done) => {
+  // TODO: honour code for _id generation
   debug('Start Seeding Event Indicators Data');
 
   const modelName = MODEL_NAME_PREDEFINE;
@@ -1633,6 +1641,7 @@ export const seedEventIndicators = (done) => {
  * seedEventTopics(error => { ... });
  */
 export const seedEventTopics = (done) => {
+  // TODO: honour code for _id generation
   debug('Start Seeding Event Topics Data');
 
   const modelName = MODEL_NAME_PREDEFINE;
@@ -1675,6 +1684,7 @@ export const seedEventTopics = (done) => {
  * seedEventLevels(error => { ... });
  */
 export const seedEventLevels = (done) => {
+  // TODO: honour code for _id generation
   debug('Start Seeding Event Levels Data');
 
   const modelName = MODEL_NAME_PREDEFINE;
@@ -1716,6 +1726,7 @@ export const seedEventLevels = (done) => {
  * seedEventSeverities(error => { ... });
  */
 export const seedEventSeverities = (done) => {
+  // TODO: honour code for _id generation
   debug('Start Seeding Event Severities Data');
 
   const modelName = MODEL_NAME_PREDEFINE;
@@ -1757,6 +1768,7 @@ export const seedEventSeverities = (done) => {
  * seedEventCertainties(error => { ... });
  */
 export const seedEventCertainties = (done) => {
+  // TODO: honour code for _id generation
   debug('Start Seeding Event Certainties Data');
 
   const modelName = MODEL_NAME_PREDEFINE;
@@ -1798,6 +1810,7 @@ export const seedEventCertainties = (done) => {
  * seedEventStatuses(error => { ... });
  */
 export const seedEventStatuses = (done) => {
+  // TODO: honour code for _id generation
   debug('Start Seeding Event Statuses Data');
 
   const modelName = MODEL_NAME_PREDEFINE;
@@ -1839,6 +1852,7 @@ export const seedEventStatuses = (done) => {
  * seedEventUrgencies(error => { ... });
  */
 export const seedEventUrgencies = (done) => {
+  // TODO: honour code for _id generation
   debug('Start Seeding Event Urgencies Data');
 
   const modelName = MODEL_NAME_PREDEFINE;
@@ -1880,6 +1894,7 @@ export const seedEventUrgencies = (done) => {
  * seedEventResponses(error => { ... });
  */
 export const seedEventResponses = (done) => {
+  // TODO: honour code for _id generation
   debug('Start Seeding Event Responses Data');
 
   const modelName = MODEL_NAME_PREDEFINE;
@@ -1921,6 +1936,7 @@ export const seedEventResponses = (done) => {
  * seedPartyOwnerships(error => { ... });
  */
 export const seedPartyOwnerships = (done) => {
+  // TODO: honour code for _id generation
   debug('Start Seeding Party Ownerships Data');
 
   const modelName = MODEL_NAME_PREDEFINE;
@@ -1962,6 +1978,7 @@ export const seedPartyOwnerships = (done) => {
  * seedPartyGroups(error => { ... });
  */
 export const seedPartyGroups = (done) => {
+  // TODO: honour code for _id generation
   debug('Start Seeding Party Groups Data');
 
   const modelName = MODEL_NAME_PREDEFINE;
@@ -2003,6 +2020,7 @@ export const seedPartyGroups = (done) => {
  * seedPartyRoles(error => { ... });
  */
 export const seedPartyRoles = (done) => {
+  // TODO: honour code for _id generation
   debug('Start Seeding Party Roles Data');
 
   const modelName = MODEL_NAME_PREDEFINE;
@@ -2044,6 +2062,7 @@ export const seedPartyRoles = (done) => {
  * seedPartyGenders(error => { ... });
  */
 export const seedPartyGenders = (done) => {
+  // TODO: honour code for _id generation
   debug('Start Seeding Party Genders Data');
 
   const modelName = MODEL_NAME_PREDEFINE;
@@ -2085,6 +2104,7 @@ export const seedPartyGenders = (done) => {
  * seedPartyOccupations(error => { ... });
  */
 export const seedPartyOccupations = (done) => {
+  // TODO: honour code for _id generation
   debug('Start Seeding Party Occupations Data');
 
   const modelName = MODEL_NAME_PREDEFINE;
@@ -2126,6 +2146,8 @@ export const seedPartyOccupations = (done) => {
  * seedPartyNationalities(error => { ... });
  */
 export const seedPartyNationalities = (done) => {
+  // TODO: honour code(e.g TZS) for _id generation
+  // TODO: support country data
   debug('Start Seeding Party Nationalities Data');
 
   const modelName = MODEL_NAME_PREDEFINE;
@@ -2167,6 +2189,7 @@ export const seedPartyNationalities = (done) => {
  * seedVehicleTypes(error => { ... });
  */
 export const seedVehicleTypes = (done) => {
+  // TODO: honour code for _id generation
   debug('Start Seeding Vehicle Types Data');
 
   const modelName = MODEL_NAME_PREDEFINE;
@@ -2208,6 +2231,7 @@ export const seedVehicleTypes = (done) => {
  * seedVehicleModels(error => { ... });
  */
 export const seedVehicleModels = (done) => {
+  // TODO: honour code for _id generation
   debug('Start Seeding Vehicle Models Data');
 
   const modelName = MODEL_NAME_PREDEFINE;
@@ -2249,6 +2273,7 @@ export const seedVehicleModels = (done) => {
  * seedVehicleMakes(error => { ... });
  */
 export const seedVehicleMakes = (done) => {
+  // TODO: honour code for _id generation
   debug('Start Seeding Vehicle Makes Data');
 
   const modelName = MODEL_NAME_PREDEFINE;
@@ -2290,6 +2315,7 @@ export const seedVehicleMakes = (done) => {
  * seedVehicleStatuses(error => { ... });
  */
 export const seedVehicleStatuses = (done) => {
+  // TODO: honour code for _id generation
   debug('Start Seeding Vehicle Statuses Data');
 
   const modelName = MODEL_NAME_PREDEFINE;
@@ -2331,6 +2357,7 @@ export const seedVehicleStatuses = (done) => {
  * seedEventGroups(error => { ... });
  */
 export const seedEventGroups = (done) => {
+  // TODO: honour group code for _id generation
   debug('Start Seeding Event Groups Data');
 
   const modelName = MODEL_NAME_PREDEFINE;
@@ -2338,6 +2365,7 @@ export const seedEventGroups = (done) => {
 
   // generate object id
   const transform = (seed) => {
+    // TODO: grab code
     const name = get(seed, 'strings.name.en');
     if (!isEmpty(name)) {
       const merged = mergeObjects(
@@ -2372,6 +2400,7 @@ export const seedEventGroups = (done) => {
  * seedEventTypes(error => { ... });
  */
 export const seedEventTypes = (done) => {
+  // TODO: honour event group etc for _id generation
   debug('Start Seeding Event Types Data');
 
   const modelName = MODEL_NAME_PREDEFINE;
@@ -2379,6 +2408,7 @@ export const seedEventTypes = (done) => {
 
   // generate object id
   const transform = (seed) => {
+    // TODO: grap event group
     // TODO: support group if available
     const name = get(seed, 'strings.name.en');
     if (!isEmpty(name)) {
@@ -2414,6 +2444,7 @@ export const seedEventTypes = (done) => {
  * seedEventFunctions(error => { ... });
  */
 export const seedEventFunctions = (done) => {
+  // TODO: honour event type, group etc for _id generation
   debug('Start Seeding Event Functions Data');
 
   const modelName = MODEL_NAME_PREDEFINE;
@@ -2421,6 +2452,8 @@ export const seedEventFunctions = (done) => {
 
   // generate object id
   const transform = (seed) => {
+    // TODO: grab event group
+    // TODO: grab event type
     const name = get(seed, 'strings.name.en');
     if (!isEmpty(name)) {
       const merged = mergeObjects(
@@ -2455,6 +2488,7 @@ export const seedEventFunctions = (done) => {
  * seedEventActions(error => { ... });
  */
 export const seedEventActions = (done) => {
+  // TODO: honour event type, group etc for _id generation
   debug('Start Seeding Event Actions Data');
 
   const modelName = MODEL_NAME_PREDEFINE;
@@ -2462,6 +2496,10 @@ export const seedEventActions = (done) => {
 
   // generate object id
   const transform = (seed) => {
+    // TODO: grab event group
+    // TODO: grab event type
+    // TODO: grab administrative area
+    // TODO: grab domain if available
     const name = get(seed, 'strings.name.en');
     if (!isEmpty(name)) {
       const merged = mergeObjects(
@@ -2496,6 +2534,7 @@ export const seedEventActions = (done) => {
  * seedEventQuestions(error => { ... });
  */
 export const seedEventQuestions = (done) => {
+  // TODO: generate _id per indicator, topic
   debug('Start Seeding Event Questions Data');
 
   const modelName = MODEL_NAME_PREDEFINE;
@@ -2503,6 +2542,9 @@ export const seedEventQuestions = (done) => {
 
   // generate object id
   const transform = (seed) => {
+    // TODO: grab indicator
+    // TODO: grab topic
+    // TODO: grab domain if available
     const name = get(seed, 'strings.code');
     if (!isEmpty(name)) {
       const merged = mergeObjects(
@@ -2538,6 +2580,7 @@ export const seedEventQuestions = (done) => {
  */
 export const seedAdministrativeAreas = (done) => {
   // TODO: seed per hierarchy
+  // TODO: seed per domain i.e ADMINISTRATIVE_LEVEL, ADMINISTRATIVE_HIERARCHY
   // TODO: domain === hierarchy
   // TODO: level === hierarchy
   // TODO: support parent on object id generation
@@ -2582,6 +2625,7 @@ export const seedAdministrativeAreas = (done) => {
  * seedAdministrators(error => { ... });
  */
 export const seedAdministrators = (done) => {
+  // TODO: hash plain password
   debug('Start Seeding Administrators Data');
 
   // prepare administrator seeds
@@ -2671,7 +2715,6 @@ export const seedAgencies = (done) => {
  * seedFocals(error => { ... });
  */
 export const seedFocals = (done) => {
-  // TODO: merge administrator|seedAdministrator
   debug('Start Seeding Focals Data');
   const type = 'Focal';
   return seedParty({ type }, (error) => {
@@ -2698,7 +2741,8 @@ export const seedFocals = (done) => {
  */
 export const seedFeatures = (done) => {
   // TODO: seed per feature type i.e hospitals, buildings etc
-  // TODO: support seed per domain
+  // TODO: support seed per domain i.e building etc
+  // TODO: seed per domain by concat streams
   // TODO: support seed per type
   debug('Start Seeding Features Data');
 
@@ -2741,9 +2785,10 @@ export const seedFeatures = (done) => {
  * seedHealthFacilities(error => { ... });
  */
 export const seedHealthFacilities = (done) => {
-  // TODO: seed per type i.e hospitals, buildings etc
+  // TODO: domain i.e hospital, dispensary etc
+  // TODO: seed per type i.e hospitals, clinics etc
   // TODO: seed per domain by concat streams
-  // TODO: seed operating status
+  // TODO: seed operating status flag
   // TODO: seed common properties
   debug('Start Seeding Health Facilities Data');
 
@@ -2794,6 +2839,7 @@ export const seedHealthFacilities = (done) => {
  */
 export const seedVehicles = (done) => {
   // TODO: seed per vehicle type i.e ambulances, fires etc
+  // TODO: vehicle domain: ambulances, fires, unknown
   debug('Start Seeding Vehicles Data');
 
   const modelName = MODEL_NAME_PREDEFINE;
@@ -2836,6 +2882,8 @@ export const seedVehicles = (done) => {
  * seedEventActionCatalogues(error => { ... });
  */
 export const seedEventActionCatalogues = (done) => {
+  // TODO: seed per event phase i.e mitigation, preparedness, response, recovery
+  // TODO: use domain i.e mitigation, preparedness, response, recovery
   debug('Start Seeding Event Action Catalogues Data');
 
   const modelName = MODEL_NAME_PREDEFINE;
@@ -2877,6 +2925,7 @@ export const seedEventActionCatalogues = (done) => {
  * seedNotificationTemplates(error => { ... });
  */
 export const seedNotificationTemplates = (done) => {
+  // TODO: transform code as sender id
   debug('Start Seeding Notification Templates Data');
 
   const modelName = MODEL_NAME_PREDEFINE;
@@ -2918,6 +2967,9 @@ export const seedNotificationTemplates = (done) => {
  * seedEvents(error => { ... });
  */
 export const seedEvents = (done) => {
+  // TODO: seed per stage i.e alert and event
+  // TODO: seed per phase i.e response etc
+  // TODO: transform _id
   debug('Start Seeding Events Data');
   return seedEvent({}, (error) => {
     debug('Finish Seeding Events Data');
@@ -2942,6 +2994,7 @@ export const seedEvents = (done) => {
  * seedVehicleDispatches(error => { ... });
  */
 export const seedVehicleDispatches = (done) => {
+  // TODO: transform _id
   debug('Start Seeding Vehicle Dispatches Data');
   return seedVehicleDispatch({}, (error) => {
     debug('Finish Seeding Vehicle Dispatches Data');
@@ -2966,6 +3019,7 @@ export const seedVehicleDispatches = (done) => {
  * seedCases(error => { ... });
  */
 export const seedCases = (done) => {
+  // TODO: transform _id
   debug('Start Seeding Cases Data');
   return seedCase({}, (error) => {
     debug('Finish Seeding Cases Data');
