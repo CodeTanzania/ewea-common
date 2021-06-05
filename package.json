@@ -1,6 +1,6 @@
 {
   "name": "@codetanzania/ewea-common",
-  "version": "0.21.2",
+  "version": "0.21.3",
   "description": "Common utilities for EWEA",
   "main": "lib/index.js",
   "module": "es/index.js",
