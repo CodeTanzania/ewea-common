@@ -1,3 +1,43 @@
+#### 0.21.3 (2021-06-05)
+
+##### Chores
+
+* **deps:**
+  *  force latest version & audit fix ([44b9ed51](https://github.com/codetanzania/ewea-common/commit/44b9ed51a70816b5aae246b9201583a143a10a31))
+  *  force latest versions ([b169b644](https://github.com/codetanzania/ewea-common/commit/b169b644f2140d8abccbf1055cbf86c81d1b6372))
+  *  force latest version & audit fix ([ee740d59](https://github.com/codetanzania/ewea-common/commit/ee740d59ec5ad4bcefd0331eb7f589ffbf7560ff))
+  *  force latest version & audit fix ([11d41896](https://github.com/codetanzania/ewea-common/commit/11d418960918096d9b7ee31d7579ea0d74e0f0a2))
+*  add inline todos ([36ce3715](https://github.com/codetanzania/ewea-common/commit/36ce371525e01622e7acb8c8770b87ce89ede1b1))
+*  add inline todos ([480eb2c9](https://github.com/codetanzania/ewea-common/commit/480eb2c9ab5612a2da127afafc56c8156e2f66c0))
+
+##### New Features
+
+* **seed:**
+  *  setup administrator party ([7d5b14d0](https://github.com/codetanzania/ewea-common/commit/7d5b14d06d3754d4e1b2bfe4b8aa203215759391))
+  *  support health facilities with domains ([5c2a9cbf](https://github.com/codetanzania/ewea-common/commit/5c2a9cbfc29e3219e640f764212d5e9131fe0ca9))
+  *  set permission id on seed ([77af37f3](https://github.com/codetanzania/ewea-common/commit/77af37f3c824c4db92f8ff2998a14cadbef53cf8))
+  *  apply transform on seed files ([bdb2e826](https://github.com/codetanzania/ewea-common/commit/bdb2e826cd6ac57c8fec113e38ab13aca634dc31))
+  *  allow domain on predefine seeding ([80480c24](https://github.com/codetanzania/ewea-common/commit/80480c242c72ccd5ff5c95a16ac9bad30dfdb1d9))
+  *  support predefine domain field ([689a3fe5](https://github.com/codetanzania/ewea-common/commit/689a3fe5fa07ffb1db3e8d450524739f27584366))
+  *  set party id on seed ([77d0c562](https://github.com/codetanzania/ewea-common/commit/77d0c562db1a0933d5e60fd0599192b2b8342742))
+  *  set event id on seed ([fabca2a5](https://github.com/codetanzania/ewea-common/commit/fabca2a5636e0ee7ea8d7db4c161e8f75b4ff85a))
+  *  set vehicle dispatch id on seed ([4c6b6f67](https://github.com/codetanzania/ewea-common/commit/4c6b6f674094074e965acb845f89865c90ceff22))
+  *  set case id on seed ([f6c7cd4c](https://github.com/codetanzania/ewea-common/commit/f6c7cd4cc30d5c51eb2f0133044ce2e0e937be61))
+
+##### Bug Fixes
+
+* **database:**  skip file models on test env ([ca9f6100](https://github.com/codetanzania/ewea-common/commit/ca9f6100d6f44b12b64999aee097601e4a1efd03))
+* **seed:**
+  *  ensure allowed resource permissions ([b2278ca2](https://github.com/codetanzania/ewea-common/commit/b2278ca2c696f6f92b2391029717dcb12e1706df))
+  *  ensure resource permissions ([aab447b7](https://github.com/codetanzania/ewea-common/commit/aab447b75408d0d917e6ed6f40b6a6fd42d9692c))
+
+##### Refactors
+
+* **seed:**
+  *  clear party lock properties ([7587a0ae](https://github.com/codetanzania/ewea-common/commit/7587a0aef4f822c7d684d5a95fdeeb03bd3aab8a))
+  *  generate unique id before seed ([caf2e61a](https://github.com/codetanzania/ewea-common/commit/caf2e61a00191c64c7781e7c215fc77ba860e157))
+*  update test env & dependencies ([75c2bc4e](https://github.com/codetanzania/ewea-common/commit/75c2bc4e55fb7f52a4e4ed2a8054e756c228bb0d))
+
 #### 0.21.2 (2020-06-15)
 
 ##### Chores
