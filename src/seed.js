@@ -276,6 +276,7 @@ export const transformSeedKeys = (seed) => {
   // normalize keys
   const transformed = mapKeys(data, (value, key) => {
     // key to lower
+    // TODO: camelize?
     let path = toLower(trim(key));
     // key to path
     path = join(split(path, ' '), '.');
@@ -542,6 +543,7 @@ export const transformToPartySeed = (seed) => {
   if (isEmpty(data.password)) {
     data.password = getString(
       'DEFAULT_HASHED_PASSWORD',
+      // TODO: dynamically hash DEFAULT_PASSWORD
       '$2a$10$rwpL/BhU8xY4fkf8SG7fHugF4PCioTJqy8BLU7BZ8N0YV.8Y1dXem'
     );
   }
@@ -791,33 +793,35 @@ export const readCsvFile = (path, transformers, done) => {
  * const options = { Model = undefined, properties = {}, namespace = undefined, throws = false }
  * processCsvSeed((options, done) => (error, {finished, feature, next}) => { ... });
  */
-export const processCsvSeed = (
-  {
-    Model = undefined,
-    properties = {},
-    namespace = undefined,
-    domain = undefined,
-    throws = false,
-  },
-  done
-) => (error, { finished, feature, next }) => {
-  // handle file read errors
-  if (error) {
-    return throws ? done(error) : done();
-  }
-  // handle read finish
-  if (finished) {
-    return done();
-  }
-  // process datas
-  if (feature && next) {
-    // seed data & next chunk from csv read stream
-    const data = mergeObjects(properties, { namespace, domain }, feature);
-    return Model.seed(data, next);
-  }
-  // request next chunk from csv read stream
-  return next && next();
-};
+export const processCsvSeed =
+  (
+    {
+      Model = undefined,
+      properties = {},
+      namespace = undefined,
+      domain = undefined,
+      throws = false,
+    },
+    done
+  ) =>
+  (error, { finished, feature, next }) => {
+    // handle file read errors
+    if (error) {
+      return throws ? done(error) : done();
+    }
+    // handle read finish
+    if (finished) {
+      return done();
+    }
+    // process datas
+    if (feature && next) {
+      // seed data & next chunk from csv read stream
+      const data = mergeObjects(properties, { namespace, domain }, feature);
+      return Model.seed(data, next);
+    }
+    // request next chunk from csv read stream
+    return next && next();
+  };
 
 /**
  * @function seedFromCsv

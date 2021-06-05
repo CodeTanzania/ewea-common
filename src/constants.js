@@ -193,6 +193,7 @@ export const DEFAULT_NAMES = sortedUniq([
   DEFAULT_ADMINISTRATIVEAREA_NAME,
 ]);
 
+// TODO update for all modules?
 export const DEFAULT_PATHS = mergeObjects(
   {
     unit: { namespace: PREDEFINE_NAMESPACE_UNIT },
@@ -232,7 +233,7 @@ export const DEFAULT_SEEDS = mapValues(
   }
 );
 
-// TODO: move to internal or common?
+// TODO: move to internal or common or dispatch?
 // TODO: use constants
 export const COMMON_VEHICLESTATUSES = {
   Waiting: { weight: 1, name: 'Waiting', abbreviation: 'WTN' },
@@ -267,7 +268,7 @@ export const COMMON_VEHICLESTATUS_SEEDS = mapValues(
   }
 );
 
-// TODO: move to dispatch
+// TODO: move to ewea-dispatch
 export const dispatchStatusFor = (optns) => {
   // ensure options
   const options = mergeObjects(optns);
@@ -321,6 +322,7 @@ export const dispatchStatusFor = (optns) => {
   return { dispatch, vehicle };
 };
 
+// TODO: move to ewea-case
 export const COMMON_CASESTAGES = {
   Screening: { weight: 1, name: 'Screening', abbreviation: 'SCRN' },
   Suspect: { weight: 2, name: 'Suspect', abbreviation: 'SUSP' },
@@ -373,7 +375,7 @@ export const COMMON_CASESEVERITY_SEEDS = mapValues(
   }
 );
 
-// TODO to case
+// TODO move to ewea-case
 export const caseSeverityFor = (optns) => {
   // ensure options
   const { score } = mergeObjects(optns);

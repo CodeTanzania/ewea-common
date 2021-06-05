@@ -24,9 +24,9 @@ import { DEFAULT_NAMES, DEFAULT_PATHS } from './constants';
  *
  * findDefaults((error, defaults) => { ... });
  * //=> { unit: {...}, ... }
- *
  */
 export const findDefaultPredefines = (done) => {
+  // TODO: move to predefine
   // TODO: Party, Event, ChangeLog defaults
 
   // prepare criterias
@@ -92,7 +92,6 @@ export const findDefaultPredefines = (done) => {
  *
  * findPartyDefaults((error, defaults) => { ... });
  * //=> { role: {...}, ... }
- *
  */
 export const findPartyDefaults = (done) => {
   // find default predefines
