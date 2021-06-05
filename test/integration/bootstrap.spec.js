@@ -13,6 +13,9 @@ process.env.JWT_ISSUER = 'ewea';
 process.env.JWT_SUBJECT = 'ewea';
 process.env.JWT_EXPIRES_IN = '7 days';
 process.env.JWT_API_TOKEN_EXPIRES_IN = '1000y';
+process.env.DEFAULT_TRANSPORT_NAME = 'echo';
+process.env.DEFAULT_CAMPAIGN_CHANNELS = 'EMAIL';
+process.env.DEFAULT_ENABLE_SYNC_TRANSPORT = true;
 
 before((done) => connect(done));
 

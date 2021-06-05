@@ -7,6 +7,7 @@ import {
   PREDEFINE_NAMESPACE_EVENTLEVEL,
   PREDEFINE_NAMESPACE_ADMINISTRATIVEAREA,
 } from '@codetanzania/ewea-internals';
+import { omit } from 'lodash';
 import { expect, fake } from '@lykmapipo/test-helpers';
 import { getStrings, getObject } from '@lykmapipo/env';
 import {
@@ -22,6 +23,10 @@ import {
   transformGeoFields,
   applyTransformsOn,
   transformToPredefineSeed,
+  transformToPartySeed,
+  transformToEventSeed,
+  transformToVehicleDispatchSeed,
+  transformToCaseSeed,
   seedFromCsv,
   seedFromJson,
   seedFromSeeds,
@@ -274,7 +279,7 @@ describe('common', () => {
       area: '',
     };
     const seed = transformToPredefineSeed(data);
-    expect(seed).to.be.eql({
+    expect(omit(seed, 'raw')).to.be.eql({
       strings: {
         name: { en: 'Two', sw: 'Two' },
         description: { en: 'Two', sw: 'Two' },
@@ -316,7 +321,7 @@ describe('common', () => {
       parent: 'Up Town',
     };
     const seed = transformToPredefineSeed(data);
-    expect(seed).to.be.eql({
+    expect(omit(seed, 'raw')).to.be.eql({
       namespace: PREDEFINE_NAMESPACE_ADMINISTRATIVEAREA,
       strings: {
         name: { en: 'Down Town', sw: 'Down Town' },
@@ -355,6 +360,51 @@ describe('common', () => {
         },
       },
     });
+  });
+
+  it('should transform to party seed', () => {
+    const data = {
+      mobile: '0714001001',
+      email: 'john.doe@example.com',
+    };
+    const s1 = transformToPartySeed(data);
+    const s2 = transformToPartySeed(data);
+    expect(s1).to.exist;
+    expect(s2).to.exist;
+    expect(s1._id).to.be.eql(s2._id);
+  });
+
+  it('should transform to event seed', () => {
+    const data = {
+      number: 'FL-2018-000033-TZ',
+    };
+    const s1 = transformToEventSeed(data);
+    const s2 = transformToEventSeed(data);
+    expect(s1).to.exist;
+    expect(s2).to.exist;
+    expect(s1._id).to.be.eql(s2._id);
+  });
+
+  it('should transform to vehicle dispatch seed', () => {
+    const data = {
+      number: '2020-000022-TZ',
+    };
+    const s1 = transformToVehicleDispatchSeed(data);
+    const s2 = transformToVehicleDispatchSeed(data);
+    expect(s1).to.exist;
+    expect(s2).to.exist;
+    expect(s1._id).to.be.eql(s2._id);
+  });
+
+  it('should transform to case seed', () => {
+    const data = {
+      number: '2020-O5-0001-TZ',
+    };
+    const s1 = transformToCaseSeed(data);
+    const s2 = transformToCaseSeed(data);
+    expect(s1).to.exist;
+    expect(s2).to.exist;
+    expect(s1._id).to.be.eql(s2._id);
   });
 
   it('should apply transforms', () => {
