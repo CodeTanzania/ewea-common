@@ -106,7 +106,7 @@
     "lodash.template": "^4.5.0",
     "mocha": "^8.4.0",
     "mongoose": ">=5.12.13",
-    "npm-check-updates": "^11.6.0",
+    "npm-check-updates": "^19.3.1",
     "nyc": "^15.1.0",
     "prettier": "^2.3.1",
     "rimraf": "^3.0.2",
