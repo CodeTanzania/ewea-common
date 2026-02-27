@@ -104,7 +104,7 @@
     "husky": "^6.0.0",
     "lint-staged": "^11.0.0",
     "lodash.template": "^4.5.0",
-    "mocha": "^8.4.0",
+    "mocha": "^11.7.5",
     "mongoose": ">=5.12.13",
     "npm-check-updates": "^11.6.0",
     "nyc": "^15.1.0",
